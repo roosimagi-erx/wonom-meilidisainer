@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.15.0
+Stable tag: 0.15.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,9 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.15.1 =
+* Parandus: plokk „Tellimuse väli" näitas kujundajas kriipsu, kui välja võti oli määramata või tellimusel puudus — päris kirjas peitis ta end ära. Nüüd käitub kujundaja täpselt nagu päris kiri.
 
 = 0.15.0 =
 * Aadressiplokk on nüüd meie oma, mitte WooCommerce'i mall. Kadusid kaldkiri, hallid raamitud kastid ja allajoonitud telefoninumbrid — aadressid on samas kirjas ja värvides kui ülejäänud kiri.

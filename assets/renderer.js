@@ -346,10 +346,16 @@
 
 			case 'order_meta':
 				var real = orderField( ctx, p.key );
-				var sample = real !== null ? real : ( p.key ? 'CC123456789EE' : '—' );
+				var sample = real !== null ? real : ( p.key ? 'CC123456789EE' : '' );
 
-				if ( real === '' && p.hide_empty ) {
+				// Sama reegel nagu päris kirjas: tühi väli (või määramata võti)
+				// peidab ploki ära, kui peitmine on sisse lülitatud.
+				if ( ( real === '' || ! p.key ) && p.hide_empty ) {
 					return '';
+				}
+
+				if ( ! sample ) {
+					sample = '—';
 				}
 
 				var shown = p.link ? '<a style="color:' + escAttr( brand.accent ) + ';">' + esc( sample ) + '</a>' : esc( sample );
