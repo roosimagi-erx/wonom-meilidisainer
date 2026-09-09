@@ -166,26 +166,30 @@ class WMD_Ajax {
 			WMD_Design::set_cache( WMD_Design::sanitize( $design ) );
 		}
 
-		$html   = '';
-		$source = 'design';
+		$order_id = self::posted_order_id();
+		$html     = '';
+		$source   = 'design';
 
 		if ( 'real' === $mode && wmd_woo_active() ) {
-			$html = self::render_real( $email_id );
+			$html = self::render_real( $email_id, $order_id );
 			if ( $html ) {
 				$source = 'real';
 			}
 		}
 
+		$order = self::preview_order( $order_id );
+
 		if ( ! $html ) {
-			$order = self::latest_order();
-			$ctx   = $order ? WMD_Tags::order_context( $order ) : WMD_Tags::sample_context();
-			$html  = WMD_Render::full( $email_id, $ctx );
+			$ctx  = $order ? WMD_Tags::order_context( $order ) : WMD_Tags::sample_context();
+			$html = WMD_Render::full( $email_id, $ctx );
 		}
 
 		wp_send_json_success(
 			array(
-				'html'   => $html,
-				'source' => $source,
+				'html'    => $html,
+				'source'  => $source,
+				'order'   => $order ? $order->get_id() : 0,
+				'payment' => $order ? $order->get_payment_method() : '',
 			)
 		);
 	}
@@ -196,8 +200,8 @@ class WMD_Ajax {
 	 * @param string $email_id WC_Email id.
 	 * @return string Tühi string, kui ei õnnestunud.
 	 */
-	protected static function render_real( $email_id ) {
-		$order = self::latest_order();
+	protected static function render_real( $email_id, $order_id = 0 ) {
+		$order = self::preview_order( $order_id );
 
 		if ( ! $order ) {
 			return '';
@@ -236,13 +240,24 @@ class WMD_Ajax {
 	}
 
 	/**
-	 * Viimane tellimus poes, kui on.
+	 * Eelvaates kasutatav tellimus.
 	 *
+	 * Kui päringus on tellimuse id, võtame selle. Muidu poe viimase.
+	 *
+	 * @param int $order_id Soovitud tellimus või 0.
 	 * @return WC_Order|null
 	 */
-	protected static function latest_order() {
+	protected static function preview_order( $order_id = 0 ) {
 		if ( ! function_exists( 'wc_get_orders' ) ) {
 			return null;
+		}
+
+		if ( $order_id > 0 && function_exists( 'wc_get_order' ) ) {
+			$order = wc_get_order( $order_id );
+
+			if ( is_a( $order, 'WC_Order' ) ) {
+				return $order;
+			}
 		}
 
 		$orders = wc_get_orders(
@@ -259,6 +274,15 @@ class WMD_Ajax {
 		}
 
 		return $orders[0];
+	}
+
+	/**
+	 * Päringus soovitud tellimuse id.
+	 *
+	 * @return int
+	 */
+	protected static function posted_order_id() {
+		return isset( $_POST['order'] ) ? absint( wp_unslash( $_POST['order'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce kontrollitakse guard() sees.
 	}
 
 	/**
@@ -288,7 +312,7 @@ class WMD_Ajax {
 			WMD_Design::save( $design );
 		}
 
-		$order = self::latest_order();
+		$order = self::preview_order( self::posted_order_id() );
 		$sent  = false;
 		$mode  = 'design';
 

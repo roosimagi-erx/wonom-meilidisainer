@@ -771,6 +771,35 @@
 	width: 100%;
 }
 
+.wmd-cond {
+	margin-top: 14px;
+}
+
+.wmd-check {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 3px 0;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.wmd-check code {
+	font-size: 10px;
+	color: var(--wmd-muted);
+	background: #eef0f3;
+	padding: 1px 4px;
+	border-radius: 3px;
+}
+
+.wmd-order-pick {
+	max-width: 300px;
+}
+
+.wmd-server-note.is-busy {
+	opacity: 0.55;
+}
+
 .wmd-modes .wmd-seg {
 	flex: 1 1 0;
 	padding: 7px 6px;

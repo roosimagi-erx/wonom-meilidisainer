@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.10.0
+Stable tag: 0.11.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,12 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.11.0 =
+* Uus: eelvaate tellimuse valik ülaribal. Saad valida, millise päris tellimuse andmetega meili näidatakse — nii saab kontrollida, kuidas kiri eri makseviiside puhul välja näeb. Valik kehtib ka testmeili saatmisel.
+* Uus: iga ploki juures saab määrata, milliste makseviiside puhul see kirja läheb. Nii saab nt pangaülekande juhised panna ainult ülekandega tellimustele. Märkimata jätmine tähendab „näita alati".
+* Uus plokk „Makseviisi juhised" — toob kirja selle, mida makselahendus ise meilile lisab (nt pangaülekande rekvisiidid). Täisrežiimis oleks see muidu kaduma läinud.
+* Serveri eelvaade on nüüd režiim, mitte ühekordne vaade. Meili või tellimuse vahetamisel värskendub see ise, enam ei pea nuppu uuesti vajutama.
 
 = 0.10.0 =
 * Uus: iga meili juures saab valida „terve meil ise". Siis ei kasutata WooCommerce'i sisumalli üldse ja kogu kiri pannakse kokku plokkidest.

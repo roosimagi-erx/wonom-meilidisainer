@@ -61,7 +61,27 @@
 		};
 	}
 
+	/**
+	 * Kas plokk on selle tellimuse puhul nähtav. Sama loogika on PHP pool.
+	 * Kui makseviis on teadmata, näitame ploki ära.
+	 */
+	function visible( b, ctx ) {
+		var pay = b.cond && b.cond.pay ? b.cond.pay : [];
+
+		if ( ! pay.length ) {
+			return true;
+		}
+
+		var current = ctx && ctx.__payment ? ctx.__payment : '';
+
+		return current ? pay.indexOf( current ) !== -1 : true;
+	}
+
 	function block( b, brand, ctx, defaultColor ) {
+		if ( ! visible( b, ctx ) ) {
+			return '';
+		}
+
 		var p = b.props || {};
 		var pad = num( p.pad, 12 );
 		var font = brand.font_family;
@@ -213,6 +233,17 @@
 
 			case 'addresses':
 				body = sampleAddresses( brand );
+				break;
+
+			case 'payment_info':
+				body = '<div style="' + escAttr( style( {
+					'font-family': font,
+					'font-size': num( brand.base_size, 15 ) + 'px',
+					'line-height': '1.6',
+					color: brand.muted_color,
+					border: '1px dashed ' + brand.border_color,
+					padding: '10px 14px',
+				} ) ) + '">Makselahenduse juhised (nt pangaülekande rekvisiidid) ilmuvad siia päris meilis, kui makselahendus neid saadab.</div>';
 				break;
 
 			case 'customer_note':

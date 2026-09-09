@@ -30,9 +30,9 @@ WooCommerce oma malle uuendab.
   sisumalli ei kasutata.
 - **Plokid** — pealkiri, tekstilõik, nupp, pilt, joon, tühi ruum, kaks veergu,
   sotsiaalmeedia, oma HTML. Lohistamisega järjestatavad.
-- **WooCommerce'i plokid** — tellimuse tabel, aadressid, kliendi märkus. Neid
-  renderdab endiselt WooCommerce ise, seega maksuread, allahindlused ja
-  tarnepluginate lisandused jäävad alles.
+- **WooCommerce'i plokid** — tellimuse tabel, aadressid, kliendi märkus ja
+  makseviisi juhised. Neid renderdab endiselt WooCommerce ise, seega maksuread,
+  allahindlused ja makselahenduste lisandused jäävad alles.
 - **Tellimuse väli** — toob meili suvalise tellimuse välja, näiteks paki
   jälgimiskoodi, koos sildi ja valikulise lingiga (`{{value}}` asendub
   väärtusega). Tühja välja saab automaatselt peita.
@@ -41,8 +41,15 @@ WooCommerce oma malle uuendab.
 - **Muutujad** — `{{customer_first_name}}`, `{{order_number}}`, `{{order_total}}`,
   `{{order_url}}` jt, valikuna nupu alt. Lisaks `{{meta:võti}}`, millega saab
   igasse teksti tuua suvalise tellimuse välja.
-- **Serveri eelvaade** — renderdab sama koodiga, mis päris saatmine, viimase
-  päris tellimuse andmetega. Nii näed, kas brauseri eelvaade ja päris meil kattuvad.
+- **Eelvaate tellimus** — vali ülaribalt, millise päris tellimuse andmetega
+  kirja näidatakse. Nii saab kontrollida, kuidas meil eri makseviiside puhul
+  välja näeb. Sama valik kehtib testmeili saatmisel.
+- **Makseviisipõhine nähtavus** — igale plokile saab öelda, milliste
+  makseviiside puhul see kirja läheb. Nii saab pangaülekande juhised panna
+  ainult ülekandega tellimustele.
+- **Serveri eelvaade** — renderdab sama koodiga, mis päris saatmine, valitud
+  tellimuse andmetega. Režiim jääb sisse ja järgneb meili- ning
+  tellimusevalikule, nii näed kohe, kas brauseri eelvaade ja päris meil kattuvad.
 - **Testmeil** — saadab päris WooCommerce'i meili, aga suunab saaja
   testaadressile. Klient ei saa midagi.
 - **Automaatsed uuendused** GitHubi väljalasetest, ilma WordPress.org-ita.

@@ -29,6 +29,11 @@
 		scroll: 0,
 		updates: cfg.updates || { source: 'off', repo: '', json: '', token: '', current: '', remote: '' },
 		updateLog: [],
+		// Eelvaate tellimus: 0 = poe viimane.
+		order: 0,
+		// Serveri eelvaade on režiim, mitte ühekordne vaade — jääb sisse, kuni välja lülitad.
+		serverMode: false,
+		serverBusy: false,
 	};
 
 	var previewTimer = null;
@@ -112,7 +117,17 @@
 		Object.keys( def.fields ).forEach( function ( key ) {
 			props[ key ] = def.fields[ key ].default;
 		} );
-		return { id: newId(), type: type, props: props };
+		return { id: newId(), type: type, props: props, cond: { pay: [] } };
+	}
+
+	function blockCond( block ) {
+		if ( ! block.cond ) {
+			block.cond = { pay: [] };
+		}
+		if ( ! block.cond.pay ) {
+			block.cond.pay = [];
+		}
+		return block.cond;
 	}
 
 	function markDirty() {
@@ -138,8 +153,36 @@
 
 	/* ------------------------------------------------------------ eelvaade */
 
+	/**
+	 * Valitud eelvaate tellimus, või null kui poes tellimusi pole.
+	 */
+	function currentOrder() {
+		var list = cfg.orders || [];
+
+		if ( ! list.length ) {
+			return null;
+		}
+
+		if ( ! state.order ) {
+			return list[ 0 ];
+		}
+
+		for ( var i = 0; i < list.length; i++ ) {
+			if ( String( list[ i ].id ) === String( state.order ) ) {
+				return list[ i ];
+			}
+		}
+
+		return list[ 0 ];
+	}
+
 	function previewCtx() {
-		return cfg.sampleCtx || {};
+		var ctx = cfg.sampleCtx || {};
+		var order = currentOrder();
+
+		// Makseviis läheb konteksti, et brauseri eelvaade oskaks plokkide
+		// nähtavustingimust sama moodi hinnata nagu server.
+		return Object.assign( {}, ctx, { __payment: order ? order.payment : '' } );
 	}
 
 	/**
@@ -162,7 +205,48 @@
 
 	function schedulePreview() {
 		clearTimeout( previewTimer );
-		previewTimer = setTimeout( updatePreview, 180 );
+
+		// Serverirežiimis on iga värskendus päring, seega ootame kauem.
+		previewTimer = setTimeout( state.serverMode ? fetchServerPreview : updatePreview, state.serverMode ? 700 : 180 );
+	}
+
+	/**
+	 * Küsib serverilt renderduse praeguse meili ja tellimuse kohta.
+	 */
+	function fetchServerPreview() {
+		if ( ! state.serverMode ) {
+			return;
+		}
+
+		state.serverBusy = true;
+		markServerBusy( true );
+
+		post( 'wmd_preview', {
+			email: state.email,
+			order: state.order || 0,
+			mode: 'real',
+			design: JSON.stringify( state.design ),
+		} ).then( function ( res ) {
+			if ( ! state.serverMode ) {
+				return;
+			}
+			state.serverHtml = res.html;
+			state.serverSource = res.source;
+			updatePreview();
+			markServerBusy( false );
+		} ).catch( function ( err ) {
+			state.serverMode = false;
+			state.serverHtml = null;
+			toast( err, 'error' );
+			render();
+		} );
+	}
+
+	function markServerBusy( busy ) {
+		var note = root.querySelector( '.wmd-server-note' );
+		if ( note ) {
+			note.classList.toggle( 'is-busy', !! busy );
+		}
 	}
 
 	function updatePreview() {
@@ -676,6 +760,24 @@
 			html += fieldHtml( 'block', key, def.fields[ key ], block.props[ key ] );
 		} );
 
+		var gateways = cfg.gateways || {};
+		var gwKeys = Object.keys( gateways );
+
+		if ( gwKeys.length ) {
+			var chosen = blockCond( block ).pay;
+
+			html += '<details class="wmd-group wmd-cond"' + ( chosen.length ? ' open' : '' ) + '>' +
+				'<summary>Nähtavus' + ( chosen.length ? ' · ' + chosen.length : '' ) + '</summary>' +
+				'<div class="wmd-group-body">' +
+				'<p class="wmd-hint">Märkimata = näita alati. Märgi need makseviisid, mille puhul plokk kirja läheb — nii saab nt pangaülekande juhised panna ainult ülekandega tellimustele.</p>' +
+				gwKeys.map( function ( id ) {
+					var on = chosen.indexOf( id ) !== -1;
+					return '<label class="wmd-check"><input type="checkbox" data-pay="' + esc( id ) + '"' + ( on ? ' checked' : '' ) + ' /> ' +
+						esc( gateways[ id ] ) + ' <code>' + esc( id ) + '</code></label>';
+				} ).join( '' ) +
+				'</div></details>';
+		}
+
 		html += '<div class="wmd-inspector-foot">' +
 			'<button type="button" class="button" data-dup="' + esc( state.selected.zone ) + '|' + esc( block.id ) + '">Kopeeri plokk</button> ' +
 			'<button type="button" class="button button-link-delete" data-del="' + esc( state.selected.zone ) + '|' + esc( block.id ) + '">Kustuta</button>' +
@@ -714,19 +816,33 @@
 			return '<option value="' + esc( id ) + '"' + ( id === state.email ? ' selected' : '' ) + '>' + esc( cfg.emails[ id ].label ) + '</option>';
 		} ).join( '' );
 
+		var orders = cfg.orders || [];
+		var orderPick = '';
+
+		if ( orders.length ) {
+			orderPick = '<select class="wmd-input wmd-order-pick" title="Millise tellimuse andmetega eelvaadet täita">' +
+				'<option value="0"' + ( state.order ? '' : ' selected' ) + '>Poe viimane tellimus</option>' +
+				orders.map( function ( o ) {
+					return '<option value="' + esc( o.id ) + '"' + ( String( o.id ) === String( state.order ) ? ' selected' : '' ) + '>' + esc( o.label ) + '</option>';
+				} ).join( '' ) +
+				'</select>';
+		}
+
 		root.innerHTML = '' +
 			'<div class="wmd-bar">' +
 			'<div class="wmd-bar-left"><span class="wmd-logo">Meilidisainer</span>' +
 			'<span class="wmd-dirty" ' + ( state.dirty ? '' : 'hidden' ) + '>' + esc( i18n.unsaved ) + '</span></div>' +
 			'<div class="wmd-bar-mid">' +
 			'<select class="wmd-input wmd-preview-pick" title="Mida eelvaates näidata">' + previewOpts + '</select>' +
+			orderPick +
 			'<div class="wmd-segs wmd-device">' +
 			'<button type="button" class="wmd-seg' + ( state.device === 'desktop' ? ' is-active' : '' ) + '" data-device="desktop">Arvuti</button>' +
 			'<button type="button" class="wmd-seg' + ( state.device === 'mobile' ? ' is-active' : '' ) + '" data-device="mobile">Mobiil</button>' +
 			'</div></div>' +
 			'<div class="wmd-bar-right">' +
 			'<label class="wmd-switch wmd-switch-inline" title="Kas kujundus rakendub päris meilidele"><input type="checkbox" class="wmd-enabled"' + ( state.enabled ? ' checked' : '' ) + ' /><span></span>Kujundus sees</label>' +
-			'<button type="button" class="button wmd-server">Serveri eelvaade</button>' +
+			'<button type="button" class="button wmd-server' + ( state.serverMode ? ' button-primary' : '' ) + '">' +
+			( state.serverMode ? 'Serveri eelvaade sees' : 'Serveri eelvaade' ) + '</button>' +
 			'<button type="button" class="button wmd-test">Saada testmeil</button>' +
 			'<button type="button" class="button button-primary wmd-save">Salvesta</button>' +
 			'<button type="button" class="button-link wmd-reset" title="Lähtesta kujundus">Lähtesta</button>' +
@@ -734,7 +850,9 @@
 			'<div class="wmd-body">' +
 			'<aside class="wmd-left"><div class="wmd-tabs">' + tabs + '</div><div class="wmd-panel">' + panel + '</div></aside>' +
 			'<main class="wmd-canvas' + ( state.device === 'mobile' ? ' is-mobile' : '' ) + '">' +
-			( state.serverHtml ? '<div class="wmd-server-note">Näed serveri renderdust — see on täpselt see HTML, mis meili läheb. <button type="button" class="button-link wmd-server-off">Tagasi kujundajasse</button></div>' : '' ) +
+			( state.serverMode ? '<div class="wmd-server-note">Näed serveri renderdust — täpselt see HTML, mis meili läheb' +
+				( state.serverSource === 'real' ? ', päris tellimuse andmetega' : ' (näidissisuga — päris tellimust ei leitud)' ) +
+				'. Vaade järgneb nii meili- kui tellimusevalikule. <button type="button" class="button-link wmd-server-off">Tagasi kujundajasse</button></div>' : '' ) +
 			'<div class="wmd-frame-wrap"><iframe class="wmd-frame" title="Meili eelvaade"></iframe></div></main>' +
 			'<aside class="wmd-right">' + inspectorHtml() + '</aside>' +
 			'</div>' +
@@ -761,8 +879,17 @@
 			}
 		}
 		markDirty();
-		state.serverHtml = null;
 		schedulePreview();
+	}
+
+	/**
+	 * Serverirežiimis tuleb pärast struktuurimuudatust uus renderdus küsida.
+	 * Kujundajavaates teeb render() juba kõik ise.
+	 */
+	function invalidatePreview() {
+		if ( state.serverMode ) {
+			schedulePreview();
+		}
 	}
 
 	function bind() {
@@ -775,23 +902,41 @@
 		} );
 
 		// Eelvaate meilivalik.
+		// Meili vahetamine ei vii enam kujundajavaatesse tagasi — kui serveri
+		// eelvaade on sees, laeme lihtsalt uue meili serverist.
+		function switchEmail( id ) {
+			state.email = id;
+			state.selected = null;
+			render();
+
+			if ( state.serverMode ) {
+				fetchServerPreview();
+			}
+		}
+
 		var pick = root.querySelector( '.wmd-preview-pick' );
 		if ( pick ) {
 			pick.addEventListener( 'change', function () {
-				state.email = pick.value;
-				state.selected = null;
-				state.serverHtml = null;
-				render();
+				switchEmail( pick.value );
 			} );
 		}
 
 		var emailPick = root.querySelector( '#wmd-email-pick' );
 		if ( emailPick ) {
 			emailPick.addEventListener( 'change', function () {
-				state.email = emailPick.value;
-				state.selected = null;
-				state.serverHtml = null;
+				switchEmail( emailPick.value );
+			} );
+		}
+
+		var orderPick = root.querySelector( '.wmd-order-pick' );
+		if ( orderPick ) {
+			orderPick.addEventListener( 'change', function () {
+				state.order = parseInt( orderPick.value, 10 ) || 0;
 				render();
+
+				if ( state.serverMode ) {
+					fetchServerPreview();
+				}
 			} );
 		}
 
@@ -849,6 +994,29 @@
 			} );
 		} );
 
+		// Ploki nähtavustingimus makseviisi järgi.
+		root.querySelectorAll( '.wmd-cond [data-pay]' ).forEach( function ( box ) {
+			box.addEventListener( 'change', function () {
+				var block = findBlock( state.selected );
+				if ( ! block ) {
+					return;
+				}
+
+				var id = box.getAttribute( 'data-pay' );
+				var pay = blockCond( block ).pay;
+				var at = pay.indexOf( id );
+
+				if ( box.checked && at === -1 ) {
+					pay.push( id );
+				} else if ( ! box.checked && at !== -1 ) {
+					pay.splice( at, 1 );
+				}
+
+				markDirty();
+				schedulePreview();
+			} );
+		} );
+
 		// Meili kokkupaneku režiim.
 		root.querySelectorAll( '.wmd-modes [data-mode]' ).forEach( function ( btn ) {
 			btn.addEventListener( 'click', function () {
@@ -867,8 +1035,8 @@
 
 				state.selected = null;
 				markDirty();
-				state.serverHtml = null;
 				render();
+				invalidatePreview();
 			} );
 		} );
 
@@ -909,8 +1077,8 @@
 				zoneList( parts[ 0 ] ).push( block );
 				state.selected = { zone: parts[ 0 ], id: block.id };
 				markDirty();
-				state.serverHtml = null;
 				render();
+				invalidatePreview();
 			} );
 		} );
 
@@ -928,8 +1096,8 @@
 				list.splice( index + 1, 0, copy );
 				state.selected = { zone: parts[ 0 ], id: copy.id };
 				markDirty();
-				state.serverHtml = null;
 				render();
+				invalidatePreview();
 			} );
 		} );
 
@@ -944,8 +1112,8 @@
 				zoneList( parts[ 0 ] ).splice( index, 1 );
 				state.selected = null;
 				markDirty();
-				state.serverHtml = null;
 				render();
+				invalidatePreview();
 			} );
 		} );
 
@@ -1009,8 +1177,8 @@
 						current.push( b );
 					} );
 					markDirty();
-					state.serverHtml = null;
 					render();
+					invalidatePreview();
 				}
 			} );
 		} );
@@ -1103,6 +1271,7 @@
 					state.design = res.design;
 					state.selected = null;
 					state.dirty = false;
+					state.serverMode = false;
 					state.serverHtml = null;
 					render();
 					toast( i18n.saved, 'ok' );
@@ -1123,19 +1292,30 @@
 		var server = root.querySelector( '.wmd-server' );
 		if ( server ) {
 			server.addEventListener( 'click', function () {
+				if ( state.serverMode ) {
+					state.serverMode = false;
+					state.serverHtml = null;
+					render();
+					return;
+				}
+
+				state.serverMode = true;
 				server.disabled = true;
+				server.textContent = 'Renderdan…';
+
 				post( 'wmd_preview', {
 					email: state.email,
+					order: state.order || 0,
 					mode: 'real',
 					design: JSON.stringify( state.design ),
 				} ).then( function ( res ) {
 					state.serverHtml = res.html;
+					state.serverSource = res.source;
 					render();
-					toast( res.source === 'real' ? 'Renderdatud päris tellimuse pealt' : 'Renderdatud näidissisuga', 'ok' );
 				} ).catch( function ( err ) {
+					state.serverMode = false;
 					toast( err, 'error' );
-				} ).then( function () {
-					server.disabled = false;
+					render();
 				} );
 			} );
 		}
@@ -1143,6 +1323,7 @@
 		var off = root.querySelector( '.wmd-server-off' );
 		if ( off ) {
 			off.addEventListener( 'click', function () {
+				state.serverMode = false;
 				state.serverHtml = null;
 				render();
 			} );

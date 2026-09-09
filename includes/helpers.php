@@ -470,6 +470,14 @@ function wmd_block_types() {
 				'pad'        => $pad,
 			),
 		),
+		'payment_info' => array(
+			'label'  => __( 'Makseviisi juhised', 'wonom-meilidisainer' ),
+			'icon'   => '€',
+			'woo'    => true,
+			'fields' => array(
+				'pad' => $pad,
+			),
+		),
 		'order_meta'   => array(
 			'label'  => __( 'Tellimuse väli', 'wonom-meilidisainer' ),
 			'icon'   => '»',
@@ -502,6 +510,85 @@ function wmd_block_types() {
 			),
 		),
 	);
+}
+
+/**
+ * Poe makseviisid tingimuste valikuks.
+ *
+ * @return array<string,string> id => nimi.
+ */
+function wmd_payment_gateways() {
+	$out = array();
+
+	if ( ! wmd_woo_active() || ! function_exists( 'WC' ) ) {
+		return $out;
+	}
+
+	$gateways = WC()->payment_gateways();
+
+	if ( ! $gateways ) {
+		return $out;
+	}
+
+	foreach ( $gateways->payment_gateways() as $gateway ) {
+		if ( empty( $gateway->id ) ) {
+			continue;
+		}
+
+		$title = $gateway->get_title();
+		$out[ $gateway->id ] = '' !== $title ? $title : $gateway->id;
+	}
+
+	return $out;
+}
+
+/**
+ * Viimased tellimused eelvaate valikusse.
+ *
+ * Silt sisaldab makseviisi, sest just selle järgi tahetakse eri variante
+ * kontrollida.
+ *
+ * @param int $limit Mitu tellimust.
+ * @return array
+ */
+function wmd_recent_orders( $limit = 25 ) {
+	$out = array();
+
+	if ( ! function_exists( 'wc_get_orders' ) ) {
+		return $out;
+	}
+
+	$orders = wc_get_orders(
+		array(
+			'limit'   => absint( $limit ),
+			'orderby' => 'date',
+			'order'   => 'DESC',
+			'type'    => 'shop_order',
+		)
+	);
+
+	foreach ( $orders as $order ) {
+		if ( ! is_a( $order, 'WC_Order' ) ) {
+			continue;
+		}
+
+		$payment = $order->get_payment_method_title();
+		$date    = $order->get_date_created();
+
+		$out[] = array(
+			'id'      => $order->get_id(),
+			'payment' => $order->get_payment_method(),
+			'label'   => sprintf(
+				'#%s · %s · %s%s',
+				$order->get_order_number(),
+				wp_strip_all_tags( $order->get_formatted_order_total() ),
+				'' !== $payment ? $payment : __( 'makseviis puudub', 'wonom-meilidisainer' ),
+				$date ? ' · ' . $date->date_i18n( 'd.m.Y' ) : ''
+			),
+		);
+	}
+
+	return $out;
 }
 
 /**

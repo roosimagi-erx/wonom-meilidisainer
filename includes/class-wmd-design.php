@@ -248,10 +248,35 @@ class WMD_Design {
 				'id'    => $id,
 				'type'  => $type,
 				'props' => $props,
+				'cond'  => self::sanitize_cond( isset( $block['cond'] ) ? $block['cond'] : array() ),
 			);
 		}
 
 		return $out;
+	}
+
+	/**
+	 * Ploki nähtavuse tingimus.
+	 *
+	 * Tühi nimekiri tähendab „näita alati". Praegu on ainus tingimus makseviis,
+	 * sest just selle järgi tuleb sisu kõige sagedamini eristada.
+	 *
+	 * @param mixed $cond Toores tingimus.
+	 * @return array
+	 */
+	protected static function sanitize_cond( $cond ) {
+		$pay = array();
+
+		if ( is_array( $cond ) && isset( $cond['pay'] ) && is_array( $cond['pay'] ) ) {
+			foreach ( $cond['pay'] as $id ) {
+				$id = sanitize_key( $id );
+				if ( '' !== $id ) {
+					$pay[] = $id;
+				}
+			}
+		}
+
+		return array( 'pay' => array_values( array_unique( $pay ) ) );
 	}
 
 	/**

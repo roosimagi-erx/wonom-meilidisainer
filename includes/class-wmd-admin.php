@@ -111,6 +111,8 @@ class WMD_Admin {
 				'testTo'      => wp_get_current_user()->user_email,
 				'hasWoo'      => wmd_woo_active() ? 1 : 0,
 				'wcDefaults'  => self::wc_defaults(),
+				'orders'      => wmd_recent_orders(),
+				'gateways'    => wmd_payment_gateways(),
 				'canUpdate'   => current_user_can( 'update_plugins' ) ? 1 : 0,
 				'updates'     => WMD_Updater::settings(),
 				'pluginsUrl'  => admin_url( 'plugins.php' ),

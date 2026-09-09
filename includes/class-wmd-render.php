@@ -275,6 +275,10 @@ class WMD_Render {
 	 * @return string
 	 */
 	protected static function block( $block, $brand, $ctx, $default_color = '' ) {
+		if ( ! self::visible( $block, $ctx ) ) {
+			return '';
+		}
+
 		$p    = isset( $block['props'] ) ? $block['props'] : array();
 		$type = $block['type'];
 		$pad  = isset( $p['pad'] ) ? (int) $p['pad'] : 12;
@@ -475,8 +479,9 @@ class WMD_Render {
 
 			case 'order_table':
 			case 'addresses':
+			case 'payment_info':
 				$body = self::woo_part( $type, $ctx );
-				if ( '' === $body ) {
+				if ( '' === trim( $body ) ) {
 					return '';
 				}
 				break;
@@ -564,6 +569,32 @@ class WMD_Render {
 	}
 
 	/**
+	 * Kas plokk on selle tellimuse puhul nähtav.
+	 *
+	 * Ilma tellimuseta (nt kontomeil või eelvaade) näitame ploki ära — parem
+	 * näidata liiga palju kui vaikselt midagi ära kaotada.
+	 *
+	 * @param array $block Plokk.
+	 * @param array $ctx   Kontekst.
+	 * @return bool
+	 */
+	protected static function visible( $block, $ctx ) {
+		$pay = isset( $block['cond']['pay'] ) ? (array) $block['cond']['pay'] : array();
+
+		if ( empty( $pay ) ) {
+			return true;
+		}
+
+		$order = isset( $ctx['__order'] ) ? $ctx['__order'] : null;
+
+		if ( ! $order || ! is_a( $order, 'WC_Order' ) ) {
+			return true;
+		}
+
+		return in_array( $order->get_payment_method(), $pay, true );
+	}
+
+	/**
 	 * WooCommerce'i enda osa — tellimuse tabel või aadressid.
 	 *
 	 * Renderdame need WooCommerce'i tegevustega, et need püsiksid kooskõlas
@@ -579,7 +610,11 @@ class WMD_Render {
 		$brand = WMD_Design::brand();
 
 		if ( ! $order || ! is_a( $order, 'WC_Order' ) ) {
-			return 'order_table' === $type ? self::sample_order_table( $brand ) : self::sample_addresses( $brand );
+			if ( 'order_table' === $type ) {
+				return self::sample_order_table( $brand );
+			}
+
+			return 'addresses' === $type ? self::sample_addresses( $brand ) : '';
 		}
 
 		$sent_to_admin = isset( $ctx['__sent_to_admin'] ) ? (bool) $ctx['__sent_to_admin'] : false;
@@ -589,6 +624,9 @@ class WMD_Render {
 
 		if ( 'order_table' === $type ) {
 			do_action( 'woocommerce_email_order_details', $order, $sent_to_admin, false, $email );
+		} elseif ( 'payment_info' === $type ) {
+			// Siia riputavad makselahendused oma meilisisu, nt pangaülekande rekvisiidid.
+			do_action( 'woocommerce_email_before_order_table', $order, $sent_to_admin, false, $email );
 		} else {
 			do_action( 'woocommerce_email_customer_details', $order, $sent_to_admin, false, $email );
 		}
