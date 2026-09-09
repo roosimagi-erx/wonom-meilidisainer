@@ -1,0 +1,672 @@
+<?php
+/**
+ * Ühised abifunktsioonid: brändi skeem, plokitüübid, meilide nimekiri, puhastus.
+ *
+ * @package Wonom_Meilidisainer
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Kas WooCommerce on aktiivne.
+ *
+ * @return bool
+ */
+function wmd_woo_active() {
+	return class_exists( 'WooCommerce' );
+}
+
+/**
+ * Brändi väljade skeem. Sama skeemi järgi ehitab JS parempoolse paneeli.
+ *
+ * @return array<string,array>
+ */
+function wmd_brand_schema() {
+	return array(
+		'logo_url'      => array(
+			'type'    => 'image',
+			'label'   => __( 'Logo', 'wonom-meilidisainer' ),
+			'group'   => 'head',
+			'default' => '',
+		),
+		'logo_width'    => array(
+			'type'    => 'range',
+			'label'   => __( 'Logo laius (px)', 'wonom-meilidisainer' ),
+			'group'   => 'head',
+			'min'     => 60,
+			'max'     => 400,
+			'step'    => 10,
+			'default' => 160,
+		),
+		'logo_align'    => array(
+			'type'    => 'align',
+			'label'   => __( 'Logo joondus', 'wonom-meilidisainer' ),
+			'group'   => 'head',
+			'default' => 'center',
+		),
+		'header_bg'     => array(
+			'type'    => 'color',
+			'label'   => __( 'Päise taust', 'wonom-meilidisainer' ),
+			'group'   => 'head',
+			'default' => '',
+			'inherit' => 'body_bg',
+		),
+		'width'         => array(
+			'type'    => 'range',
+			'label'   => __( 'Meili laius (px)', 'wonom-meilidisainer' ),
+			'group'   => 'layout',
+			'min'     => 480,
+			'max'     => 800,
+			'step'    => 10,
+			'default' => 600,
+		),
+		'radius'        => array(
+			'type'    => 'range',
+			'label'   => __( 'Nurkade ümarus (px)', 'wonom-meilidisainer' ),
+			'group'   => 'layout',
+			'min'     => 0,
+			'max'     => 28,
+			'step'    => 1,
+			'default' => 10,
+		),
+		'pad_x'         => array(
+			'type'    => 'range',
+			'label'   => __( 'Sisemine veeris (px)', 'wonom-meilidisainer' ),
+			'group'   => 'layout',
+			'min'     => 12,
+			'max'     => 48,
+			'step'    => 2,
+			'default' => 28,
+		),
+		'page_bg'       => array(
+			'type'    => 'color',
+			'label'   => __( 'Lehe taust', 'wonom-meilidisainer' ),
+			'group'   => 'colors',
+			'default' => '#f2f4f7',
+		),
+		'body_bg'       => array(
+			'type'    => 'color',
+			'label'   => __( 'Meili taust', 'wonom-meilidisainer' ),
+			'group'   => 'colors',
+			'default' => '#ffffff',
+		),
+		'text_color'    => array(
+			'type'    => 'color',
+			'label'   => __( 'Tekst', 'wonom-meilidisainer' ),
+			'group'   => 'colors',
+			'default' => '#31373d',
+		),
+		'heading_color' => array(
+			'type'    => 'color',
+			'label'   => __( 'Pealkirjad', 'wonom-meilidisainer' ),
+			'group'   => 'colors',
+			'default' => '#12161a',
+		),
+		'muted_color'   => array(
+			'type'    => 'color',
+			'label'   => __( 'Hall abitekst', 'wonom-meilidisainer' ),
+			'group'   => 'colors',
+			'default' => '#7c868e',
+		),
+		'accent'        => array(
+			'type'    => 'color',
+			'label'   => __( 'Aktsentvärv (lingid)', 'wonom-meilidisainer' ),
+			'group'   => 'colors',
+			'default' => '#1f7a5a',
+		),
+		'border_color'  => array(
+			'type'    => 'color',
+			'label'   => __( 'Jooned ja piirded', 'wonom-meilidisainer' ),
+			'group'   => 'colors',
+			'default' => '#e3e7ea',
+		),
+		'btn_bg'        => array(
+			'type'    => 'color',
+			'label'   => __( 'Nupu taust', 'wonom-meilidisainer' ),
+			'group'   => 'button',
+			'default' => '#1f7a5a',
+		),
+		'btn_text'      => array(
+			'type'    => 'color',
+			'label'   => __( 'Nupu tekst', 'wonom-meilidisainer' ),
+			'group'   => 'button',
+			'default' => '#ffffff',
+		),
+		'btn_radius'    => array(
+			'type'    => 'range',
+			'label'   => __( 'Nupu ümarus (px)', 'wonom-meilidisainer' ),
+			'group'   => 'button',
+			'min'     => 0,
+			'max'     => 30,
+			'step'    => 1,
+			'default' => 6,
+		),
+		'font_family'   => array(
+			'type'    => 'select',
+			'label'   => __( 'Kirjatüüp', 'wonom-meilidisainer' ),
+			'group'   => 'type',
+			'options' => array(
+				'-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif' => __( 'Süsteemne (soovitatud)', 'wonom-meilidisainer' ),
+				'Arial, Helvetica, sans-serif'                                 => 'Arial',
+				'Helvetica Neue, Helvetica, Arial, sans-serif'                  => 'Helvetica',
+				'Georgia, Times New Roman, serif'                               => 'Georgia',
+				'Trebuchet MS, Tahoma, sans-serif'                              => 'Trebuchet MS',
+				'Verdana, Geneva, sans-serif'                                   => 'Verdana',
+				'Courier New, Courier, monospace'                               => 'Courier New',
+			),
+			'default' => '-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif',
+		),
+		'base_size'     => array(
+			'type'    => 'range',
+			'label'   => __( 'Teksti suurus (px)', 'wonom-meilidisainer' ),
+			'group'   => 'type',
+			'min'     => 12,
+			'max'     => 20,
+			'step'    => 1,
+			'default' => 15,
+		),
+		'heading_size'  => array(
+			'type'    => 'range',
+			'label'   => __( 'Peapealkirja suurus (px)', 'wonom-meilidisainer' ),
+			'group'   => 'type',
+			'min'     => 18,
+			'max'     => 40,
+			'step'    => 1,
+			'default' => 26,
+		),
+		'custom_css'    => array(
+			'type'    => 'textarea',
+			'label'   => __( 'Lisa-CSS (edasijõudnutele)', 'wonom-meilidisainer' ),
+			'group'   => 'advanced',
+			'default' => '',
+		),
+	);
+}
+
+/**
+ * Brändi väljade rühmad paneelis.
+ *
+ * @return array<string,string>
+ */
+function wmd_brand_groups() {
+	return array(
+		'head'     => __( 'Logo ja päis', 'wonom-meilidisainer' ),
+		'colors'   => __( 'Värvid', 'wonom-meilidisainer' ),
+		'type'     => __( 'Kiri', 'wonom-meilidisainer' ),
+		'button'   => __( 'Nupud', 'wonom-meilidisainer' ),
+		'layout'   => __( 'Paigutus', 'wonom-meilidisainer' ),
+		'advanced' => __( 'Muu', 'wonom-meilidisainer' ),
+	);
+}
+
+/**
+ * Plokitüübid ja nende väljad.
+ *
+ * @return array<string,array>
+ */
+function wmd_block_types() {
+	$align = array(
+		'type'    => 'align',
+		'label'   => __( 'Joondus', 'wonom-meilidisainer' ),
+		'default' => 'left',
+	);
+
+	$pad = array(
+		'type'    => 'range',
+		'label'   => __( 'Vahe ülal/all (px)', 'wonom-meilidisainer' ),
+		'min'     => 0,
+		'max'     => 48,
+		'step'    => 2,
+		'default' => 12,
+	);
+
+	return array(
+		'heading' => array(
+			'label'  => __( 'Pealkiri', 'wonom-meilidisainer' ),
+			'icon'   => 'H',
+			'fields' => array(
+				'text'  => array(
+					'type'    => 'text',
+					'label'   => __( 'Tekst', 'wonom-meilidisainer' ),
+					'default' => __( 'Aitäh tellimuse eest!', 'wonom-meilidisainer' ),
+					'tags'    => true,
+				),
+				'size'  => array(
+					'type'    => 'select',
+					'label'   => __( 'Suurus', 'wonom-meilidisainer' ),
+					'options' => array(
+						'lg' => __( 'Suur', 'wonom-meilidisainer' ),
+						'md' => __( 'Keskmine', 'wonom-meilidisainer' ),
+						'sm' => __( 'Väike', 'wonom-meilidisainer' ),
+					),
+					'default' => 'md',
+				),
+				'color' => array(
+					'type'    => 'color',
+					'label'   => __( 'Värv', 'wonom-meilidisainer' ),
+					'default' => '',
+					'inherit' => 'heading_color',
+				),
+				'align' => $align,
+				'pad'   => $pad,
+			),
+		),
+		'text'    => array(
+			'label'  => __( 'Tekstilõik', 'wonom-meilidisainer' ),
+			'icon'   => 'T',
+			'fields' => array(
+				'html'  => array(
+					'type'    => 'richtext',
+					'label'   => __( 'Tekst', 'wonom-meilidisainer' ),
+					'default' => __( 'Saime su tellimuse kätte ja asume seda kohe komplekteerima.', 'wonom-meilidisainer' ),
+					'tags'    => true,
+				),
+				'color' => array(
+					'type'    => 'color',
+					'label'   => __( 'Värv', 'wonom-meilidisainer' ),
+					'default' => '',
+					'inherit' => 'text_color',
+				),
+				'size'  => array(
+					'type'    => 'range',
+					'label'   => __( 'Suurus (px)', 'wonom-meilidisainer' ),
+					'min'     => 11,
+					'max'     => 22,
+					'step'    => 1,
+					'default' => 0,
+					'inherit' => 'base_size',
+				),
+				'align' => $align,
+				'pad'   => $pad,
+			),
+		),
+		'button'  => array(
+			'label'  => __( 'Nupp', 'wonom-meilidisainer' ),
+			'icon'   => 'B',
+			'fields' => array(
+				'label' => array(
+					'type'    => 'text',
+					'label'   => __( 'Nupu tekst', 'wonom-meilidisainer' ),
+					'default' => __( 'Vaata tellimust', 'wonom-meilidisainer' ),
+					'tags'    => true,
+				),
+				'url'   => array(
+					'type'    => 'url',
+					'label'   => __( 'Link', 'wonom-meilidisainer' ),
+					'default' => '{{order_url}}',
+					'tags'    => true,
+				),
+				'style' => array(
+					'type'    => 'select',
+					'label'   => __( 'Stiil', 'wonom-meilidisainer' ),
+					'options' => array(
+						'solid'   => __( 'Täidetud', 'wonom-meilidisainer' ),
+						'outline' => __( 'Raamiga', 'wonom-meilidisainer' ),
+					),
+					'default' => 'solid',
+				),
+				'full'  => array(
+					'type'    => 'toggle',
+					'label'   => __( 'Terve laius', 'wonom-meilidisainer' ),
+					'default' => 0,
+				),
+				'align' => array_merge( $align, array( 'default' => 'center' ) ),
+				'pad'   => $pad,
+			),
+		),
+		'image'   => array(
+			'label'  => __( 'Pilt', 'wonom-meilidisainer' ),
+			'icon'   => 'P',
+			'fields' => array(
+				'url'   => array(
+					'type'    => 'image',
+					'label'   => __( 'Pilt', 'wonom-meilidisainer' ),
+					'default' => '',
+				),
+				'alt'   => array(
+					'type'    => 'text',
+					'label'   => __( 'Alt-tekst', 'wonom-meilidisainer' ),
+					'default' => '',
+				),
+				'link'  => array(
+					'type'    => 'url',
+					'label'   => __( 'Link klõpsamisel', 'wonom-meilidisainer' ),
+					'default' => '',
+				),
+				'width' => array(
+					'type'    => 'range',
+					'label'   => __( 'Laius (px)', 'wonom-meilidisainer' ),
+					'min'     => 40,
+					'max'     => 800,
+					'step'    => 10,
+					'default' => 240,
+				),
+				'align' => array_merge( $align, array( 'default' => 'center' ) ),
+				'pad'   => $pad,
+			),
+		),
+		'divider' => array(
+			'label'  => __( 'Joon', 'wonom-meilidisainer' ),
+			'icon'   => '—',
+			'fields' => array(
+				'color' => array(
+					'type'    => 'color',
+					'label'   => __( 'Värv', 'wonom-meilidisainer' ),
+					'default' => '',
+					'inherit' => 'border_color',
+				),
+				'pad'   => array_merge( $pad, array( 'default' => 14 ) ),
+			),
+		),
+		'spacer'  => array(
+			'label'  => __( 'Tühi ruum', 'wonom-meilidisainer' ),
+			'icon'   => '↕',
+			'fields' => array(
+				'height' => array(
+					'type'    => 'range',
+					'label'   => __( 'Kõrgus (px)', 'wonom-meilidisainer' ),
+					'min'     => 4,
+					'max'     => 80,
+					'step'    => 2,
+					'default' => 24,
+				),
+			),
+		),
+		'columns' => array(
+			'label'  => __( 'Kaks veergu', 'wonom-meilidisainer' ),
+			'icon'   => '▥',
+			'fields' => array(
+				'left'  => array(
+					'type'    => 'richtext',
+					'label'   => __( 'Vasak veerg', 'wonom-meilidisainer' ),
+					'default' => __( '<strong>Tarneaeg</strong><br>1–3 tööpäeva', 'wonom-meilidisainer' ),
+					'tags'    => true,
+				),
+				'right' => array(
+					'type'    => 'richtext',
+					'label'   => __( 'Parem veerg', 'wonom-meilidisainer' ),
+					'default' => __( '<strong>Küsimused?</strong><br>Kirjuta meile julgelt.', 'wonom-meilidisainer' ),
+					'tags'    => true,
+				),
+				'pad'   => $pad,
+			),
+		),
+		'social'  => array(
+			'label'  => __( 'Sotsiaalmeedia', 'wonom-meilidisainer' ),
+			'icon'   => '@',
+			'fields' => array(
+				'facebook'  => array(
+					'type'    => 'url',
+					'label'   => 'Facebook',
+					'default' => '',
+				),
+				'instagram' => array(
+					'type'    => 'url',
+					'label'   => 'Instagram',
+					'default' => '',
+				),
+				'youtube'   => array(
+					'type'    => 'url',
+					'label'   => 'YouTube',
+					'default' => '',
+				),
+				'linkedin'  => array(
+					'type'    => 'url',
+					'label'   => 'LinkedIn',
+					'default' => '',
+				),
+				'pad'       => $pad,
+			),
+		),
+		'html'    => array(
+			'label'  => __( 'Oma HTML', 'wonom-meilidisainer' ),
+			'icon'   => '<>',
+			'fields' => array(
+				'code' => array(
+					'type'    => 'textarea',
+					'label'   => __( 'HTML', 'wonom-meilidisainer' ),
+					'default' => '',
+					'tags'    => true,
+				),
+				'pad'  => $pad,
+			),
+		),
+	);
+}
+
+/**
+ * Ploki vaikeväärtused tüübi järgi.
+ *
+ * @param string $type Plokitüüp.
+ * @return array
+ */
+function wmd_block_defaults( $type ) {
+	$types = wmd_block_types();
+	if ( ! isset( $types[ $type ] ) ) {
+		return array();
+	}
+
+	$props = array();
+	foreach ( $types[ $type ]['fields'] as $key => $field ) {
+		$props[ $key ] = $field['default'];
+	}
+
+	return $props;
+}
+
+/**
+ * WooCommerce'i meilid, mida kujundaja katab. Võti on WC_Email->id.
+ *
+ * @return array<string,array>
+ */
+function wmd_email_list() {
+	return apply_filters(
+		'wmd_email_list',
+		array(
+			'customer_processing_order' => array(
+				'label' => __( 'Tellimus töösse võetud', 'wonom-meilidisainer' ),
+				'group' => 'customer',
+			),
+			'customer_completed_order'  => array(
+				'label' => __( 'Tellimus täidetud', 'wonom-meilidisainer' ),
+				'group' => 'customer',
+			),
+			'customer_on_hold_order'    => array(
+				'label' => __( 'Tellimus ootel', 'wonom-meilidisainer' ),
+				'group' => 'customer',
+			),
+			'customer_refunded_order'   => array(
+				'label' => __( 'Tellimus tagastatud', 'wonom-meilidisainer' ),
+				'group' => 'customer',
+			),
+			'customer_invoice'          => array(
+				'label' => __( 'Arve / makseootel tellimus', 'wonom-meilidisainer' ),
+				'group' => 'customer',
+			),
+			'customer_note'             => array(
+				'label' => __( 'Märkus kliendile', 'wonom-meilidisainer' ),
+				'group' => 'customer',
+			),
+			'customer_reset_password'   => array(
+				'label' => __( 'Parooli lähtestamine', 'wonom-meilidisainer' ),
+				'group' => 'account',
+			),
+			'customer_new_account'      => array(
+				'label' => __( 'Uus konto', 'wonom-meilidisainer' ),
+				'group' => 'account',
+			),
+			'new_order'                 => array(
+				'label' => __( 'Uus tellimus (poele)', 'wonom-meilidisainer' ),
+				'group' => 'admin',
+			),
+			'cancelled_order'           => array(
+				'label' => __( 'Tühistatud tellimus (poele)', 'wonom-meilidisainer' ),
+				'group' => 'admin',
+			),
+			'failed_order'              => array(
+				'label' => __( 'Ebaõnnestunud tellimus (poele)', 'wonom-meilidisainer' ),
+				'group' => 'admin',
+			),
+		)
+	);
+}
+
+/**
+ * Meilirühmade nimed.
+ *
+ * @return array<string,string>
+ */
+function wmd_email_groups() {
+	return array(
+		'customer' => __( 'Kliendi tellimusmeilid', 'wonom-meilidisainer' ),
+		'account'  => __( 'Konto meilid', 'wonom-meilidisainer' ),
+		'admin'    => __( 'Poe sisemised meilid', 'wonom-meilidisainer' ),
+	);
+}
+
+/**
+ * Vaikimisi kujundus.
+ *
+ * @return array
+ */
+function wmd_default_design() {
+	$brand = array();
+	foreach ( wmd_brand_schema() as $key => $field ) {
+		$brand[ $key ] = $field['default'];
+	}
+
+	$header = array(
+		wmd_make_block(
+			'heading',
+			array(
+				'text'  => '{{site_title}}',
+				'size'  => 'md',
+				'align' => 'center',
+				'pad'   => 4,
+			)
+		),
+	);
+
+	$footer = array(
+		wmd_make_block( 'divider', array( 'pad' => 10 ) ),
+		wmd_make_block(
+			'text',
+			array(
+				'html'  => '{{site_title}} &middot; <a href="{{shop_url}}">{{shop_url}}</a>',
+				'align' => 'center',
+				'size'  => 13,
+				'pad'   => 6,
+			)
+		),
+		wmd_make_block(
+			'text',
+			array(
+				'html'  => __( 'Said selle kirja, sest tegid meie poes tellimuse.', 'wonom-meilidisainer' ),
+				'align' => 'center',
+				'size'  => 12,
+				'pad'   => 2,
+			)
+		),
+		wmd_make_block( 'social', array( 'pad' => 8 ) ),
+	);
+
+	$emails = array();
+	foreach ( array_keys( wmd_email_list() ) as $id ) {
+		$emails[ $id ] = array(
+			'subject' => '',
+			'heading' => '',
+			'before'  => array(),
+			'after'   => array(),
+		);
+	}
+
+	// Näidissisu kõige tavalisemas meilis, et kujundaja ei avaneks tühjana.
+	$emails['customer_processing_order']['before'] = array(
+		wmd_make_block(
+			'text',
+			array(
+				'html' => __( 'Tere {{customer_first_name}}! Saime su tellimuse <strong>#{{order_number}}</strong> kätte ja asume seda komplekteerima. Anname teada, kui pakk teele läheb.', 'wonom-meilidisainer' ),
+				'pad'  => 8,
+			)
+		),
+	);
+	$emails['customer_processing_order']['after'] = array(
+		wmd_make_block(
+			'button',
+			array(
+				'label' => __( 'Vaata tellimust', 'wonom-meilidisainer' ),
+				'url'   => '{{order_url}}',
+			)
+		),
+	);
+
+	return array(
+		'version' => 1,
+		'brand'   => $brand,
+		'header'  => $header,
+		'footer'  => $footer,
+		'emails'  => $emails,
+	);
+}
+
+/**
+ * Uus plokk vaikeväärtustega.
+ *
+ * @param string $type  Plokitüüp.
+ * @param array  $props Ülekirjutatavad väärtused.
+ * @return array
+ */
+function wmd_make_block( $type, $props = array() ) {
+	return array(
+		'id'    => 'b' . substr( md5( $type . microtime( true ) . wp_rand() ), 0, 10 ),
+		'type'  => $type,
+		'props' => array_merge( wmd_block_defaults( $type ), $props ),
+	);
+}
+
+/**
+ * Lubatud HTML rikkalikus tekstis.
+ *
+ * @return array
+ */
+function wmd_allowed_html() {
+	return array(
+		'a'      => array(
+			'href'   => array(),
+			'title'  => array(),
+			'style'  => array(),
+			'target' => array(),
+		),
+		'strong' => array( 'style' => array() ),
+		'b'      => array( 'style' => array() ),
+		'em'     => array( 'style' => array() ),
+		'i'      => array( 'style' => array() ),
+		'u'      => array( 'style' => array() ),
+		'br'     => array(),
+		'span'   => array( 'style' => array() ),
+		'small'  => array( 'style' => array() ),
+		'ul'     => array( 'style' => array() ),
+		'ol'     => array( 'style' => array() ),
+		'li'     => array( 'style' => array() ),
+		'p'      => array( 'style' => array() ),
+	);
+}
+
+/**
+ * Värvi puhastus. Tühi väärtus tähendab, et päritakse brändilt.
+ *
+ * @param string $value Sisend.
+ * @return string
+ */
+function wmd_sanitize_color( $value ) {
+	$value = trim( (string) $value );
+	if ( '' === $value ) {
+		return '';
+	}
+
+	$hex = sanitize_hex_color( $value );
+
+	return $hex ? $hex : '';
+}

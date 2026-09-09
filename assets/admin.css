@@ -1,0 +1,782 @@
+/**
+ * Meilidisaineri kujundaja liides.
+ */
+
+:root {
+	--wmd-line: #dfe3e8;
+	--wmd-bg: #f6f7f9;
+	--wmd-ink: #1d2327;
+	--wmd-muted: #6b737c;
+	--wmd-accent: #2271b1;
+}
+
+/* Täisekraan wp-admini sees. */
+.wmd-wrap {
+	margin: 0 0 0 -20px;
+	padding: 0;
+}
+
+.wmd-app {
+	display: flex;
+	flex-direction: column;
+	height: calc( 100vh - 32px );
+	background: var(--wmd-bg);
+	color: var(--wmd-ink);
+	font-size: 13px;
+}
+
+.wmd-boot {
+	padding: 40px;
+	color: var(--wmd-muted);
+}
+
+/* -------------------------------------------------------------- ülariba */
+
+.wmd-bar {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 8px 16px;
+	background: #fff;
+	border-bottom: 1px solid var(--wmd-line);
+	flex: 0 0 auto;
+	flex-wrap: wrap;
+}
+
+.wmd-bar-left {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-width: 200px;
+}
+
+.wmd-logo {
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.wmd-dirty {
+	font-size: 11px;
+	color: #a15c00;
+	background: #fff3d6;
+	border-radius: 10px;
+	padding: 2px 8px;
+}
+
+.wmd-bar-mid {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1 1 auto;
+	justify-content: center;
+}
+
+.wmd-preview-pick {
+	max-width: 260px;
+}
+
+.wmd-bar-right {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+}
+
+/* --------------------------------------------------------------- keha */
+
+.wmd-body {
+	display: flex;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.wmd-left,
+.wmd-right {
+	background: #fff;
+	overflow-y: auto;
+	flex: 0 0 auto;
+}
+
+.wmd-left {
+	width: 320px;
+	border-right: 1px solid var(--wmd-line);
+	display: flex;
+	flex-direction: column;
+}
+
+.wmd-right {
+	width: 300px;
+	border-left: 1px solid var(--wmd-line);
+	padding: 14px;
+}
+
+.wmd-canvas {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: auto;
+	padding: 18px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+}
+
+.wmd-frame-wrap {
+	width: 100%;
+	max-width: 760px;
+	flex: 1 1 auto;
+	display: flex;
+	justify-content: center;
+}
+
+.wmd-canvas.is-mobile .wmd-frame-wrap {
+	max-width: 390px;
+}
+
+.wmd-frame {
+	width: 100%;
+	height: 100%;
+	min-height: 520px;
+	border: 1px solid var(--wmd-line);
+	border-radius: 8px;
+	background: #fff;
+	box-shadow: 0 1px 3px rgba( 0, 0, 0, 0.06 );
+}
+
+.wmd-server-note {
+	width: 100%;
+	max-width: 760px;
+	background: #eef6ff;
+	border: 1px solid #c9e0f7;
+	border-radius: 6px;
+	padding: 8px 12px;
+	color: #12507e;
+}
+
+/* ------------------------------------------------------- vasak paneel */
+
+.wmd-tabs {
+	display: flex;
+	border-bottom: 1px solid var(--wmd-line);
+	flex: 0 0 auto;
+}
+
+.wmd-tab {
+	flex: 1 1 0;
+	padding: 11px 4px;
+	background: none;
+	border: 0;
+	border-bottom: 2px solid transparent;
+	cursor: pointer;
+	font-size: 13px;
+	color: var(--wmd-muted);
+}
+
+.wmd-tab:hover {
+	color: var(--wmd-ink);
+}
+
+.wmd-tab.is-active {
+	color: var(--wmd-accent);
+	border-bottom-color: var(--wmd-accent);
+	font-weight: 600;
+}
+
+.wmd-panel {
+	padding: 14px;
+	overflow-y: auto;
+	flex: 1 1 auto;
+}
+
+.wmd-intro {
+	font-size: 12px;
+	line-height: 1.5;
+	color: var(--wmd-muted);
+	background: #f6f7f9;
+	border-radius: 6px;
+	padding: 9px 11px;
+	margin-bottom: 14px;
+}
+
+.wmd-h3 {
+	margin: 18px 0 8px;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--wmd-muted);
+}
+
+.wmd-h3 em {
+	font-style: normal;
+	text-transform: none;
+	letter-spacing: 0;
+	opacity: 0.7;
+	margin-left: 6px;
+}
+
+.wmd-group {
+	border: 1px solid var(--wmd-line);
+	border-radius: 6px;
+	margin-bottom: 8px;
+	background: #fff;
+}
+
+.wmd-group > summary {
+	padding: 9px 11px;
+	cursor: pointer;
+	font-weight: 600;
+	list-style: none;
+}
+
+.wmd-group > summary::-webkit-details-marker {
+	display: none;
+}
+
+.wmd-group > summary::before {
+	content: '▸';
+	margin-right: 7px;
+	color: var(--wmd-muted);
+}
+
+.wmd-group[open] > summary::before {
+	content: '▾';
+}
+
+.wmd-group-body {
+	padding: 4px 11px 11px;
+	border-top: 1px solid var(--wmd-line);
+}
+
+/* --------------------------------------------------------- plokkide list */
+
+.wmd-list {
+	margin: 0 0 10px;
+	padding: 0;
+	list-style: none;
+	border: 1px solid var(--wmd-line);
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.wmd-item {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	padding: 8px 9px;
+	border-bottom: 1px solid var(--wmd-line);
+	cursor: pointer;
+	background: #fff;
+}
+
+.wmd-item:last-child {
+	border-bottom: 0;
+}
+
+.wmd-item:hover {
+	background: #f3f7fb;
+}
+
+.wmd-item.is-active {
+	background: #eaf3fb;
+	box-shadow: inset 3px 0 0 var(--wmd-accent);
+}
+
+.wmd-item.is-dragging {
+	opacity: 0.45;
+}
+
+.wmd-item-icon {
+	width: 24px;
+	height: 24px;
+	flex: 0 0 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 5px;
+	background: #eef0f3;
+	font-size: 11px;
+	font-weight: 700;
+	color: #55606a;
+}
+
+.wmd-item-label {
+	flex: 1 1 auto;
+	min-width: 0;
+	line-height: 1.3;
+}
+
+.wmd-item-label em {
+	display: block;
+	font-style: normal;
+	font-size: 11px;
+	color: var(--wmd-muted);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wmd-item-actions {
+	display: flex;
+	gap: 2px;
+	opacity: 0;
+}
+
+.wmd-item:hover .wmd-item-actions,
+.wmd-item.is-active .wmd-item-actions {
+	opacity: 1;
+}
+
+.wmd-icon {
+	border: 0;
+	background: none;
+	cursor: pointer;
+	color: var(--wmd-muted);
+	padding: 3px 5px;
+	border-radius: 4px;
+	line-height: 1;
+}
+
+.wmd-icon:hover {
+	background: #e3e8ed;
+	color: var(--wmd-ink);
+}
+
+.wmd-empty {
+	padding: 14px 10px;
+	color: var(--wmd-muted);
+	text-align: center;
+	font-size: 12px;
+}
+
+.wmd-palette {
+	display: grid;
+	grid-template-columns: repeat( 3, 1fr );
+	gap: 5px;
+}
+
+.wmd-add {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 3px;
+	padding: 8px 3px;
+	border: 1px dashed var(--wmd-line);
+	border-radius: 6px;
+	background: #fff;
+	cursor: pointer;
+	font-size: 11px;
+	color: #444;
+	line-height: 1.2;
+	text-align: center;
+}
+
+.wmd-add span {
+	font-size: 13px;
+	font-weight: 700;
+	color: #55606a;
+}
+
+.wmd-add:hover {
+	border-color: var(--wmd-accent);
+	color: var(--wmd-accent);
+	border-style: solid;
+}
+
+/* ---------------------------------------------------------------- väljad */
+
+.wmd-field {
+	margin-bottom: 12px;
+}
+
+.wmd-label {
+	display: block;
+	font-size: 11px;
+	font-weight: 600;
+	color: #4a545e;
+	margin-bottom: 4px;
+}
+
+.wmd-input {
+	width: 100%;
+	box-sizing: border-box;
+	min-height: 30px;
+	border: 1px solid #b8bfc7;
+	border-radius: 4px;
+	padding: 4px 8px;
+	font-size: 13px;
+	background: #fff;
+}
+
+.wmd-input:focus {
+	border-color: var(--wmd-accent);
+	outline: 2px solid rgba( 34, 113, 177, 0.2 );
+}
+
+.wmd-textarea {
+	resize: vertical;
+	line-height: 1.5;
+	font-family: inherit;
+}
+
+.wmd-mono {
+	font-family: Consolas, Monaco, monospace;
+	font-size: 12px;
+}
+
+.wmd-small {
+	font-size: 11px;
+	margin-top: 5px;
+}
+
+.wmd-inline {
+	display: flex;
+	gap: 5px;
+	align-items: flex-start;
+}
+
+.wmd-rich-bar {
+	display: flex;
+	gap: 3px;
+	margin-bottom: 4px;
+	align-items: center;
+}
+
+.wmd-rich-bar button {
+	min-width: 26px;
+	height: 24px;
+	border: 1px solid var(--wmd-line);
+	background: #fff;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 12px;
+	line-height: 1;
+}
+
+.wmd-rich-bar button:hover {
+	background: #eef2f6;
+}
+
+/* Muutujate valik. */
+
+.wmd-tags {
+	position: relative;
+	flex: 0 0 auto;
+}
+
+.wmd-tags-toggle {
+	height: 30px;
+	min-width: 30px;
+	border: 1px solid var(--wmd-line);
+	background: #fff;
+	border-radius: 4px;
+	cursor: pointer;
+	font-weight: 700;
+	color: #55606a;
+}
+
+.wmd-rich-bar .wmd-tags-toggle {
+	height: 24px;
+}
+
+.wmd-tags-toggle:hover {
+	border-color: var(--wmd-accent);
+	color: var(--wmd-accent);
+}
+
+.wmd-tags-menu {
+	position: absolute;
+	right: 0;
+	top: calc( 100% + 4px );
+	z-index: 30;
+	width: 260px;
+	max-height: 280px;
+	overflow-y: auto;
+	background: #fff;
+	border: 1px solid var(--wmd-line);
+	border-radius: 6px;
+	box-shadow: 0 6px 18px rgba( 0, 0, 0, 0.12 );
+	padding: 4px;
+}
+
+.wmd-tag {
+	display: block;
+	width: 100%;
+	text-align: left;
+	border: 0;
+	background: none;
+	padding: 5px 7px;
+	border-radius: 4px;
+	cursor: pointer;
+	line-height: 1.3;
+}
+
+.wmd-tag:hover {
+	background: #eef2f6;
+}
+
+.wmd-tag code {
+	display: block;
+	font-size: 11px;
+	color: var(--wmd-accent);
+}
+
+.wmd-tag span {
+	font-size: 11px;
+	color: var(--wmd-muted);
+}
+
+/* Värv, vahemik, lüliti, joondus. */
+
+.wmd-color {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+}
+
+.wmd-swatch {
+	width: 34px;
+	height: 30px;
+	padding: 2px;
+	border: 1px solid #b8bfc7;
+	border-radius: 4px;
+	background: #fff;
+	cursor: pointer;
+	flex: 0 0 auto;
+}
+
+.wmd-hex {
+	flex: 1 1 auto;
+	font-family: Consolas, Monaco, monospace;
+	font-size: 11px;
+}
+
+.wmd-mini {
+	border: 1px solid var(--wmd-line);
+	background: #fff;
+	border-radius: 4px;
+	padding: 4px 7px;
+	font-size: 11px;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.wmd-mini:hover {
+	border-color: var(--wmd-accent);
+	color: var(--wmd-accent);
+}
+
+.wmd-range {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.wmd-range input {
+	flex: 1 1 auto;
+}
+
+.wmd-range output {
+	width: 34px;
+	text-align: right;
+	font-size: 11px;
+	color: var(--wmd-muted);
+}
+
+.wmd-segs {
+	display: inline-flex;
+	border: 1px solid var(--wmd-line);
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+.wmd-seg {
+	border: 0;
+	background: #fff;
+	padding: 5px 12px;
+	cursor: pointer;
+	font-size: 12px;
+	color: var(--wmd-muted);
+	border-right: 1px solid var(--wmd-line);
+}
+
+.wmd-seg:last-child {
+	border-right: 0;
+}
+
+.wmd-seg.is-active {
+	background: var(--wmd-accent);
+	color: #fff;
+}
+
+.wmd-switch {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	cursor: pointer;
+	font-size: 12px;
+}
+
+.wmd-switch input {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.wmd-switch span {
+	width: 32px;
+	height: 18px;
+	border-radius: 9px;
+	background: #c4cad0;
+	position: relative;
+	transition: background 0.15s;
+	flex: 0 0 auto;
+}
+
+.wmd-switch span::after {
+	content: '';
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background: #fff;
+	transition: transform 0.15s;
+}
+
+.wmd-switch input:checked + span {
+	background: #2ea36b;
+}
+
+.wmd-switch input:checked + span::after {
+	transform: translateX( 14px );
+}
+
+.wmd-image img {
+	max-width: 100%;
+	max-height: 90px;
+	display: block;
+	border: 1px solid var(--wmd-line);
+	border-radius: 5px;
+	padding: 5px;
+	background: #fafbfc;
+}
+
+.wmd-image-empty {
+	height: 54px;
+	border: 1px dashed var(--wmd-line);
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--wmd-muted);
+}
+
+.wmd-image-actions {
+	display: flex;
+	gap: 5px;
+	margin-top: 5px;
+}
+
+/* -------------------------------------------------------- parem paneel */
+
+.wmd-inspector-head {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 600;
+	padding-bottom: 10px;
+	margin-bottom: 12px;
+	border-bottom: 1px solid var(--wmd-line);
+}
+
+.wmd-inspector-empty {
+	color: var(--wmd-muted);
+	padding: 24px 4px;
+	text-align: center;
+	line-height: 1.5;
+}
+
+.wmd-inspector-empty h3 {
+	font-size: 13px;
+	margin: 0 0 6px;
+	color: var(--wmd-ink);
+}
+
+.wmd-inspector-foot {
+	margin-top: 16px;
+	padding-top: 12px;
+	border-top: 1px solid var(--wmd-line);
+}
+
+/* ---------------------------------------------------------- uuendused */
+
+.wmd-updates-actions {
+	display: flex;
+	gap: 6px;
+	margin: 14px 0 12px;
+}
+
+.wmd-update-status {
+	font-size: 12px;
+	line-height: 1.5;
+	border-radius: 6px;
+	padding: 9px 11px;
+	background: #f6f7f9;
+	color: var(--wmd-muted);
+}
+
+.wmd-status.is-ok {
+	color: #1f7a5a;
+}
+
+.wmd-status.is-warn {
+	color: #a15c00;
+}
+
+.wmd-status.is-new {
+	color: #12507e;
+}
+
+/* ------------------------------------------------------------ teavitus */
+
+.wmd-toast {
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+	background: #1d2327;
+	color: #fff;
+	padding: 10px 16px;
+	border-radius: 6px;
+	box-shadow: 0 6px 20px rgba( 0, 0, 0, 0.2 );
+	opacity: 0;
+	transform: translateY( 8px );
+	transition: opacity 0.18s, transform 0.18s;
+	pointer-events: none;
+	z-index: 100;
+}
+
+.wmd-toast.is-visible {
+	opacity: 1;
+	transform: translateY( 0 );
+}
+
+.wmd-toast.is-ok {
+	background: #1f7a5a;
+}
+
+.wmd-toast.is-error {
+	background: #a3252b;
+}
+
+@media screen and ( max-width: 1200px ) {
+	.wmd-right {
+		width: 260px;
+	}
+
+	.wmd-left {
+		width: 280px;
+	}
+}
