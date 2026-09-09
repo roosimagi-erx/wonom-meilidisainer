@@ -38,6 +38,12 @@
 
 	var previewTimer = null;
 
+	/**
+	 * WooCommerce'i enda sisu meili ja tellimuse kohta. See ei sõltu plokkidest,
+	 * seega piisab ühest päringust — edasi tuleb kanvas mälust ja jääb kiireks.
+	 */
+	var wcCache = {};
+
 	/* ---------------------------------------------------------------- abi */
 
 	function esc( str ) {
@@ -242,6 +248,57 @@
 		} );
 	}
 
+	function wcKey() {
+		return state.email + '|' + ( state.order || 0 );
+	}
+
+	/**
+	 * Teade, kui WooCommerce'i sisu ei õnnestunud kätte saada — siis on kanvasel
+	 * näidissisu ja seda peab kasutaja teadma.
+	 */
+	function wcNoteHtml() {
+		if ( emailSettings().mode === 'full' ) {
+			return '';
+		}
+
+		var wc = wcCache[ wcKey() ];
+
+		if ( ! wc || wc.pending || wc.html ) {
+			return '';
+		}
+
+		return '<div class="wmd-server-note is-warn">Kanvasel on WooCommerce\'i osas <strong>näidissisu</strong>, mitte päris tekst' +
+			( wc.why ? ' — ' + esc( wc.why ) : '' ) + '</div>';
+	}
+
+	/**
+	 * Toob WooCommerce'i sisuosa, kui seda veel mälus pole. Kuni vastus tuleb,
+	 * näitab kanvas näidissisu — nii ei jää vaade tühjaks.
+	 */
+	function ensureWcPart() {
+		var key = wcKey();
+
+		if ( wcCache[ key ] || emailSettings().mode === 'full' ) {
+			return;
+		}
+
+		wcCache[ key ] = { pending: true, html: '', css: '' };
+
+		post( 'wmd_wc_part', {
+			email: state.email,
+			order: state.order || 0,
+			design: JSON.stringify( state.design ),
+		} ).then( function ( res ) {
+			wcCache[ key ] = { pending: false, html: res.html || '', css: res.css || '', why: res.why || '' };
+
+			if ( wcKey() === key ) {
+				updatePreview();
+			}
+		} ).catch( function () {
+			wcCache[ key ] = { pending: false, html: '', css: '', why: 'Ei saanud WooCommerce\'i sisu kätte.' };
+		} );
+	}
+
 	function markServerBusy( busy ) {
 		var note = root.querySelector( '.wmd-server-note' );
 		if ( note ) {
@@ -259,12 +316,22 @@
 		if ( state.serverHtml ) {
 			html = state.serverHtml;
 		} else {
+			ensureWcPart();
+
+			var wc = wcCache[ wcKey() ];
+			var full = emailSettings().mode === 'full';
+
 			html = window.WMDRender.full(
 				state.design,
 				state.email,
 				previewCtx(),
 				wcDefault( state.email, 'heading' ),
-				undefined
+				// Päris WooCommerce'i sisu, kui see on käes. Muidu näidis.
+				( wc && ! wc.pending && wc.html ) ? wc.html : undefined,
+				{
+					extraCss: wc && wc.css ? wc.css : '',
+					markWc: ! full,
+				}
 			);
 		}
 
@@ -286,6 +353,39 @@
 		if ( state.serverHtml ) {
 			return;
 		}
+
+		// „Võta üle" WooCommerce'i ala sildil.
+		doc.addEventListener( 'click', function ( ev ) {
+			var btn = ev.target.closest ? ev.target.closest( '[data-wmd-action="takeover"]' ) : null;
+
+			if ( ! btn ) {
+				return;
+			}
+
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var e = emailSettings();
+			e.mode = 'full';
+
+			if ( ! e.body.length ) {
+				// Olemasolev sisu kopeerime kehasse ja jätame ka originaali alles,
+				// et wrap-režiimi tagasi minnes ei oleks midagi kadunud.
+				e.body = JSON.parse( JSON.stringify( e.before ) )
+					.concat( seedBody().slice( 1 ) )
+					.concat( JSON.parse( JSON.stringify( e.after ) ) );
+
+				e.body.forEach( function ( b ) {
+					b.id = newId();
+				} );
+			}
+
+			state.selected = null;
+			markDirty();
+			render();
+			invalidatePreview();
+			toast( 'Meil on nüüd täisrežiimis — WooCommerce\'i oma tekst enam kirja ei lähe', 'ok' );
+		}, true );
 
 		doc.addEventListener( 'click', function ( ev ) {
 			var node = ev.target;
@@ -841,8 +941,9 @@
 			'</div></div>' +
 			'<div class="wmd-bar-right">' +
 			'<label class="wmd-switch wmd-switch-inline" title="Kas kujundus rakendub päris meilidele"><input type="checkbox" class="wmd-enabled"' + ( state.enabled ? ' checked' : '' ) + ' /><span></span>Kujundus sees</label>' +
-			'<button type="button" class="button wmd-server' + ( state.serverMode ? ' button-primary' : '' ) + '">' +
-			( state.serverMode ? 'Serveri eelvaade sees' : 'Serveri eelvaade' ) + '</button>' +
+			'<button type="button" class="button wmd-server' + ( state.serverMode ? ' button-primary' : '' ) + '" ' +
+			'title="Renderdab kirja serveris. Kanvas näitab niikuinii päris sisu — see on lisakontroll.">' +
+			( state.serverMode ? 'Serverikontroll sees' : 'Kontrolli serverist' ) + '</button>' +
 			'<button type="button" class="button wmd-test">Saada testmeil</button>' +
 			'<button type="button" class="button button-primary wmd-save">Salvesta</button>' +
 			'<button type="button" class="button-link wmd-reset" title="Lähtesta kujundus">Lähtesta</button>' +
@@ -850,9 +951,9 @@
 			'<div class="wmd-body">' +
 			'<aside class="wmd-left"><div class="wmd-tabs">' + tabs + '</div><div class="wmd-panel">' + panel + '</div></aside>' +
 			'<main class="wmd-canvas' + ( state.device === 'mobile' ? ' is-mobile' : '' ) + '">' +
-			( state.serverMode ? '<div class="wmd-server-note">Näed serveri renderdust — täpselt see HTML, mis meili läheb' +
-				( state.serverSource === 'real' ? ', päris tellimuse andmetega' : ' (näidissisuga — päris tellimust ei leitud)' ) +
-				'. Vaade järgneb nii meili- kui tellimusevalikule. <button type="button" class="button-link wmd-server-off">Tagasi kujundajasse</button></div>' : '' ) +
+			( state.serverMode ? '<div class="wmd-server-note">Serverikontroll: kogu kiri on renderdatud PHP-ga, sama koodiga mis saatmisel' +
+				( state.serverSource === 'real' ? '' : ' (näidissisuga — päris tellimust ei leitud)' ) +
+				'. Klõpsamine ja plokkide märgistus siin ei tööta. <button type="button" class="button-link wmd-server-off">Tagasi kujundajasse</button></div>' : wcNoteHtml() ) +
 			'<div class="wmd-frame-wrap"><iframe class="wmd-frame" title="Meili eelvaade"></iframe></div></main>' +
 			'<aside class="wmd-right">' + inspectorHtml() + '</aside>' +
 			'</div>' +

@@ -15,6 +15,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WMD_Render {
 
 	/**
+	 * Kas WooCommerce'i sisu ümber pannakse markerid.
+	 *
+	 * Kujundaja tõmbab WooCommerce'i osa eraldi, et kanvas saaks näidata päris
+	 * sisu. Markerid on ainult selle päringu ajal sees, päris meili nad ei jõua.
+	 *
+	 * @var bool
+	 */
+	public static $mark_wc = false;
+
+	/**
+	 * Markerid, mille vahelt kujundaja WooCommerce'i osa välja lõikab.
+	 */
+	const WC_START = '<!--WMD_WC_START-->';
+	const WC_END   = '<!--WMD_WC_END-->';
+
+	/**
 	 * Meili päis kuni sisuosa avamiseni.
 	 *
 	 * @param string $email_heading WooCommerce'i pealkiri.
@@ -143,6 +159,10 @@ class WMD_Render {
 
 		$out .= '<div class="wmd-wc-content">';
 
+		if ( self::$mark_wc ) {
+			$out .= self::WC_START;
+		}
+
 		return $out;
 	}
 
@@ -161,7 +181,7 @@ class WMD_Render {
 		$width = (int) $brand['width'];
 		$pad   = (int) $brand['pad_x'];
 
-		$out = '</div>';
+		$out = self::$mark_wc ? self::WC_END . '</div>' : '</div>';
 
 		if ( 'full' !== $settings['mode'] && ! empty( $settings['after'] ) ) {
 			$out .= self::blocks( $settings['after'], $brand, $ctx );

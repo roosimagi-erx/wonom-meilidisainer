@@ -377,7 +377,22 @@
 	 * @param {string} bodyHtml Sisuosa.
 	 * @return {string} HTML.
 	 */
-	function full( design, emailId, ctx, heading, bodyHtml ) {
+	/**
+	 * Kujundaja märgis WooCommerce'i ala ümber. Ainult kanvasel — päris meili
+	 * see ei jõua, sest päris meili renderdab PHP.
+	 */
+	function wcMark( inner, brand ) {
+		return '<div style="position:relative;margin:6px 0;padding:26px 10px 10px 10px;border:1px dashed #c2a561;border-radius:6px;background:#fffdf6;">' +
+			'<div style="position:absolute;top:0;left:0;right:0;display:flex;gap:8px;align-items:center;justify-content:space-between;' +
+			'padding:3px 8px;background:#f4e9cf;border-radius:5px 5px 0 0;font:600 11px/1.4 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#6b5216;">' +
+			'<span>WooCommerce\'i enda sisu — seda siit muuta ei saa</span>' +
+			'<button type="button" data-wmd-action="takeover" style="border:0;border-radius:4px;background:#6b5216;color:#fff;' +
+			'font:600 11px/1 -apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:4px 8px;cursor:pointer;">Võta üle</button>' +
+			'</div>' + inner + '</div>';
+	}
+
+	function full( design, emailId, ctx, heading, bodyHtml, opts ) {
+		opts = opts || {};
 		var brand = design.brand;
 		var settings = ( design.emails && design.emails[ emailId ] ) || { heading: '', before: [], after: [] };
 		var width = num( brand.width, 600 );
@@ -387,7 +402,8 @@
 		var title = settings.heading && settings.heading.trim() ? tags( settings.heading, ctx ) : ( heading || '' );
 		var body = bodyHtml === undefined || bodyHtml === null ? sampleBody( brand ) : bodyHtml;
 
-		var css = '' +
+		// WooCommerce'i enda CSS peab tulema esimesena, meie oma kirjutab üle.
+		var css = ( opts.extraCss || '' ) +
 			'body{margin:0;padding:0;}' +
 			'a{color:' + brand.accent + ';}' +
 			'@media only screen and (max-width:620px){' +
@@ -455,8 +471,10 @@
 			// Terve meil tuleb plokkidest — WooCommerce'i enda sisu ei renderdata.
 			out += '<div data-wmd-zone="body">' + blocks( settings.body, brand, ctx ) + '</div>';
 		} else {
+			var wc = '<div class="wmd-wc-content" data-wmd-zone="wc">' + body + '</div>';
+
 			out += '<div data-wmd-zone="before">' + blocks( settings.before, brand, ctx ) + '</div>';
-			out += '<div class="wmd-wc-content" data-wmd-zone="wc">' + body + '</div>';
+			out += opts.markWc ? wcMark( wc, brand ) : wc;
 			out += '<div data-wmd-zone="after">' + blocks( settings.after, brand, ctx ) + '</div>';
 		}
 

@@ -800,6 +800,12 @@
 	opacity: 0.55;
 }
 
+.wmd-server-note.is-warn {
+	background: #fff4e0;
+	border-color: #edd6a8;
+	color: #7a4b00;
+}
+
 .wmd-modes .wmd-seg {
 	flex: 1 1 0;
 	padding: 7px 6px;

@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.11.0
+Stable tag: 0.12.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,12 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.12.0 =
+* Kujundaja kanvas näitab nüüd WooCommerce'i enda sisu päriselt, mitte näidist. Nii on kohe näha, kui su enda plokk ütleb sama, mida WooCommerce'i mall — varem tuli selle avastamiseks eraldi serveri eelvaadet vaadata.
+* WooCommerce'i osa on kanvasel katkendjoonega märgistatud ja selle küljes on nupp „Võta üle", mis lülitab meili täisrežiimi ja tõstab olemasolevad plokid kehasse. Wrap-režiimi plokid jäävad alles, nii et tagasi minnes ei ole midagi kadunud.
+* „Serveri eelvaade" on ümber nimetatud „Kontrolli serverist" ja jäänud kõrvaliseks kontrollinupuks — tõde on nüüd kanvasel endal.
+* WooCommerce'i sisuosa küsitakse serverist ühe korra meili ja tellimuse kohta ning hoitakse mälus, seega kanvas jääb plokkide sättimisel sama kiireks kui varem.
 
 = 0.11.0 =
 * Uus: eelvaate tellimuse valik ülaribal. Saad valida, millise päris tellimuse andmetega meili näidatakse — nii saab kontrollida, kuidas kiri eri makseviiside puhul välja näeb. Valik kehtib ka testmeili saatmisel.

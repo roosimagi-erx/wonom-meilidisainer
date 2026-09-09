@@ -36,8 +36,10 @@ WooCommerce oma malle uuendab.
 - **Tellimuse väli** — toob meili suvalise tellimuse välja, näiteks paki
   jälgimiskoodi, koos sildi ja valikulise lingiga (`{{value}}` asendub
   väärtusega). Tühja välja saab automaatselt peita.
-- **Elav eelvaade** — muudatus on ekraanil kohe, arvuti- ja mobiilivaade.
-  Klõps eelvaates valib ploki.
+- **Elav eelvaade, mis ei valeta** — muudatus on ekraanil kohe, arvuti- ja
+  mobiilivaade, klõps valib ploki. WooCommerce'i enda sisu tuuakse serverist
+  päris kujul, seega dubleeriv tekst on kohe näha. WooCommerce'i ala on
+  märgistatud ja selle küljes on nupp „Võta üle".
 - **Muutujad** — `{{customer_first_name}}`, `{{order_number}}`, `{{order_total}}`,
   `{{order_url}}` jt, valikuna nupu alt. Lisaks `{{meta:võti}}`, millega saab
   igasse teksti tuua suvalise tellimuse välja.

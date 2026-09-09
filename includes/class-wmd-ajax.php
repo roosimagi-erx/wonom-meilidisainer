@@ -21,6 +21,7 @@ class WMD_Ajax {
 		add_action( 'wp_ajax_wmd_save', array( __CLASS__, 'save' ) );
 		add_action( 'wp_ajax_wmd_reset', array( __CLASS__, 'reset' ) );
 		add_action( 'wp_ajax_wmd_preview', array( __CLASS__, 'preview' ) );
+		add_action( 'wp_ajax_wmd_wc_part', array( __CLASS__, 'wc_part' ) );
 		add_action( 'wp_ajax_wmd_test_email', array( __CLASS__, 'test_email' ) );
 		add_action( 'wp_ajax_wmd_toggle', array( __CLASS__, 'toggle' ) );
 		add_action( 'wp_ajax_wmd_save_updates', array( __CLASS__, 'save_updates' ) );
@@ -192,6 +193,109 @@ class WMD_Ajax {
 				'payment' => $order ? $order->get_payment_method() : '',
 			)
 		);
+	}
+
+	/**
+	 * Ainult WooCommerce'i enda sisuosa, ilma meie päise ja jaluseta.
+	 *
+	 * Kujundaja paneb selle oma kanvasel plokkide vahele, et sa näeksid päris
+	 * teksti — sealhulgas seda, kui su enda plokk ütleb sama, mida WooCommerce.
+	 * See osa ei sõltu plokkidest, seega piisab ühest päringust meili ja
+	 * tellimuse kohta.
+	 */
+	public static function wc_part() {
+		self::guard();
+
+		$email_id = isset( $_POST['email'] ) ? sanitize_key( wp_unslash( $_POST['email'] ) ) : '';
+		$list     = wmd_email_list();
+
+		if ( ! isset( $list[ $email_id ] ) ) {
+			$email_id = key( $list );
+		}
+
+		$design = self::posted_design();
+		if ( ! empty( $design ) ) {
+			WMD_Design::set_cache( WMD_Design::sanitize( $design ) );
+		}
+
+		$order = self::preview_order( self::posted_order_id() );
+
+		if ( ! wmd_woo_active() || ! $order ) {
+			wp_send_json_success(
+				array(
+					'html' => '',
+					'css'  => '',
+					'why'  => __( 'Poes ei ole tellimust, mille pealt WooCommerce\'i sisu näidata.', 'wonom-meilidisainer' ),
+				)
+			);
+		}
+
+		$html = '';
+		$css  = '';
+
+		WMD_Render::$mark_wc = true;
+
+		try {
+			$found = self::find_email( $email_id );
+
+			if ( $found ) {
+				$found->object    = $order;
+				$found->recipient = $order->get_billing_email();
+
+				if ( property_exists( $found, 'placeholders' ) && is_array( $found->placeholders ) ) {
+					$date                                  = $order->get_date_created();
+					$found->placeholders['{order_date}']   = $date ? wc_format_datetime( $date ) : '';
+					$found->placeholders['{order_number}'] = $order->get_order_number();
+				}
+
+				// Stiile ei reastata sisse — eelvaade on brauser, mitte postkast,
+				// ja reastaja võiks markerid ära süüa.
+				$full  = $found->get_content_html();
+				$start = strpos( $full, WMD_Render::WC_START );
+				$end   = strpos( $full, WMD_Render::WC_END );
+
+				if ( false !== $start && false !== $end && $end > $start ) {
+					$html = substr( $full, $start + strlen( WMD_Render::WC_START ), $end - $start - strlen( WMD_Render::WC_START ) );
+				}
+
+				ob_start();
+				wc_get_template( 'emails/email-styles.php' );
+				$css = apply_filters( 'woocommerce_email_styles', (string) ob_get_clean(), $found );
+			}
+		} catch ( Throwable $e ) {
+			$html = '';
+		}
+
+		WMD_Render::$mark_wc = false;
+
+		wp_send_json_success(
+			array(
+				'html'  => $html,
+				'css'   => $css,
+				'order' => $order->get_id(),
+				'why'   => '' === $html ? __( 'WooCommerce\'i sisu ei õnnestunud renderdada.', 'wonom-meilidisainer' ) : '',
+			)
+		);
+	}
+
+	/**
+	 * WC_Email objekt id järgi.
+	 *
+	 * @param string $email_id WC_Email id.
+	 * @return WC_Email|null
+	 */
+	protected static function find_email( $email_id ) {
+		if ( ! function_exists( 'WC' ) ) {
+			return null;
+		}
+
+		foreach ( WC()->mailer()->get_emails() as $email ) {
+			if ( isset( $email->id ) && $email->id === $email_id ) {
+				return $email;
+			}
+		}
+
+		return null;
 	}
 
 	/**
