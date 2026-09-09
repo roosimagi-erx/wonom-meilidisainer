@@ -129,6 +129,9 @@ class WMD_Tags {
 		$ctx['payment_method']      = $order->get_payment_method_title();
 		$ctx['shipping_method']     = $order->get_shipping_method();
 
+		// WooCommerce'i plokid ja {{meta:...}} vajavad tellimust ennast.
+		$ctx['__order'] = $order;
+
 		return $ctx;
 	}
 
@@ -147,11 +150,26 @@ class WMD_Tags {
 		}
 
 		return preg_replace_callback(
-			'/\{\{\s*([a-z0-9_]+)\s*\}\}/i',
+			'/\{\{\s*([a-z0-9_:\-]+)\s*\}\}/i',
 			function ( $m ) use ( $ctx ) {
 				$key = strtolower( $m[1] );
 
-				return isset( $ctx[ $key ] ) ? (string) $ctx[ $key ] : '';
+				// {{meta:_tracking_number}} loeb välja otse tellimuselt. Nii saab
+				// kasutada ka tarnepluginate välju, mida me ette ei tea.
+				if ( 0 === strpos( $key, 'meta:' ) ) {
+					$order = isset( $ctx['__order'] ) ? $ctx['__order'] : null;
+
+					if ( ! $order || ! is_a( $order, 'WC_Order' ) ) {
+						return '';
+					}
+
+					// Võtit ei tohi väiketäheliseks teha — meta võtmed on tõstutundlikud.
+					$meta_key = trim( substr( $m[1], 5 ) );
+
+					return (string) $order->get_meta( $meta_key, true );
+				}
+
+				return isset( $ctx[ $key ] ) && is_scalar( $ctx[ $key ] ) ? (string) $ctx[ $key ] : '';
 			},
 			$text
 		);

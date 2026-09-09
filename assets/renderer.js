@@ -206,6 +206,43 @@
 				body = tags( p.code, ctx );
 				break;
 
+			// WooCommerce'i osad: eelvaates näidis, päris meilis renderdab WooCommerce.
+			case 'order_table':
+				body = sampleOrderTable( brand );
+				break;
+
+			case 'addresses':
+				body = sampleAddresses( brand );
+				break;
+
+			case 'customer_note':
+				body = '<div style="' + escAttr( style( {
+					'border-left': '3px solid ' + brand.accent,
+					'background-color': '#00000008',
+					padding: '10px 14px',
+					'font-family': font,
+					'font-size': num( brand.base_size, 15 ) + 'px',
+					'line-height': '1.6',
+					color: brand.text_color,
+				} ) ) + '">' +
+					( p.title ? '<strong style="color:' + escAttr( brand.heading_color ) + ';">' + esc( p.title ) + '</strong><br>' : '' ) +
+					'Palun jätke pakk pakiautomaati.</div>';
+				break;
+
+			case 'order_meta':
+				var sample = p.key ? 'CC123456789EE' : '—';
+				var shown = p.link ? '<a style="color:' + escAttr( brand.accent ) + ';">' + esc( sample ) + '</a>' : esc( sample );
+				cell[ 'text-align' ] = p.align;
+				body = '<div style="' + escAttr( style( {
+					'font-family': font,
+					'font-size': num( brand.base_size, 15 ) + 'px',
+					'line-height': '1.6',
+					color: brand.text_color,
+				} ) ) + '">' +
+					( p.title ? '<strong style="color:' + escAttr( brand.heading_color ) + ';">' + esc( p.title ) + ':</strong> ' : '' ) +
+					shown + '</div>';
+				break;
+
 			default:
 				return '';
 		}
@@ -253,6 +290,16 @@
 	}
 
 	function sampleBody( brand ) {
+		return sampleOrderTable( brand ) + sampleAddresses( brand );
+	}
+
+	function sampleAddresses( brand ) {
+		var h2 = Math.max( 17, Math.round( num( brand.heading_size, 26 ) * 0.72 ) );
+		return '<h2 style="font-family:' + brand.font_family + ';color:' + brand.heading_color + ';font-size:' + h2 + 'px;margin:22px 0 10px 0;line-height:1.3;">Arveaadress</h2>' +
+			'<p style="font-family:' + brand.font_family + ';font-size:' + num( brand.base_size, 15 ) + 'px;color:' + brand.text_color + ';line-height:1.6;margin:0;">Mari Tamm<br>Pikk 12-4<br>10123 Tallinn<br>Eesti</p>';
+	}
+
+	function sampleOrderTable( brand ) {
 		var b = brand.border_color;
 		var h = brand.heading_color;
 		var t = brand.text_color;
@@ -285,8 +332,6 @@
 		out += foot( 'Tarne:', '5,00 €' );
 		out += foot( 'Kokku:', '<strong>87,40 €</strong>' );
 		out += '</tfoot></table>';
-		out += '<h2 style="font-family:' + f + ';color:' + h + ';font-size:' + h2 + 'px;margin:22px 0 10px 0;line-height:1.3;">Arveaadress</h2>';
-		out += '<p style="font-family:' + f + ';font-size:' + fs + 'px;color:' + t + ';line-height:1.6;margin:0;">Mari Tamm<br>Pikk 12-4<br>10123 Tallinn<br>Eesti</p>';
 
 		return out;
 	}
@@ -375,9 +420,14 @@
 			} ) ) + '">' + esc( title ) + '</h1>';
 		}
 
-		out += '<div data-wmd-zone="before">' + blocks( settings.before, brand, ctx ) + '</div>';
-		out += '<div class="wmd-wc-content" data-wmd-zone="body">' + body + '</div>';
-		out += '<div data-wmd-zone="after">' + blocks( settings.after, brand, ctx ) + '</div>';
+		if ( settings.mode === 'full' ) {
+			// Terve meil tuleb plokkidest — WooCommerce'i enda sisu ei renderdata.
+			out += '<div data-wmd-zone="body">' + blocks( settings.body, brand, ctx ) + '</div>';
+		} else {
+			out += '<div data-wmd-zone="before">' + blocks( settings.before, brand, ctx ) + '</div>';
+			out += '<div class="wmd-wc-content" data-wmd-zone="wc">' + body + '</div>';
+			out += '<div data-wmd-zone="after">' + blocks( settings.after, brand, ctx ) + '</div>';
+		}
 
 		out += '</td></tr></table>';
 

@@ -28,6 +28,7 @@
 		serverHtml: null,
 		scroll: 0,
 		updates: cfg.updates || { source: 'off', repo: '', json: '', token: '', current: '', remote: '' },
+		updateLog: [],
 	};
 
 	var previewTimer = null;
@@ -61,6 +62,21 @@
 			e[ zone ] = [];
 		}
 		return e[ zone ];
+	}
+
+	function emailSettings() {
+		var e = state.design.emails[ state.email ];
+		if ( ! e ) {
+			e = { mode: 'wrap', subject: '', heading: '', before: [], after: [], body: [] };
+			state.design.emails[ state.email ] = e;
+		}
+		if ( ! e.mode ) {
+			e.mode = 'wrap';
+		}
+		if ( ! e.body ) {
+			e.body = [];
+		}
+		return e;
 	}
 
 	function findBlock( sel ) {
@@ -213,7 +229,7 @@
 	}
 
 	function zoneOfId( id ) {
-		var zones = [ 'header', 'footer', 'before', 'after' ];
+		var zones = [ 'header', 'footer', 'before', 'after', 'body' ];
 		for ( var i = 0; i < zones.length; i++ ) {
 			if ( blockIndex( zones[ i ], id ) !== -1 ) {
 				return zones[ i ];
@@ -335,7 +351,9 @@
 				body = '<input type="text" class="wmd-input" ' + attrs + ' value="' + esc( value ) + '" />';
 		}
 
-		return '<div class="wmd-field">' + label + body + '</div>';
+		var hint = field.hint ? '<p class="wmd-hint">' + esc( field.hint ) + '</p>' : '';
+
+		return '<div class="wmd-field">' + label + body + hint + '</div>';
 	}
 
 	/* ------------------------------------------------------- vasak paneel */
@@ -358,7 +376,13 @@
 			items = '<li class="wmd-empty">' + esc( i18n.noBlocks ) + '</li>';
 		}
 
-		var palette = Object.keys( cfg.blockTypes ).map( function ( type ) {
+		// WooCommerce'i osi (tellimuse tabel, aadressid, tellimuse väljad) pakume
+		// ainult meili sisus — päises ja jaluses pole neil tellimust, mida näidata.
+		var allowWoo = zone !== 'header' && zone !== 'footer';
+
+		var palette = Object.keys( cfg.blockTypes ).filter( function ( type ) {
+			return allowWoo || ! cfg.blockTypes[ type ].woo;
+		} ).map( function ( type ) {
 			var def = cfg.blockTypes[ type ];
 			return '<button type="button" class="wmd-add" data-add="' + esc( zone ) + '|' + esc( type ) + '">' +
 				'<span>' + esc( def.icon ) + '</span>' + esc( def.label ) + '</button>';
@@ -425,7 +449,8 @@
 			}
 		} );
 
-		var e = state.design.emails[ state.email ] || { subject: '', heading: '' };
+		var e = emailSettings();
+		var full = e.mode === 'full';
 
 		var html = '<div class="wmd-intro">Vali meil ja täienda seda. Tühjaks jäetud väli tähendab, et kasutatakse WooCommerce\'i vaikeväärtust.</div>';
 		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-email-pick">Meil</label>' +
@@ -439,8 +464,19 @@
 			'<div class="wmd-inline"><input type="text" class="wmd-input" id="wmd-f-email-heading" data-scope="email" data-key="heading" value="' + esc( e.heading ) + '" placeholder="' + esc( wcDefault( state.email, 'heading' ) ) + '" />' +
 			tagPicker( 'wmd-f-email-heading' ) + '</div></div>';
 
-		html += blockListHtml( 'before', 'Sisu enne tellimuse tabelit', 'tervitus, info' );
-		html += blockListHtml( 'after', 'Sisu pärast tellimuse tabelit', 'nupp, lisamüük' );
+		html += '<div class="wmd-field"><label class="wmd-label">Kuidas meil kokku pannakse</label>' +
+			'<div class="wmd-segs wmd-modes">' +
+			'<button type="button" class="wmd-seg' + ( full ? '' : ' is-active' ) + '" data-mode="wrap">WooCommerce\'i sisu ümber</button>' +
+			'<button type="button" class="wmd-seg' + ( full ? ' is-active' : '' ) + '" data-mode="full">Terve meil ise</button>' +
+			'</div></div>';
+
+		if ( full ) {
+			html += '<div class="wmd-intro wmd-warn">Selles režiimis ei kasutata WooCommerce\'i sisumalli. Kõik, mis meilis on, tuleb allolevatest plokkidest — ka tellimuse tabel ja aadressid.</div>';
+			html += blockListHtml( 'body', 'Meili sisu', 'terve keha' );
+		} else {
+			html += blockListHtml( 'before', 'Sisu enne tellimuse tabelit', 'tervitus, info' );
+			html += blockListHtml( 'after', 'Sisu pärast tellimuse tabelit', 'nupp, lisamüük' );
+		}
 
 		return html;
 	}
@@ -450,7 +486,20 @@
 		if ( ! e ) {
 			return false;
 		}
-		return !! ( e.subject || e.heading || ( e.before && e.before.length ) || ( e.after && e.after.length ) );
+		return !! ( e.subject || e.heading || e.mode === 'full' ||
+			( e.before && e.before.length ) || ( e.after && e.after.length ) || ( e.body && e.body.length ) );
+	}
+
+	/**
+	 * Vaikimisi keha, kui „terve meil ise" valitakse esimest korda — nii ei
+	 * jää kasutaja tühja lehe ette ja tellimuse tabel ei kao kogemata ära.
+	 */
+	function seedBody() {
+		return [
+			makeBlock( 'text' ),
+			makeBlock( 'order_table' ),
+			makeBlock( 'addresses' ),
+		];
 	}
 
 	/* ------------------------------------------------------ uuendused */
@@ -472,9 +521,10 @@
 		} else if ( u.remote === u.current ) {
 			status = '<span class="wmd-status is-ok">Kõik on värske — paigaldatud ' + esc( u.current ) + ', allikas ' + esc( u.remote ) + '.</span>';
 		} else {
-			status = '<span class="wmd-status is-new">Saadaval on ' + esc( u.remote ) + ' (paigaldatud ' + esc( u.current ) + '). ' +
-				'<a href="' + esc( cfg.pluginsUrl ) + '">Ava Pluginad-leht</a> ja vajuta „Uuenda kohe".</span>';
+			status = '<span class="wmd-status is-new">Saadaval on <strong>' + esc( u.remote ) + '</strong> (paigaldatud ' + esc( u.current ) + ').</span>';
 		}
+
+		var canInstall = u.remote && u.remote !== u.current;
 
 		var html = '<div class="wmd-intro">Plugin ei ole WordPress.org-is, seega uuendused tulevad otse sinu GitHubi väljalasetest. WordPress näitab uuendusteadet tavalisel Pluginad-lehel.</div>';
 
@@ -503,6 +553,17 @@
 			'</div>';
 
 		html += '<div class="wmd-update-status">' + status + '</div>';
+
+		if ( canInstall ) {
+			html += '<div class="wmd-updates-actions">' +
+				'<button type="button" class="button button-primary wmd-u-install">Uuenda kohe versioonile ' + esc( u.remote ) + '</button>' +
+				'</div>' +
+				'<p class="wmd-hint">Paigaldab uue versiooni siinsamas. Leht laaditakse pärast uuesti; salvestamata muudatused salvesta enne ära.</p>';
+		}
+
+		if ( state.updateLog && state.updateLog.length ) {
+			html += '<pre class="wmd-log">' + esc( state.updateLog.join( '\n' ) ) + '</pre>';
+		}
 
 		return html;
 	}
@@ -541,6 +602,39 @@
 				save.disabled = false;
 			} );
 		} );
+
+		var install = root.querySelector( '.wmd-u-install' );
+		if ( install ) {
+			install.addEventListener( 'click', function () {
+				if ( state.dirty && ! window.confirm( 'Sul on salvestamata muudatusi. Uuendamine laadib lehe uuesti ja need lähevad kaotsi. Jätkan?' ) ) {
+					return;
+				}
+
+				install.disabled = true;
+				install.textContent = 'Paigaldan…';
+
+				post( 'wmd_update_now', {} ).then( function ( res ) {
+					state.dirty = false;
+					state.updateLog = res.log || [];
+
+					if ( res.updated ) {
+						toast( res.message + ' Laen lehe uuesti…', 'ok' );
+						setTimeout( function () {
+							window.location.reload();
+						}, 1200 );
+						return;
+					}
+
+					toast( res.message, 'ok' );
+					render();
+				} ).catch( function ( err ) {
+					state.updateLog = [];
+					toast( err, 'error' );
+					install.disabled = false;
+					install.textContent = 'Proovi uuesti';
+				} );
+			} );
+		}
 
 		var check = root.querySelector( '.wmd-u-check' );
 		check.addEventListener( 'click', function () {
@@ -752,6 +846,29 @@
 
 			input.addEventListener( 'input', function () {
 				setValue( scope, key, input.value );
+			} );
+		} );
+
+		// Meili kokkupaneku režiim.
+		root.querySelectorAll( '.wmd-modes [data-mode]' ).forEach( function ( btn ) {
+			btn.addEventListener( 'click', function () {
+				var mode = btn.getAttribute( 'data-mode' );
+				var e = emailSettings();
+
+				if ( e.mode === mode ) {
+					return;
+				}
+
+				e.mode = mode;
+
+				if ( mode === 'full' && ! e.body.length ) {
+					e.body = seedBody();
+				}
+
+				state.selected = null;
+				markDirty();
+				state.serverHtml = null;
+				render();
 			} );
 		} );
 

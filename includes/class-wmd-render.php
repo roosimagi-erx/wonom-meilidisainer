@@ -136,7 +136,8 @@ class WMD_Render {
 			) . '>' . wp_kses_post( $heading ) . '</h1>';
 		}
 
-		if ( ! empty( $settings['before'] ) ) {
+		// Täisrežiimis on kogu sisu keha plokkides, seega ümbritsevaid ei renderdata.
+		if ( 'full' !== $settings['mode'] && ! empty( $settings['before'] ) ) {
 			$out .= self::blocks( $settings['before'], $brand, $ctx );
 		}
 
@@ -162,7 +163,7 @@ class WMD_Render {
 
 		$out = '</div>';
 
-		if ( ! empty( $settings['after'] ) ) {
+		if ( 'full' !== $settings['mode'] && ! empty( $settings['after'] ) ) {
 			$out .= self::blocks( $settings['after'], $brand, $ctx );
 		}
 
@@ -472,11 +473,141 @@ class WMD_Render {
 				$body = WMD_Tags::replace( $code, $ctx );
 				break;
 
+			case 'order_table':
+			case 'addresses':
+				$body = self::woo_part( $type, $ctx );
+				if ( '' === $body ) {
+					return '';
+				}
+				break;
+
+			case 'customer_note':
+				$order = isset( $ctx['__order'] ) ? $ctx['__order'] : null;
+				$note  = $order ? trim( (string) $order->get_customer_note() ) : '';
+
+				if ( '' === $note ) {
+					if ( ! empty( $p['hide_empty'] ) ) {
+						return '';
+					}
+					$note = __( '(märkust ei ole)', 'wonom-meilidisainer' );
+				}
+
+				$body = '<div ' . self::attr(
+					array(
+						'style' => self::style(
+							array(
+								'border-left'      => '3px solid ' . $brand['accent'],
+								'background-color' => '#00000008',
+								'padding'          => '10px 14px',
+								'font-family'      => $font,
+								'font-size'        => (int) $brand['base_size'] . 'px',
+								'line-height'      => '1.6',
+								'color'            => $brand['text_color'],
+							)
+						),
+					)
+				) . '>';
+
+				if ( '' !== trim( (string) $p['title'] ) ) {
+					$body .= '<strong style="color:' . esc_attr( $brand['heading_color'] ) . ';">' . esc_html( $p['title'] ) . '</strong><br>';
+				}
+
+				$body .= nl2br( esc_html( $note ) ) . '</div>';
+				break;
+
+			case 'order_meta':
+				$key   = trim( (string) $p['key'] );
+				$order = isset( $ctx['__order'] ) ? $ctx['__order'] : null;
+				$value = ( $key && $order ) ? trim( (string) $order->get_meta( $key, true ) ) : '';
+
+				if ( '' === $value ) {
+					if ( ! empty( $p['hide_empty'] ) ) {
+						return '';
+					}
+					$value = '—';
+				}
+
+				$shown = esc_html( $value );
+				$link  = trim( (string) $p['link'] );
+
+				if ( '' !== $link && '—' !== $value ) {
+					$url   = str_replace( '{{value}}', rawurlencode( $value ), $link );
+					$shown = '<a href="' . esc_url( WMD_Tags::replace( $url, $ctx ) ) . '" style="color:' . esc_attr( $brand['accent'] ) . ';">' . esc_html( $value ) . '</a>';
+				}
+
+				$cell['text-align'] = $p['align'];
+				$body               = '<div ' . self::attr(
+					array(
+						'style' => self::style(
+							array(
+								'font-family' => $font,
+								'font-size'   => (int) $brand['base_size'] . 'px',
+								'line-height' => '1.6',
+								'color'       => $brand['text_color'],
+							)
+						),
+					)
+				) . '>';
+
+				if ( '' !== trim( (string) $p['title'] ) ) {
+					$body .= '<strong style="color:' . esc_attr( $brand['heading_color'] ) . ';">' . esc_html( $p['title'] ) . ':</strong> ';
+				}
+
+				$body .= $shown . '</div>';
+				break;
+
 			default:
 				return '';
 		}
 
 		return '<tr><td ' . self::attr( array( 'style' => self::style( $cell ) ) ) . '>' . $body . '</td></tr>';
+	}
+
+	/**
+	 * WooCommerce'i enda osa — tellimuse tabel või aadressid.
+	 *
+	 * Renderdame need WooCommerce'i tegevustega, et need püsiksid kooskõlas
+	 * poe pluginatega (maksuread, allahindlused, tarnepluginate lisad).
+	 * Ilma tellimuseta (eelvaade) anname näidissisu.
+	 *
+	 * @param string $type Ploki tüüp.
+	 * @param array  $ctx  Kontekst.
+	 * @return string
+	 */
+	protected static function woo_part( $type, $ctx ) {
+		$order = isset( $ctx['__order'] ) ? $ctx['__order'] : null;
+		$brand = WMD_Design::brand();
+
+		if ( ! $order || ! is_a( $order, 'WC_Order' ) ) {
+			return 'order_table' === $type ? self::sample_order_table( $brand ) : self::sample_addresses( $brand );
+		}
+
+		$sent_to_admin = isset( $ctx['__sent_to_admin'] ) ? (bool) $ctx['__sent_to_admin'] : false;
+		$email         = isset( $ctx['__email'] ) ? $ctx['__email'] : null;
+
+		ob_start();
+
+		if ( 'order_table' === $type ) {
+			do_action( 'woocommerce_email_order_details', $order, $sent_to_admin, false, $email );
+		} else {
+			do_action( 'woocommerce_email_customer_details', $order, $sent_to_admin, false, $email );
+		}
+
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Meili keha, kui kasutaja paneb meili tervikuna ise kokku.
+	 *
+	 * @param string $email_id WC_Email id.
+	 * @param array  $ctx      Kontekst.
+	 * @return string
+	 */
+	public static function body_html( $email_id, $ctx ) {
+		$brand    = WMD_Design::brand();
+		$settings = WMD_Design::email( $email_id );
+
+		return self::blocks( $settings['body'], $brand, $ctx );
 	}
 
 	/**
@@ -537,6 +668,16 @@ class WMD_Render {
 	 * @return string
 	 */
 	public static function sample_body( $brand ) {
+		return self::sample_order_table( $brand ) . self::sample_addresses( $brand );
+	}
+
+	/**
+	 * Näidis-tellimusetabel eelvaatesse, kui päris tellimust pole.
+	 *
+	 * @param array $brand Bränd.
+	 * @return string
+	 */
+	public static function sample_order_table( $brand ) {
 		$b  = $brand['border_color'];
 		$h  = $brand['heading_color'];
 		$t  = $brand['text_color'];
@@ -566,7 +707,23 @@ class WMD_Render {
 		$out .= '<tr><th style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $h . ';">' . esc_html__( 'Kokku:', 'wonom-meilidisainer' ) . '</th><td colspan="2" style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $t . ';"><strong>87,40 €</strong></td></tr>';
 		$out .= '</tfoot></table>';
 
-		$out .= '<h2 style="font-family:' . $f . ';color:' . $h . ';font-size:' . max( 17, (int) round( $brand['heading_size'] * 0.72 ) ) . 'px;margin:22px 0 10px 0;">' . esc_html__( 'Arveaadress', 'wonom-meilidisainer' ) . '</h2>';
+		return $out;
+	}
+
+	/**
+	 * Näidisaadressid eelvaatesse.
+	 *
+	 * @param array $brand Bränd.
+	 * @return string
+	 */
+	public static function sample_addresses( $brand ) {
+		$h  = $brand['heading_color'];
+		$t  = $brand['text_color'];
+		$f  = $brand['font_family'];
+		$fs = (int) $brand['base_size'];
+		$h2 = max( 17, (int) round( $brand['heading_size'] * 0.72 ) );
+
+		$out  = '<h2 style="font-family:' . $f . ';color:' . $h . ';font-size:' . $h2 . 'px;margin:22px 0 10px 0;line-height:1.3;">' . esc_html__( 'Arveaadress', 'wonom-meilidisainer' ) . '</h2>';
 		$out .= '<p style="font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $t . ';line-height:1.6;margin:0;">Mari Tamm<br>Pikk 12-4<br>10123 Tallinn<br>Eesti</p>';
 
 		return $out;
@@ -586,7 +743,9 @@ class WMD_Render {
 		$label = isset( $list[ $email_id ] ) ? $list[ $email_id ]['label'] : '';
 
 		if ( null === $body ) {
-			$body = self::sample_body( $brand );
+			$body = WMD_Design::is_full( $email_id )
+				? self::body_html( $email_id, $ctx )
+				: self::sample_body( $brand );
 		}
 
 		$html  = self::header_html( $label, $email_id, $ctx );

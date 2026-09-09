@@ -25,17 +25,28 @@ WooCommerce oma malle uuendab.
 
 ## Mida saab teha
 
+- **Kaks režiimi meili kohta** — kas plokid WooCommerce'i sisu ümber, või
+  „terve meil ise", kus kogu kiri pannakse kokku plokkidest ja WooCommerce'i
+  sisumalli ei kasutata.
 - **Plokid** — pealkiri, tekstilõik, nupp, pilt, joon, tühi ruum, kaks veergu,
   sotsiaalmeedia, oma HTML. Lohistamisega järjestatavad.
+- **WooCommerce'i plokid** — tellimuse tabel, aadressid, kliendi märkus. Neid
+  renderdab endiselt WooCommerce ise, seega maksuread, allahindlused ja
+  tarnepluginate lisandused jäävad alles.
+- **Tellimuse väli** — toob meili suvalise tellimuse välja, näiteks paki
+  jälgimiskoodi, koos sildi ja valikulise lingiga (`{{value}}` asendub
+  väärtusega). Tühja välja saab automaatselt peita.
 - **Elav eelvaade** — muudatus on ekraanil kohe, arvuti- ja mobiilivaade.
   Klõps eelvaates valib ploki.
 - **Muutujad** — `{{customer_first_name}}`, `{{order_number}}`, `{{order_total}}`,
-  `{{order_url}}` jt, valikuna nupu alt.
+  `{{order_url}}` jt, valikuna nupu alt. Lisaks `{{meta:võti}}`, millega saab
+  igasse teksti tuua suvalise tellimuse välja.
 - **Serveri eelvaade** — renderdab sama koodiga, mis päris saatmine, viimase
   päris tellimuse andmetega. Nii näed, kas brauseri eelvaade ja päris meil kattuvad.
 - **Testmeil** — saadab päris WooCommerce'i meili, aga suunab saaja
   testaadressile. Klient ei saa midagi.
 - **Automaatsed uuendused** GitHubi väljalasetest, ilma WordPress.org-ita.
+  Uue versiooni saab paigaldada otse kujundajast, Pluginad-lehele minemata.
 
 ## Kaetud meilid
 

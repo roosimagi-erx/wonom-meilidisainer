@@ -426,6 +426,87 @@ class WMD_Updater {
 	}
 
 	/**
+	 * Paigaldab uue versiooni kohapeal, ilma Pluginad-lehele minemata.
+	 *
+	 * Sama teed käib WordPressi enda „Uuenda kohe" nupp: laeb paketi alla,
+	 * pakib lahti, vahetab kausta ja aktiveerib plugina uuesti.
+	 *
+	 * @return array|WP_Error
+	 */
+	public static function update_now() {
+		if ( ! current_user_can( 'update_plugins' ) ) {
+			return new WP_Error( 'wmd_forbidden', __( 'Puuduvad õigused pluginate uuendamiseks.', 'wonom-meilidisainer' ) );
+		}
+
+		$info = self::remote( true );
+
+		if ( ! $info ) {
+			return new WP_Error( 'wmd_no_source', __( 'Uuenduste allikast ei saanud vastust.', 'wonom-meilidisainer' ) );
+		}
+
+		if ( ! version_compare( $info['version'], WMD_VERSION, '>' ) ) {
+			return array(
+				'updated' => false,
+				'version' => WMD_VERSION,
+				'message' => __( 'Uuemat versiooni ei ole.', 'wonom-meilidisainer' ),
+			);
+		}
+
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/misc.php';
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+
+		// Uuendaja loeb paketi asukoha sellest transientist, seega täidame ta ise.
+		delete_site_transient( 'update_plugins' );
+		wp_update_plugins();
+
+		$file    = self::basename();
+		$skin    = new Automatic_Upgrader_Skin();
+		$upgrade = new Plugin_Upgrader( $skin );
+
+		$was_active = is_plugin_active( $file );
+		$result     = $upgrade->upgrade( $file );
+
+		$log = array_filter( (array) $skin->get_upgrade_messages() );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		if ( is_wp_error( $skin->result ) ) {
+			return $skin->result;
+		}
+
+		if ( false === $result ) {
+			return new WP_Error(
+				'wmd_upgrade_failed',
+				__( 'Uuendus ei õnnestunud. Vaata failiõigusi või paigalda ZIP käsitsi.', 'wonom-meilidisainer' ),
+				$log
+			);
+		}
+
+		// Uuendaja lülitab plugina uuenduse ajaks välja.
+		if ( $was_active && ! is_plugin_active( $file ) ) {
+			activate_plugin( $file );
+		}
+
+		delete_transient( self::TRANSIENT );
+		delete_site_transient( 'update_plugins' );
+
+		return array(
+			'updated' => true,
+			'version' => $info['version'],
+			'log'     => array_map( 'wp_strip_all_tags', $log ),
+			'message' => sprintf(
+				/* translators: %s: versiooninumber. */
+				__( 'Paigaldatud versioon %s.', 'wonom-meilidisainer' ),
+				$info['version']
+			),
+		);
+	}
+
+	/**
 	 * Käsitsi kontroll kujundajast.
 	 *
 	 * @return array

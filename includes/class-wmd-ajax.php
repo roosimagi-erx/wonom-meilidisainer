@@ -25,6 +25,31 @@ class WMD_Ajax {
 		add_action( 'wp_ajax_wmd_toggle', array( __CLASS__, 'toggle' ) );
 		add_action( 'wp_ajax_wmd_save_updates', array( __CLASS__, 'save_updates' ) );
 		add_action( 'wp_ajax_wmd_check_update', array( __CLASS__, 'check_update' ) );
+		add_action( 'wp_ajax_wmd_update_now', array( __CLASS__, 'update_now' ) );
+	}
+
+	/**
+	 * Uuenduse paigaldus otse kujundajast.
+	 */
+	public static function update_now() {
+		self::guard();
+
+		if ( ! current_user_can( 'update_plugins' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Puuduvad õigused.', 'wonom-meilidisainer' ) ), 403 );
+		}
+
+		$result = WMD_Updater::update_now();
+
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error(
+				array(
+					'message' => $result->get_error_message(),
+					'log'     => (array) $result->get_error_data(),
+				)
+			);
+		}
+
+		wp_send_json_success( $result );
 	}
 
 	/**

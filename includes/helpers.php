@@ -433,6 +433,105 @@ function wmd_block_types() {
 				'pad'  => $pad,
 			),
 		),
+
+		// WooCommerce'i enda osad. Neid renderdab WooCommerce, meie ütleme ainult,
+		// kuhu need meilis lähevad. Eelvaates näidatakse näidisandmeid.
+		'order_table'  => array(
+			'label'  => __( 'Tellimuse tabel', 'wonom-meilidisainer' ),
+			'icon'   => '#',
+			'woo'    => true,
+			'fields' => array(
+				'pad' => $pad,
+			),
+		),
+		'addresses'    => array(
+			'label'  => __( 'Aadressid', 'wonom-meilidisainer' ),
+			'icon'   => 'A',
+			'woo'    => true,
+			'fields' => array(
+				'pad' => $pad,
+			),
+		),
+		'customer_note' => array(
+			'label'  => __( 'Kliendi märkus', 'wonom-meilidisainer' ),
+			'icon'   => '"',
+			'woo'    => true,
+			'fields' => array(
+				'title'      => array(
+					'type'    => 'text',
+					'label'   => __( 'Pealkiri', 'wonom-meilidisainer' ),
+					'default' => __( 'Sinu märkus tellimusele', 'wonom-meilidisainer' ),
+				),
+				'hide_empty' => array(
+					'type'    => 'toggle',
+					'label'   => __( 'Peida, kui märkust pole', 'wonom-meilidisainer' ),
+					'default' => 1,
+				),
+				'pad'        => $pad,
+			),
+		),
+		'order_meta'   => array(
+			'label'  => __( 'Tellimuse väli', 'wonom-meilidisainer' ),
+			'icon'   => '»',
+			'woo'    => true,
+			'fields' => array(
+				'key'        => array(
+					'type'    => 'text',
+					'label'   => __( 'Välja võti tellimusel', 'wonom-meilidisainer' ),
+					'hint'    => __( 'Nt _tracking_number. Küsi vajadusel tarnepluginalt.', 'wonom-meilidisainer' ),
+					'default' => '',
+				),
+				'title'      => array(
+					'type'    => 'text',
+					'label'   => __( 'Silt', 'wonom-meilidisainer' ),
+					'default' => __( 'Jälgimiskood', 'wonom-meilidisainer' ),
+				),
+				'link'       => array(
+					'type'    => 'text',
+					'label'   => __( 'Link (valikuline)', 'wonom-meilidisainer' ),
+					'hint'    => __( 'Kasuta {{value}} välja väärtuse kohal.', 'wonom-meilidisainer' ),
+					'default' => '',
+				),
+				'hide_empty' => array(
+					'type'    => 'toggle',
+					'label'   => __( 'Peida, kui väli on tühi', 'wonom-meilidisainer' ),
+					'default' => 1,
+				),
+				'align'      => $align,
+				'pad'        => $pad,
+			),
+		),
+	);
+}
+
+/**
+ * Kuidas meili kokku pannakse.
+ *
+ * @return array<string,string>
+ */
+function wmd_email_modes() {
+	return array(
+		'wrap' => __( 'WooCommerce\'i sisu ümber', 'wonom-meilidisainer' ),
+		'full' => __( 'Terve meil ise', 'wonom-meilidisainer' ),
+	);
+}
+
+/**
+ * Näidisplokid, millega „terve meil ise" alustab, et vaade ei jääks tühjaks.
+ *
+ * @return array
+ */
+function wmd_default_body() {
+	return array(
+		wmd_make_block(
+			'text',
+			array(
+				'html' => __( 'Tere {{customer_first_name}}! Saime su tellimuse <strong>#{{order_number}}</strong> kätte ja asume seda komplekteerima.', 'wonom-meilidisainer' ),
+				'pad'  => 8,
+			)
+		),
+		wmd_make_block( 'order_table', array( 'pad' => 8 ) ),
+		wmd_make_block( 'addresses', array( 'pad' => 8 ) ),
 	);
 }
 
@@ -466,48 +565,59 @@ function wmd_email_list() {
 		'wmd_email_list',
 		array(
 			'customer_processing_order' => array(
-				'label' => __( 'Tellimus töösse võetud', 'wonom-meilidisainer' ),
-				'group' => 'customer',
+				'label'    => __( 'Tellimus töösse võetud', 'wonom-meilidisainer' ),
+				'group'    => 'customer',
+				'template' => 'emails/customer-processing-order.php',
 			),
 			'customer_completed_order'  => array(
-				'label' => __( 'Tellimus täidetud', 'wonom-meilidisainer' ),
-				'group' => 'customer',
+				'label'    => __( 'Tellimus täidetud', 'wonom-meilidisainer' ),
+				'group'    => 'customer',
+				'template' => 'emails/customer-completed-order.php',
 			),
 			'customer_on_hold_order'    => array(
-				'label' => __( 'Tellimus ootel', 'wonom-meilidisainer' ),
-				'group' => 'customer',
+				'label'    => __( 'Tellimus ootel', 'wonom-meilidisainer' ),
+				'group'    => 'customer',
+				'template' => 'emails/customer-on-hold-order.php',
 			),
 			'customer_refunded_order'   => array(
-				'label' => __( 'Tellimus tagastatud', 'wonom-meilidisainer' ),
-				'group' => 'customer',
+				'label'    => __( 'Tellimus tagastatud', 'wonom-meilidisainer' ),
+				'group'    => 'customer',
+				'template' => 'emails/customer-refunded-order.php',
 			),
 			'customer_invoice'          => array(
-				'label' => __( 'Arve / makseootel tellimus', 'wonom-meilidisainer' ),
-				'group' => 'customer',
+				'label'    => __( 'Arve / makseootel tellimus', 'wonom-meilidisainer' ),
+				'group'    => 'customer',
+				'template' => 'emails/customer-invoice.php',
 			),
 			'customer_note'             => array(
-				'label' => __( 'Märkus kliendile', 'wonom-meilidisainer' ),
-				'group' => 'customer',
+				'label'    => __( 'Märkus kliendile', 'wonom-meilidisainer' ),
+				'group'    => 'customer',
+				'template' => 'emails/customer-note.php',
 			),
 			'customer_reset_password'   => array(
-				'label' => __( 'Parooli lähtestamine', 'wonom-meilidisainer' ),
-				'group' => 'account',
+				'label'    => __( 'Parooli lähtestamine', 'wonom-meilidisainer' ),
+				'group'    => 'account',
+				'template' => 'emails/customer-reset-password.php',
 			),
 			'customer_new_account'      => array(
-				'label' => __( 'Uus konto', 'wonom-meilidisainer' ),
-				'group' => 'account',
+				'label'    => __( 'Uus konto', 'wonom-meilidisainer' ),
+				'group'    => 'account',
+				'template' => 'emails/customer-new-account.php',
 			),
 			'new_order'                 => array(
-				'label' => __( 'Uus tellimus (poele)', 'wonom-meilidisainer' ),
-				'group' => 'admin',
+				'label'    => __( 'Uus tellimus (poele)', 'wonom-meilidisainer' ),
+				'group'    => 'admin',
+				'template' => 'emails/admin-new-order.php',
 			),
 			'cancelled_order'           => array(
-				'label' => __( 'Tühistatud tellimus (poele)', 'wonom-meilidisainer' ),
-				'group' => 'admin',
+				'label'    => __( 'Tühistatud tellimus (poele)', 'wonom-meilidisainer' ),
+				'group'    => 'admin',
+				'template' => 'emails/admin-cancelled-order.php',
 			),
 			'failed_order'              => array(
-				'label' => __( 'Ebaõnnestunud tellimus (poele)', 'wonom-meilidisainer' ),
-				'group' => 'admin',
+				'label'    => __( 'Ebaõnnestunud tellimus (poele)', 'wonom-meilidisainer' ),
+				'group'    => 'admin',
+				'template' => 'emails/admin-failed-order.php',
 			),
 		)
 	);
@@ -575,10 +685,12 @@ function wmd_default_design() {
 	$emails = array();
 	foreach ( array_keys( wmd_email_list() ) as $id ) {
 		$emails[ $id ] = array(
+			'mode'    => 'wrap',
 			'subject' => '',
 			'heading' => '',
 			'before'  => array(),
 			'after'   => array(),
+			'body'    => array(),
 		);
 	}
 

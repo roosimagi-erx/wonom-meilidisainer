@@ -66,11 +66,25 @@ class WMD_Design {
 		}
 
 		return array(
+			'mode'    => 'wrap',
 			'subject' => '',
 			'heading' => '',
 			'before'  => array(),
 			'after'   => array(),
+			'body'    => array(),
 		);
+	}
+
+	/**
+	 * Kas see meil pannakse tervikuna ise kokku.
+	 *
+	 * @param string $email_id WC_Email id.
+	 * @return bool
+	 */
+	public static function is_full( $email_id ) {
+		$settings = self::email( $email_id );
+
+		return 'full' === $settings['mode'] && ! empty( $settings['body'] );
 	}
 
 	/**
@@ -141,10 +155,12 @@ class WMD_Design {
 				: $default['emails'][ $id ];
 
 			$out['emails'][ $id ] = array(
+				'mode'    => ( isset( $stored['mode'] ) && 'full' === $stored['mode'] ) ? 'full' : 'wrap',
 				'subject' => isset( $stored['subject'] ) ? (string) $stored['subject'] : '',
 				'heading' => isset( $stored['heading'] ) ? (string) $stored['heading'] : '',
 				'before'  => isset( $stored['before'] ) && is_array( $stored['before'] ) ? $stored['before'] : array(),
 				'after'   => isset( $stored['after'] ) && is_array( $stored['after'] ) ? $stored['after'] : array(),
+				'body'    => isset( $stored['body'] ) && is_array( $stored['body'] ) ? $stored['body'] : array(),
 			);
 		}
 
@@ -184,10 +200,12 @@ class WMD_Design {
 			$stored = isset( $design['emails'][ $id ] ) ? $design['emails'][ $id ] : array();
 
 			$out['emails'][ $id ] = array(
+				'mode'    => ( isset( $stored['mode'] ) && 'full' === $stored['mode'] ) ? 'full' : 'wrap',
 				'subject' => isset( $stored['subject'] ) ? sanitize_text_field( $stored['subject'] ) : '',
 				'heading' => isset( $stored['heading'] ) ? sanitize_text_field( $stored['heading'] ) : '',
 				'before'  => self::sanitize_blocks( isset( $stored['before'] ) ? $stored['before'] : array() ),
 				'after'   => self::sanitize_blocks( isset( $stored['after'] ) ? $stored['after'] : array() ),
+				'body'    => self::sanitize_blocks( isset( $stored['body'] ) ? $stored['body'] : array() ),
 			);
 		}
 

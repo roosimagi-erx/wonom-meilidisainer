@@ -117,8 +117,16 @@ class WMD_Emails {
 			'emails/email-footer.php' => WMD_DIR . 'templates/emails/email-footer.php',
 		);
 
+		// Sisumall võetakse üle ainult nendel meilidel, kus kasutaja on valinud
+		// „terve meil ise" ja kehas on vähemalt üks plokk.
 		if ( ! isset( $ours[ $template_name ] ) ) {
-			return $template;
+			$email_id = self::email_by_template( $template_name );
+
+			if ( '' === $email_id || ! WMD_Design::is_full( $email_id ) ) {
+				return $template;
+			}
+
+			$ours[ $template_name ] = WMD_DIR . 'templates/emails/wmd-body.php';
 		}
 
 		// Kui teema on malli ise üle kirjutanud, jätame teema oma alles.
@@ -134,6 +142,27 @@ class WMD_Emails {
 		}
 
 		return $ours[ $template_name ];
+	}
+
+	/**
+	 * Millisele meilile see WooCommerce'i sisumall kuulub.
+	 *
+	 * @param string $template_name Malli nimi.
+	 * @return string Tühi string, kui see pole meili sisumall.
+	 */
+	protected static function email_by_template( $template_name ) {
+		static $map = null;
+
+		if ( null === $map ) {
+			$map = array();
+			foreach ( wmd_email_list() as $id => $meta ) {
+				if ( ! empty( $meta['template'] ) ) {
+					$map[ $meta['template'] ] = $id;
+				}
+			}
+		}
+
+		return isset( $map[ $template_name ] ) ? $map[ $template_name ] : '';
 	}
 
 	/**
@@ -196,6 +225,10 @@ class WMD_Emails {
 		if ( ! $order && $email && isset( $email->user_login ) ) {
 			$ctx['customer_first_name'] = isset( $email->user_login ) ? (string) $email->user_login : '';
 		}
+
+		// WooCommerce'i plokid ja {{meta:...}} vajavad objekte endid.
+		$ctx['__order'] = $order;
+		$ctx['__email'] = $email;
 
 		return $ctx;
 	}

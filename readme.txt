@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.9.1
+Stable tag: 0.10.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,13 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.10.0 =
+* Uus: iga meili juures saab valida „terve meil ise". Siis ei kasutata WooCommerce'i sisumalli üldse ja kogu kiri pannakse kokku plokkidest.
+* Uued plokid: tellimuse tabel, aadressid, kliendi märkus ja tellimuse väli. Tellimuse tabeli ja aadressid renderdab endiselt WooCommerce, nii et maksuread, allahindlused ja tarnepluginate lisad jäävad alles.
+* Uus: plokk „Tellimuse väli" toob meili suvalise tellimuse välja, näiteks paki jälgimiskoodi. Sildi, valikulise lingi (kasuta {{value}}) ja tühja välja peitmisega.
+* Uus märgend {{meta:võti}}, millega saab tellimuse välju kasutada ka tekstis, nupu lingis ja oma HTML-is.
+* Uuendusi saab nüüd paigaldada otse kujundajast — eraldi Pluginad-lehele minna pole vaja.
 
 = 0.9.1 =
 * Parandus: meilipõhised plokid (sisu enne ja pärast tellimuse tabelit) jäid päris meilist välja. WooCommerce ei anna päise- ja jalusemallile meiliobjekti kaasa, seega ei osanud plugin öelda, millise meiliga on tegu. Nüüd püütakse meil kinni tegevustest woocommerce_email_header ja woocommerce_email_footer.
