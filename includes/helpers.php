@@ -465,7 +465,37 @@ function wmd_block_types() {
 			'icon'   => 'A',
 			'woo'    => true,
 			'fields' => array(
-				'pad' => $pad,
+				'show'           => array(
+					'type'    => 'select',
+					'label'   => __( 'Mida näidata', 'wonom-meilidisainer' ),
+					'options' => array(
+						'both'     => __( 'Arve- ja tarneaadress', 'wonom-meilidisainer' ),
+						'billing'  => __( 'Ainult arveaadress', 'wonom-meilidisainer' ),
+						'shipping' => __( 'Ainult tarneaadress', 'wonom-meilidisainer' ),
+					),
+					'default' => 'both',
+				),
+				'billing_title'  => array(
+					'type'    => 'text',
+					'label'   => __( 'Arveaadressi pealkiri', 'wonom-meilidisainer' ),
+					'default' => __( 'Arveaadress', 'wonom-meilidisainer' ),
+				),
+				'shipping_title' => array(
+					'type'    => 'text',
+					'label'   => __( 'Tarneaadressi pealkiri', 'wonom-meilidisainer' ),
+					'default' => __( 'Tarneaadress', 'wonom-meilidisainer' ),
+				),
+				'contacts'       => array(
+					'type'    => 'toggle',
+					'label'   => __( 'Näita telefoni ja e-posti', 'wonom-meilidisainer' ),
+					'default' => 1,
+				),
+				'box'            => array(
+					'type'    => 'toggle',
+					'label'   => __( 'Raamitud kastis', 'wonom-meilidisainer' ),
+					'default' => 0,
+				),
+				'pad'            => $pad,
 			),
 		),
 		'customer_note' => array(

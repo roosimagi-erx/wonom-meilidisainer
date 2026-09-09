@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.14.2
+Stable tag: 0.15.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,11 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.15.0 =
+* Aadressiplokk on nüüd meie oma, mitte WooCommerce'i mall. Kadusid kaldkiri, hallid raamitud kastid ja allajoonitud telefoninumbrid — aadressid on samas kirjas ja värvides kui ülejäänud kiri.
+* Aadressiplokil on seaded: kas näidata mõlemat, ainult arve- või ainult tarneaadressi; pealkirjad ümberkirjutatavad; telefoni ja e-posti saab välja lülitada; raamitud kasti saab soovi korral tagasi.
+* „Värskenda serverist" nupp on kadunud. Tellimuse andmed tulevad serverist niikuinii iga kord, kui meili või tellimust vahetad — eraldi nuppu ei olnud vaja.
 
 = 0.14.2 =
 * Parandus: kujundaja näitas muutujate asemel alati näidisväärtusi — „Tere Mari" ja „tellimus #1042" ka siis, kui ülariba tellimusevalikus oli päris tellimus. Nüüd saadab server valitud tellimuse päris väärtused ja need kirjutavad näidise üle.

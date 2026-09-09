@@ -531,8 +531,16 @@ class WMD_Render {
 					: '<div style="border:1px solid ' . esc_attr( $brand['border_color'] ) . ';border-left:3px solid ' . esc_attr( $brand['accent'] ) . ';border-radius:6px;padding:12px 14px;">' . $inner . '</div>';
 				break;
 
-			case 'order_table':
 			case 'addresses':
+				$order = isset( $ctx['__order'] ) ? $ctx['__order'] : null;
+				$body  = self::addresses_block( self::address_data( $order ), $p, $brand );
+
+				if ( '' === $body ) {
+					return '';
+				}
+				break;
+
+			case 'order_table':
 			case 'payment_info':
 				$body = self::woo_part( $type, $ctx );
 				if ( '' === trim( $body ) ) {
@@ -788,6 +796,87 @@ class WMD_Render {
 			default:
 				return esc_html( $value );
 		}
+	}
+
+	/**
+	 * Aadressid kujul, mida nii PHP kui kujundaja oskavad renderdada.
+	 *
+	 * @param WC_Order|null $order Tellimus.
+	 * @return array
+	 */
+	public static function address_data( $order ) {
+		if ( ! $order || ! is_a( $order, 'WC_Order' ) ) {
+			return array(
+				'billing'  => 'Mari Tamm<br/>Pikk 12-4<br/>10123 Tallinn<br/>Eesti',
+				'shipping' => 'Mari Tamm<br/>Tallinna Balti Jaama Turg<br/>10411 Tallinn',
+				'phone'    => '5551234',
+				'email'    => 'mari.tamm@naide.ee',
+			);
+		}
+
+		return array(
+			'billing'  => (string) $order->get_formatted_billing_address(),
+			'shipping' => (string) $order->get_formatted_shipping_address(),
+			'phone'    => (string) $order->get_billing_phone(),
+			'email'    => (string) $order->get_billing_email(),
+		);
+	}
+
+	/**
+	 * Aadressiplokk meie enda kujundusega.
+	 *
+	 * WooCommerce'i enda mall paneb aadressid kaldkirjas raamitud kastidesse,
+	 * mis ei sobi kokku ülejäänud kirjaga. Siin on sama sisu, aga brändi kirjas.
+	 *
+	 * @param array $data  Aadressid.
+	 * @param array $p     Ploki seaded.
+	 * @param array $brand Bränd.
+	 * @return string
+	 */
+	public static function addresses_block( $data, $p, $brand ) {
+		$show  = isset( $p['show'] ) ? $p['show'] : 'both';
+		$cols  = array();
+		$f     = $brand['font_family'];
+		$fs    = (int) $brand['base_size'];
+		$title = 'font-family:' . $f . ';font-size:' . max( 15, $fs ) . 'px;font-weight:700;color:' . $brand['heading_color'] . ';margin:0 0 6px 0;';
+		$lines = 'font-family:' . $f . ';font-size:' . $fs . 'px;line-height:1.6;color:' . $brand['text_color'] . ';';
+
+		if ( 'shipping' !== $show && '' !== trim( wp_strip_all_tags( $data['billing'] ) ) ) {
+			$inner = '<div style="' . esc_attr( $title ) . '">' . esc_html( $p['billing_title'] ) . '</div>'
+				. '<div style="' . esc_attr( $lines ) . '">' . wp_kses( $data['billing'], array( 'br' => array() ) );
+
+			if ( ! empty( $p['contacts'] ) ) {
+				if ( '' !== $data['phone'] ) {
+					$inner .= '<br/>' . esc_html( $data['phone'] );
+				}
+				if ( '' !== $data['email'] ) {
+					$inner .= '<br/>' . esc_html( $data['email'] );
+				}
+			}
+
+			$cols[] = $inner . '</div>';
+		}
+
+		if ( 'billing' !== $show && '' !== trim( wp_strip_all_tags( $data['shipping'] ) ) ) {
+			$cols[] = '<div style="' . esc_attr( $title ) . '">' . esc_html( $p['shipping_title'] ) . '</div>'
+				. '<div style="' . esc_attr( $lines ) . '">' . wp_kses( $data['shipping'], array( 'br' => array() ) ) . '</div>';
+		}
+
+		if ( empty( $cols ) ) {
+			return '';
+		}
+
+		$pad = empty( $p['box'] ) ? '' : 'border:1px solid ' . $brand['border_color'] . ';border-radius:6px;padding:12px 14px;';
+		$td  = 'vertical-align:top;width:' . ( count( $cols ) > 1 ? '50%' : '100%' ) . ';';
+
+		$cells = '';
+		foreach ( $cols as $i => $col ) {
+			$side   = ( count( $cols ) > 1 && 0 === $i ) ? 'padding-right:12px;' : '';
+			$side  .= ( count( $cols ) > 1 && $i > 0 ) ? 'padding-left:12px;' : '';
+			$cells .= '<td class="wmd-col" style="' . esc_attr( $td . $side ) . '"><div style="' . esc_attr( $pad ) . '">' . $col . '</div></td>';
+		}
+
+		return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;"><tr>' . $cells . '</tr></table>';
 	}
 
 	/**

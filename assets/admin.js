@@ -230,6 +230,7 @@
 				__totals: wc && wc.totals && wc.totals.length ? wc.totals : null,
 				__parts: ( wc && wc.parts ) || null,
 				__fields: ( wc && wc.fields ) || null,
+				__addr: ( wc && wc.addr ) || null,
 			}
 		);
 	}
@@ -307,6 +308,7 @@
 				items: res.items || [],
 				totals: res.totals || [],
 				fields: res.fields || [],
+				addr: res.addr || null,
 				ctx: res.ctx || {},
 				parts: res.parts || {},
 				why: res.why || '',
@@ -316,7 +318,7 @@
 				render();
 			}
 		} ).catch( function () {
-			wcCache[ key ] = { pending: false, html: '', css: '', items: [], totals: [], fields: [], ctx: {}, parts: {}, why: 'Ei saanud WooCommerce\'i sisu kätte.' };
+			wcCache[ key ] = { pending: false, html: '', css: '', items: [], totals: [], fields: [], ctx: {}, parts: {}, addr: null, why: 'Ei saanud WooCommerce\'i sisu kätte.' };
 		} );
 	}
 
@@ -1042,7 +1044,6 @@
 			'</div></div>' +
 			'<div class="wmd-bar-right">' +
 			'<label class="wmd-switch wmd-switch-inline" title="Kas kujundus rakendub päris meilidele"><input type="checkbox" class="wmd-enabled"' + ( state.enabled ? ' checked' : '' ) + ' /><span></span>Kujundus sees</label>' +
-			'<button type="button" class="button wmd-refresh" title="Küsi selle tellimuse andmed serverist uuesti">Värskenda serverist</button>' +
 			'<button type="button" class="button wmd-test">Saada testmeil</button>' +
 			'<button type="button" class="button button-primary wmd-save">Salvesta</button>' +
 			'<button type="button" class="button-link wmd-reset" title="Lähtesta kujundus">Lähtesta</button>' +
@@ -1607,22 +1608,6 @@
 				post( 'wmd_toggle', { on: enabled.checked ? 1 : 0 } ).then( function () {
 					toast( enabled.checked ? 'Kujundus rakendub meilidele' : 'Kujundus on välja lülitatud', 'ok' );
 				} );
-			} );
-		}
-
-		var refresh = root.querySelector( '.wmd-refresh' );
-		if ( refresh ) {
-			refresh.addEventListener( 'click', function () {
-				delete wcCache[ wcKey() ];
-				refresh.disabled = true;
-				refresh.textContent = 'Küsin…';
-				ensureWcPart();
-
-				setTimeout( function () {
-					refresh.disabled = false;
-					refresh.textContent = 'Värskenda serverist';
-					render();
-				}, 900 );
 			} );
 		}
 

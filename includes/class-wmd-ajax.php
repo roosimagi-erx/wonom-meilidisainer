@@ -286,7 +286,6 @@ class WMD_Ajax {
 		try {
 			$parts = array(
 				'order_table'  => WMD_Render::woo_part( 'order_table', $ctx ),
-				'addresses'    => WMD_Render::woo_part( 'addresses', $ctx ),
 				'payment_info' => WMD_Render::woo_part( 'payment_info', $ctx ),
 			);
 		} catch ( Throwable $e ) {
@@ -303,6 +302,7 @@ class WMD_Ajax {
 				'fields' => self::order_fields( $order ),
 				'ctx'    => array_filter( $ctx, 'is_scalar' ),
 				'parts'  => $parts,
+				'addr'   => WMD_Render::address_data( $order ),
 				'why'    => ( $needs_html && '' === $html ) ? __( 'WooCommerce\'i sisu ei õnnestunud renderdada.', 'wonom-meilidisainer' ) : '',
 			)
 		);

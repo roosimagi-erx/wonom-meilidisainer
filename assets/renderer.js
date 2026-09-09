@@ -262,7 +262,10 @@
 				break;
 
 			case 'addresses':
-				body = wooPart( ctx, 'addresses' ) || sampleAddresses( brand );
+				body = addressesBlock( ( ctx && ctx.__addr ) || sampleAddressData(), p, brand );
+				if ( ! body ) {
+					return '';
+				}
 				break;
 
 			case 'order_items':
@@ -543,6 +546,66 @@
 
 	function sampleBody( brand ) {
 		return sampleOrderTable( brand ) + sampleAddresses( brand );
+	}
+
+	function sampleAddressData() {
+		return {
+			billing: 'Mari Tamm<br/>Pikk 12-4<br/>10123 Tallinn<br/>Eesti',
+			shipping: 'Mari Tamm<br/>Tallinna Balti Jaama Turg<br/>10411 Tallinn',
+			phone: '5551234',
+			email: 'mari.tamm@naide.ee',
+		};
+	}
+
+	/**
+	 * Aadressiplokk meie enda kujundusega. Peegeldab WMD_Render::addresses_block.
+	 */
+	function addressesBlock( data, p, brand ) {
+		var show = p.show || 'both';
+		var f = brand.font_family;
+		var fs = num( brand.base_size, 15 );
+		var title = 'font-family:' + f + ';font-size:' + Math.max( 15, fs ) + 'px;font-weight:700;color:' + brand.heading_color + ';margin:0 0 6px 0;';
+		var lines = 'font-family:' + f + ';font-size:' + fs + 'px;line-height:1.6;color:' + brand.text_color + ';';
+		var cols = [];
+
+		function plain( html ) {
+			return String( html || '' ).replace( /<(?!\/?br\s*\/?)[^>]*>/gi, '' );
+		}
+
+		if ( show !== 'shipping' && plain( data.billing ).trim() ) {
+			var b = '<div style="' + escAttr( title ) + '">' + esc( p.billing_title ) + '</div><div style="' + escAttr( lines ) + '">' + plain( data.billing );
+
+			if ( p.contacts ) {
+				if ( data.phone ) {
+					b += '<br/>' + esc( data.phone );
+				}
+				if ( data.email ) {
+					b += '<br/>' + esc( data.email );
+				}
+			}
+
+			cols.push( b + '</div>' );
+		}
+
+		if ( show !== 'billing' && plain( data.shipping ).trim() ) {
+			cols.push( '<div style="' + escAttr( title ) + '">' + esc( p.shipping_title ) + '</div><div style="' + escAttr( lines ) + '">' + plain( data.shipping ) + '</div>' );
+		}
+
+		if ( ! cols.length ) {
+			return '';
+		}
+
+		var box = p.box ? 'border:1px solid ' + brand.border_color + ';border-radius:6px;padding:12px 14px;' : '';
+		var td = 'vertical-align:top;width:' + ( cols.length > 1 ? '50%' : '100%' ) + ';';
+		var cells = '';
+
+		cols.forEach( function ( col, i ) {
+			var side = ( cols.length > 1 && i === 0 ) ? 'padding-right:12px;' : '';
+			side += ( cols.length > 1 && i > 0 ) ? 'padding-left:12px;' : '';
+			cells += '<td class="wmd-col" style="' + escAttr( td + side ) + '"><div style="' + escAttr( box ) + '">' + col + '</div></td>';
+		} );
+
+		return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;"><tr>' + cells + '</tr></table>';
 	}
 
 	function sampleAddresses( brand ) {
