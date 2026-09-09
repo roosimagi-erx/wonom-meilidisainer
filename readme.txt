@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.9.0
+Stable tag: 0.9.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,11 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.9.1 =
+* Parandus: meilipõhised plokid (sisu enne ja pärast tellimuse tabelit) jäid päris meilist välja. WooCommerce ei anna päise- ja jalusemallile meiliobjekti kaasa, seega ei osanud plugin öelda, millise meiliga on tegu. Nüüd püütakse meil kinni tegevustest woocommerce_email_header ja woocommerce_email_footer.
+* Parandus: mallidel puudus @version päis, mistõttu WooCommerce → Olek → Mallid märkis need punaselt.
+* Kujundaja eelvaade näitab nüüd WooCommerce'i päris pealkirja, mitte meili nime. Pealkirja ja teema väljade kohatäitjad näitavad poe tegelikke vaikeväärtusi.
 
 = 0.9.0 =
 * Esimene testversioon: bränd, päis, jalus, meilipõhised plokid, elav eelvaade, serveri eelvaade, testmeil.

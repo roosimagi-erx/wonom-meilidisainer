@@ -126,6 +126,24 @@
 		return cfg.sampleCtx || {};
 	}
 
+	/**
+	 * WooCommerce'i enda pealkiri või teema. Kui seda kätte ei saa (nt WooCommerce
+	 * puudub), langeme tagasi meili nimele, et eelvaade ei jääks tühjaks.
+	 *
+	 * @param {string} id    Meili võti.
+	 * @param {string} field 'heading' või 'subject'.
+	 * @return {string} Tekst.
+	 */
+	function wcDefault( id, field ) {
+		var d = cfg.wcDefaults && cfg.wcDefaults[ id ];
+
+		if ( d && d[ field ] ) {
+			return d[ field ];
+		}
+
+		return cfg.emails[ id ] ? cfg.emails[ id ].label : '';
+	}
+
 	function schedulePreview() {
 		clearTimeout( previewTimer );
 		previewTimer = setTimeout( updatePreview, 180 );
@@ -145,7 +163,7 @@
 				state.design,
 				state.email,
 				previewCtx(),
-				cfg.emails[ state.email ] ? cfg.emails[ state.email ].label : '',
+				wcDefault( state.email, 'heading' ),
 				undefined
 			);
 		}
@@ -414,11 +432,11 @@
 			'<select class="wmd-input" id="wmd-email-pick">' + opts + '</select></div>';
 
 		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-f-email-subject">Pealkiri postkastis</label>' +
-			'<div class="wmd-inline"><input type="text" class="wmd-input" id="wmd-f-email-subject" data-scope="email" data-key="subject" value="' + esc( e.subject ) + '" placeholder="WooCommerce\'i vaikimisi" />' +
+			'<div class="wmd-inline"><input type="text" class="wmd-input" id="wmd-f-email-subject" data-scope="email" data-key="subject" value="' + esc( e.subject ) + '" placeholder="' + esc( wcDefault( state.email, 'subject' ) ) + '" />' +
 			tagPicker( 'wmd-f-email-subject' ) + '</div></div>';
 
 		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-f-email-heading">Suur pealkiri meilis</label>' +
-			'<div class="wmd-inline"><input type="text" class="wmd-input" id="wmd-f-email-heading" data-scope="email" data-key="heading" value="' + esc( e.heading ) + '" placeholder="WooCommerce\'i vaikimisi" />' +
+			'<div class="wmd-inline"><input type="text" class="wmd-input" id="wmd-f-email-heading" data-scope="email" data-key="heading" value="' + esc( e.heading ) + '" placeholder="' + esc( wcDefault( state.email, 'heading' ) ) + '" />' +
 			tagPicker( 'wmd-f-email-heading' ) + '</div></div>';
 
 		html += blockListHtml( 'before', 'Sisu enne tellimuse tabelit', 'tervitus, info' );

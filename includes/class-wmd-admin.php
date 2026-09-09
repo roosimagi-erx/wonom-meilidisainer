@@ -110,6 +110,7 @@ class WMD_Admin {
 				'enabled'     => WMD_Emails::enabled() ? 1 : 0,
 				'testTo'      => wp_get_current_user()->user_email,
 				'hasWoo'      => wmd_woo_active() ? 1 : 0,
+				'wcDefaults'  => self::wc_defaults(),
 				'canUpdate'   => current_user_can( 'update_plugins' ) ? 1 : 0,
 				'updates'     => WMD_Updater::settings(),
 				'pluginsUrl'  => admin_url( 'plugins.php' ),
@@ -129,6 +130,46 @@ class WMD_Admin {
 				),
 			)
 		);
+	}
+
+	/**
+	 * WooCommerce'i enda teemad ja pealkirjad, et eelvaade ei näitaks midagi muud
+	 * kui päris meil. Ilma tellimuseta jäävad kohatäitjad tühjaks — see on ok.
+	 *
+	 * @return array<string,array>
+	 */
+	protected static function wc_defaults() {
+		$out = array();
+
+		if ( ! wmd_woo_active() || ! function_exists( 'WC' ) ) {
+			return $out;
+		}
+
+		$list = wmd_email_list();
+
+		try {
+			$mailer = WC()->mailer();
+
+			foreach ( $mailer->get_emails() as $email ) {
+				if ( empty( $email->id ) || ! isset( $list[ $email->id ] ) ) {
+					continue;
+				}
+
+				// Küsime seadetest otse, mitte get_subject() kaudu — muidu tuleks
+				// tagasi meie enda ülekirjutus ja väli näitaks kohatäitjana iseennast.
+				$heading = method_exists( $email, 'get_default_heading' ) ? $email->get_default_heading() : '';
+				$subject = method_exists( $email, 'get_default_subject' ) ? $email->get_default_subject() : '';
+
+				$out[ $email->id ] = array(
+					'heading' => wp_strip_all_tags( (string) $email->format_string( $email->get_option( 'heading', $heading ) ) ),
+					'subject' => wp_strip_all_tags( (string) $email->format_string( $email->get_option( 'subject', $subject ) ) ),
+				);
+			}
+		} catch ( Throwable $e ) {
+			return $out;
+		}
+
+		return $out;
 	}
 
 	/**

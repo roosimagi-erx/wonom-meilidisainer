@@ -15,15 +15,79 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WMD_Emails {
 
 	/**
+	 * Parasjagu renderdatav meil.
+	 *
+	 * WooCommerce ei anna päise- ja jalusemallile meiliobjekti kaasa —
+	 * WC_Emails::email_header() saadab mallile ainult pealkirja ja poe nime.
+	 * Küll aga käivitatakse enne seda tegevus woocommerce_email_header, kuhu
+	 * meiliobjekt kaasa antakse. Sealt me selle kinni püüamegi.
+	 *
+	 * @var WC_Email|null
+	 */
+	protected static $current = null;
+
+	/**
 	 * Haagid.
 	 */
 	public static function init() {
 		add_filter( 'woocommerce_locate_template', array( __CLASS__, 'locate_template' ), 20, 3 );
 		add_filter( 'woocommerce_email_styles', array( __CLASS__, 'styles' ), 20, 2 );
 
+		// Prioriteet 1, et jõuaksime enne WC_Emails oma malli renderdust (10).
+		add_action( 'woocommerce_email_header', array( __CLASS__, 'capture' ), 1, 2 );
+		add_action( 'woocommerce_email_footer', array( __CLASS__, 'capture' ), 1, 1 );
+		add_action( 'woocommerce_email_footer', array( __CLASS__, 'release' ), 999 );
+
 		foreach ( array_keys( wmd_email_list() ) as $id ) {
 			add_filter( 'woocommerce_email_subject_' . $id, array( __CLASS__, 'subject' ), 20, 3 );
 		}
+	}
+
+	/**
+	 * Jätab meiliobjekti meelde.
+	 *
+	 * Päises on esimene argument pealkiri ja teine meil, jaluses on meil ainuke
+	 * argument — seepärast vaatame mõlemat.
+	 *
+	 * @param mixed $first  Pealkiri või meil.
+	 * @param mixed $second Meil, kui esimene oli pealkiri.
+	 */
+	public static function capture( $first = null, $second = null ) {
+		if ( is_a( $second, 'WC_Email' ) ) {
+			self::$current = $second;
+			return;
+		}
+
+		if ( is_a( $first, 'WC_Email' ) ) {
+			self::$current = $first;
+		}
+	}
+
+	/**
+	 * Unustab meili, kui kiri on valmis.
+	 */
+	public static function release() {
+		self::$current = null;
+	}
+
+	/**
+	 * Parasjagu renderdatav meil.
+	 *
+	 * @return WC_Email|null
+	 */
+	public static function current() {
+		return self::$current;
+	}
+
+	/**
+	 * Parasjagu renderdatava meili id.
+	 *
+	 * @return string Tühi string, kui meili ei õnnestunud tuvastada.
+	 */
+	public static function current_id() {
+		$email = self::current();
+
+		return ( $email && ! empty( $email->id ) ) ? (string) $email->id : '';
 	}
 
 	/**
