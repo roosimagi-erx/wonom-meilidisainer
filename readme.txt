@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.13.0
+Stable tag: 0.14.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,12 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.14.0 =
+* Parandus: makseviiside juhised ei jõudnud kunagi serverisse. Tühi PHP massiiv jõuab JavaScripti massiivina, mitte objektina, ja massiivile lisatud võtmed kadusid salvestamisel vaikselt ära. Kõik, mis vahekaardile „Makseviisid" kirjutati, läks kaotsi.
+* Parandus: plokkide lohistamine muutis ainult nimekirja välimust, mitte järjekorda. Järjekord salvestati drop-sündmusel, mis käivitub ainult lubatud kukutamiskohas — nimekirja serval või väljaspool lastes jäi see tulemata. Nüüd salvestatakse dragend-sündmusel, mis käivitub alati.
+* Uus: iga ploki juures on nooled üles-alla. Lohistamine töötab, aga nooltega on kindel.
+* Uus: sotsiaalmeedia plokis on nüüd päris logod (Facebook, Instagram, YouTube, LinkedIn) brändivärvides PNG-piltidena, mitte tähtedega mullid. Ikooni suurus ja vahed on seadistatavad.
 
 = 0.13.0 =
 * Uus plokk „Tooted (oma tabel)" — sina valid, millised veerud kirja lähevad (pilt, toode, tootekood, variandid, kogus, ühiku hind, rea summa), millises järjekorras ja mis sildiga. Enam ei pea leppima WooCommerce'i malliga.

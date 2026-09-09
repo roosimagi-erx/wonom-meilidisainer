@@ -99,7 +99,7 @@ class WMD_Admin {
 			array(
 				'ajaxUrl'     => admin_url( 'admin-ajax.php' ),
 				'nonce'       => wp_create_nonce( 'wmd_ajax' ),
-				'design'      => WMD_Design::get(),
+				'design'      => WMD_Design::for_js(),
 				'brandSchema' => wmd_brand_schema(),
 				'brandGroups' => wmd_brand_groups(),
 				'blockTypes'  => wmd_block_types(),
@@ -116,6 +116,7 @@ class WMD_Admin {
 				'canUpdate'   => current_user_can( 'update_plugins' ) ? 1 : 0,
 				'updates'     => WMD_Updater::settings(),
 				'pluginsUrl'  => admin_url( 'plugins.php' ),
+				'assetsUrl'   => WMD_URL . 'assets/',
 				'i18n'        => array(
 					'saved'        => __( 'Salvestatud', 'wonom-meilidisainer' ),
 					'saveFailed'   => __( 'Salvestamine ebaõnnestus', 'wonom-meilidisainer' ),

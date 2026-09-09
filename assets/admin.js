@@ -16,8 +16,30 @@
 	var i18n = cfg.i18n || {};
 	var emailIds = Object.keys( cfg.emails || {} );
 
+	/**
+	 * PHP tühi massiiv jõuab JSON-is kujul [], mitte {}. JavaScripti massiivile
+	 * string-võtme lisamine kaob JSON.stringify käigus vaikselt ära, seega
+	 * teeme võtmega kogumid siin kindlasti objektiks.
+	 *
+	 * @param {Object} design Kujundus.
+	 * @return {Object} Sama kujundus, kindlate tüüpidega.
+	 */
+	function normalise( design ) {
+		var d = JSON.parse( JSON.stringify( design ) );
+
+		if ( ! d.payments || Array.isArray( d.payments ) ) {
+			var fixed = {};
+			Object.keys( d.payments || {} ).forEach( function ( k ) {
+				fixed[ k ] = d.payments[ k ];
+			} );
+			d.payments = fixed;
+		}
+
+		return d;
+	}
+
 	var state = {
-		design: JSON.parse( JSON.stringify( cfg.design ) ),
+		design: normalise( cfg.design ),
 		tab: 'brand',
 		email: emailIds[ 0 ] || '',
 		selected: null, // { zone: 'header'|'footer'|'before'|'after', id: 'b123' }
@@ -316,6 +338,7 @@
 			{
 				extraCss: wc && wc.css ? wc.css : '',
 				markWc: ! full,
+				assetsUrl: cfg.assetsUrl || '',
 			}
 		);
 
@@ -573,6 +596,8 @@
 				'<span class="wmd-item-icon">' + esc( def.icon ) + '</span>' +
 				'<span class="wmd-item-label">' + esc( def.label ) + '<em>' + esc( blockSummary( b ) ) + '</em></span>' +
 				'<span class="wmd-item-actions">' +
+				'<button type="button" class="wmd-icon" data-move="' + esc( zone ) + '|' + esc( b.id ) + '|-1" title="Üles"' + ( 0 === index ? ' disabled' : '' ) + '>↑</button>' +
+				'<button type="button" class="wmd-icon" data-move="' + esc( zone ) + '|' + esc( b.id ) + '|1" title="Alla"' + ( index === list.length - 1 ? ' disabled' : '' ) + '>↓</button>' +
 				'<button type="button" class="wmd-icon" data-dup="' + esc( zone ) + '|' + esc( b.id ) + '" title="Kopeeri">⧉</button>' +
 				'<button type="button" class="wmd-icon" data-del="' + esc( zone ) + '|' + esc( b.id ) + '" title="Kustuta">✕</button>' +
 				'</span></li>';
@@ -1306,6 +1331,28 @@
 			} );
 		} );
 
+		// Nooled plokinimekirjas — lohistamise kõrvale kindel viis järjestada.
+		root.querySelectorAll( '[data-move]' ).forEach( function ( btn ) {
+			btn.addEventListener( 'click', function ( ev ) {
+				ev.stopPropagation();
+
+				var parts = btn.getAttribute( 'data-move' ).split( '|' );
+				var list = zoneList( parts[ 0 ] );
+				var index = blockIndex( parts[ 0 ], parts[ 1 ] );
+				var to = index + parseInt( parts[ 2 ], 10 );
+
+				if ( index === -1 || to < 0 || to >= list.length ) {
+					return;
+				}
+
+				list.splice( to, 0, list.splice( index, 1 )[ 0 ] );
+				state.selected = { zone: parts[ 0 ], id: parts[ 1 ] };
+				markDirty();
+				render();
+				invalidatePreview();
+			} );
+		} );
+
 		root.querySelectorAll( '[data-dup]' ).forEach( function ( btn ) {
 			btn.addEventListener( 'click', function ( ev ) {
 				ev.stopPropagation();
@@ -1357,7 +1404,65 @@
 	function bindDrag() {
 		var dragged = null;
 
+		/**
+		 * Kirjutab plokkide järjekorra ümber selle järgi, mis nimekirjas näha on.
+		 *
+		 * NB: seda kutsutakse dragend-sündmusel, mitte drop-il. Drop käivitub
+		 * ainult siis, kui kukutamiskoht on dragover-is lubatud; kui kasutaja
+		 * laseb hiire lahti nimekirja serval või väljaspool, jääks drop tulemata
+		 * ja nimekiri näeks ümber järjestatud välja, aga andmetes poleks midagi
+		 * muutunud. Dragend käivitub alati.
+		 *
+		 * @param {Element} list Plokinimekiri.
+		 */
+		function commitOrder( list ) {
+			var zone = list.getAttribute( 'data-zone' );
+			var current = zoneList( zone );
+			var order = Array.prototype.map.call( list.querySelectorAll( '.wmd-item' ), function ( n ) {
+				return n.getAttribute( 'data-id' );
+			} );
+
+			var sorted = order.map( function ( id ) {
+				return current.filter( function ( b ) {
+					return b.id === id;
+				} )[ 0 ];
+			} ).filter( Boolean );
+
+			if ( sorted.length !== current.length ) {
+				return;
+			}
+
+			var changed = sorted.some( function ( b, i ) {
+				return b !== current[ i ];
+			} );
+
+			if ( ! changed ) {
+				return;
+			}
+
+			current.length = 0;
+			sorted.forEach( function ( b ) {
+				current.push( b );
+			} );
+
+			markDirty();
+			render();
+			invalidatePreview();
+		}
+
 		root.querySelectorAll( '.wmd-list' ).forEach( function ( list ) {
+			// Ilma selleta ei lubata kukutamist nimekirja servadel ja drop jääks olemata.
+			list.addEventListener( 'dragover', function ( ev ) {
+				if ( dragged && dragged.parentNode === list ) {
+					ev.preventDefault();
+					ev.dataTransfer.dropEffect = 'move';
+				}
+			} );
+
+			list.addEventListener( 'drop', function ( ev ) {
+				ev.preventDefault();
+			} );
+
 			list.querySelectorAll( '.wmd-item' ).forEach( function ( item ) {
 				item.addEventListener( 'dragstart', function ( ev ) {
 					dragged = item;
@@ -1369,41 +1474,21 @@
 				item.addEventListener( 'dragend', function () {
 					item.classList.remove( 'is-dragging' );
 					dragged = null;
+					commitOrder( list );
 				} );
 
 				item.addEventListener( 'dragover', function ( ev ) {
 					if ( ! dragged || dragged === item || dragged.parentNode !== item.parentNode ) {
 						return;
 					}
+
 					ev.preventDefault();
+
 					var rect = item.getBoundingClientRect();
 					var after = ( ev.clientY - rect.top ) > rect.height / 2;
+
 					item.parentNode.insertBefore( dragged, after ? item.nextSibling : item );
 				} );
-			} );
-
-			list.addEventListener( 'drop', function ( ev ) {
-				ev.preventDefault();
-				var zone = list.getAttribute( 'data-zone' );
-				var order = Array.prototype.map.call( list.querySelectorAll( '.wmd-item' ), function ( n ) {
-					return n.getAttribute( 'data-id' );
-				} );
-				var current = zoneList( zone );
-				var sorted = order.map( function ( id ) {
-					return current.filter( function ( b ) {
-						return b.id === id;
-					} )[ 0 ];
-				} ).filter( Boolean );
-
-				if ( sorted.length === current.length ) {
-					current.length = 0;
-					sorted.forEach( function ( b ) {
-						current.push( b );
-					} );
-					markDirty();
-					render();
-					invalidatePreview();
-				}
 			} );
 		} );
 	}
@@ -1492,7 +1577,7 @@
 					return;
 				}
 				post( 'wmd_reset', {} ).then( function ( res ) {
-					state.design = res.design;
+					state.design = normalise( res.design );
 					state.selected = null;
 					state.dirty = false;
 					wcCache = {};
@@ -1561,7 +1646,7 @@
 		}
 
 		return post( 'wmd_save', { design: JSON.stringify( state.design ) } ).then( function ( res ) {
-			state.design = res.design;
+			state.design = normalise( res.design );
 			state.dirty = false;
 			render();
 			toast( i18n.saved, 'ok' );

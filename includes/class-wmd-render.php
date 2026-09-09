@@ -447,38 +447,28 @@ class WMD_Render {
 				break;
 
 			case 'social':
+				// Päris logod PNG-na. Meilikliendid ei renderda SVG-d ega
+				// data-URI-sid, seega peavad ikoonid tulema päris aadressilt.
 				$nets  = array(
-					'facebook'  => 'f',
-					'instagram' => 'in',
-					'youtube'   => 'yt',
-					'linkedin'  => 'li',
+					'facebook'  => 'Facebook',
+					'instagram' => 'Instagram',
+					'youtube'   => 'YouTube',
+					'linkedin'  => 'LinkedIn',
 				);
+				$size  = isset( $p['size'] ) ? (int) $p['size'] : 28;
+				$gap   = isset( $p['gap'] ) ? (int) $p['gap'] : 10;
 				$cells = '';
-				foreach ( $nets as $key => $short ) {
+
+				foreach ( $nets as $key => $name ) {
 					if ( empty( $p[ $key ] ) ) {
 						continue;
 					}
-					$cells .= '<td style="padding:0 4px;">'
-						. '<a href="' . esc_url( $p[ $key ] ) . '" target="_blank" rel="noopener" ' . self::attr(
-							array(
-								'style' => self::style(
-									array(
-										'display'          => 'inline-block',
-										'width'            => '30px',
-										'height'           => '30px',
-										'line-height'      => '30px',
-										'text-align'       => 'center',
-										'border-radius'    => '15px',
-										'background-color' => $brand['accent'],
-										'color'            => '#ffffff',
-										'font-family'      => $font,
-										'font-size'        => '12px',
-										'font-weight'      => '700',
-										'text-decoration'  => 'none',
-									)
-								),
-							)
-						) . '>' . esc_html( $short ) . '</a></td>';
+
+					$cells .= '<td style="padding:0 ' . (int) round( $gap / 2 ) . 'px;">'
+						. '<a href="' . esc_url( $p[ $key ] ) . '" target="_blank" rel="noopener" style="display:block;text-decoration:none;">'
+						. '<img src="' . esc_url( WMD_URL . 'assets/social/' . $key . '.png' ) . '" alt="' . esc_attr( $name ) . '" '
+						. 'width="' . $size . '" height="' . $size . '" '
+						. 'style="width:' . $size . 'px;height:' . $size . 'px;display:block;border:0;" /></a></td>';
 				}
 
 				if ( '' === $cells ) {

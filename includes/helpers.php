@@ -397,6 +397,22 @@ function wmd_block_types() {
 			'label'  => __( 'Sotsiaalmeedia', 'wonom-meilidisainer' ),
 			'icon'   => '@',
 			'fields' => array(
+				'size'      => array(
+					'type'    => 'range',
+					'label'   => __( 'Ikooni suurus (px)', 'wonom-meilidisainer' ),
+					'min'     => 18,
+					'max'     => 48,
+					'step'    => 2,
+					'default' => 28,
+				),
+				'gap'       => array(
+					'type'    => 'range',
+					'label'   => __( 'Vahe ikoonide vahel (px)', 'wonom-meilidisainer' ),
+					'min'     => 0,
+					'max'     => 24,
+					'step'    => 2,
+					'default' => 10,
+				),
 				'facebook'  => array(
 					'type'    => 'url',
 					'label'   => 'Facebook',

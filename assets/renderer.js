@@ -9,6 +9,9 @@
 	// seega hoiame neid siin ja full() värskendab iga renderdusega.
 	var design_payments = {};
 
+	// Plugina assets-kausta aadress, et ikoonipildid leiaksid tee eelvaatesse.
+	var assetsUrl = '';
+
 	function esc( str ) {
 		return String( str == null ? '' : str )
 			.replace( /&/g, '&amp;' )
@@ -195,30 +198,26 @@
 				break;
 
 			case 'social':
-				var nets = { facebook: 'f', instagram: 'in', youtube: 'yt', linkedin: 'li' };
+				var nets = { facebook: 'Facebook', instagram: 'Instagram', youtube: 'YouTube', linkedin: 'LinkedIn' };
+				var iconSize = num( p.size, 28 );
+				var gap = num( p.gap, 10 );
 				var cells = '';
+
 				Object.keys( nets ).forEach( function ( key ) {
 					if ( ! p[ key ] ) {
 						return;
 					}
-					cells += '<td style="padding:0 4px;"><a href="' + escAttr( p[ key ] ) + '" style="' + escAttr( style( {
-						display: 'inline-block',
-						width: '30px',
-						height: '30px',
-						'line-height': '30px',
-						'text-align': 'center',
-						'border-radius': '15px',
-						'background-color': brand.accent,
-						color: '#ffffff',
-						'font-family': font,
-						'font-size': '12px',
-						'font-weight': '700',
-						'text-decoration': 'none',
-					} ) ) + '">' + esc( nets[ key ] ) + '</a></td>';
+					cells += '<td style="padding:0 ' + Math.round( gap / 2 ) + 'px;">' +
+						'<a href="' + escAttr( p[ key ] ) + '" style="display:block;text-decoration:none;">' +
+						'<img src="' + escAttr( assetsUrl + 'social/' + key + '.png' ) + '" alt="' + escAttr( nets[ key ] ) + '" ' +
+						'width="' + iconSize + '" height="' + iconSize + '" ' +
+						'style="width:' + iconSize + 'px;height:' + iconSize + 'px;display:block;border:0;" /></a></td>';
 				} );
+
 				if ( ! cells ) {
 					return '';
 				}
+
 				cell[ 'text-align' ] = 'center';
 				body = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;"><tr>' + cells + '</tr></table>';
 				break;
@@ -565,6 +564,7 @@
 	function full( design, emailId, ctx, heading, bodyHtml, opts ) {
 		opts = opts || {};
 		design_payments = design.payments || {};
+		assetsUrl = opts.assetsUrl || assetsUrl;
 		var brand = design.brand;
 		var settings = ( design.emails && design.emails[ emailId ] ) || { heading: '', before: [], after: [] };
 		var width = num( brand.width, 600 );

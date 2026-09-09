@@ -124,7 +124,7 @@ class WMD_Ajax {
 
 		$saved = WMD_Design::save( self::posted_design() );
 
-		wp_send_json_success( array( 'design' => $saved ) );
+		wp_send_json_success( array( 'design' => WMD_Design::for_js( $saved ) ) );
 	}
 
 	/**
@@ -133,7 +133,7 @@ class WMD_Ajax {
 	public static function reset() {
 		self::guard();
 
-		wp_send_json_success( array( 'design' => WMD_Design::reset() ) );
+		wp_send_json_success( array( 'design' => WMD_Design::for_js( WMD_Design::reset() ) ) );
 	}
 
 	/**

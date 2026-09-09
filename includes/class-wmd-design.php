@@ -170,6 +170,26 @@ class WMD_Design {
 	}
 
 	/**
+	 * Kujundus JSON-i jaoks.
+	 *
+	 * Tühi PHP massiiv muutub JSON-is massiiviks `[]`, mitte objektiks `{}`.
+	 * JavaScripti massiivile string-võtme lisamine kaob JSON.stringify käigus
+	 * vaikselt ära, seega peavad võtmega kogumid siit välja minema objektina.
+	 *
+	 * @param array|null $design Kujundus või null praeguse jaoks.
+	 * @return array
+	 */
+	public static function for_js( $design = null ) {
+		if ( null === $design ) {
+			$design = self::get();
+		}
+
+		$design['payments'] = (object) ( isset( $design['payments'] ) ? $design['payments'] : array() );
+
+		return $design;
+	}
+
+	/**
 	 * Ühe makseviisi juhised.
 	 *
 	 * @param string $gateway_id Makselahenduse id.
