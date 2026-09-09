@@ -278,7 +278,9 @@
 	function ensureWcPart() {
 		var key = wcKey();
 
-		if ( wcCache[ key ] || emailSettings().mode === 'full' ) {
+		// Ka täisrežiimis on vaja tellimuse ridu, kokkuvõtet ja välju — ainult
+		// WooCommerce'i sisuosa jääb seal kasutamata.
+		if ( wcCache[ key ] ) {
 			return;
 		}
 

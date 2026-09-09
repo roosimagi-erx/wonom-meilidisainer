@@ -233,6 +233,10 @@ class WMD_Ajax {
 		$html = '';
 		$css  = '';
 
+		// Täisrežiimis ei kasutata WooCommerce'i sisuosa üldse, seega ei ole
+		// mõtet meili renderdada. Tellimuse read ja väljad on ikka vaja.
+		$needs_html = ! WMD_Design::is_full( $email_id );
+
 		WMD_Render::$mark_wc = true;
 
 		try {
@@ -250,12 +254,14 @@ class WMD_Ajax {
 
 				// Stiile ei reastata sisse — eelvaade on brauser, mitte postkast,
 				// ja reastaja võiks markerid ära süüa.
-				$full  = $found->get_content_html();
-				$start = strpos( $full, WMD_Render::WC_START );
-				$end   = strpos( $full, WMD_Render::WC_END );
+				if ( $needs_html ) {
+					$full  = $found->get_content_html();
+					$start = strpos( $full, WMD_Render::WC_START );
+					$end   = strpos( $full, WMD_Render::WC_END );
 
-				if ( false !== $start && false !== $end && $end > $start ) {
-					$html = substr( $full, $start + strlen( WMD_Render::WC_START ), $end - $start - strlen( WMD_Render::WC_START ) );
+					if ( false !== $start && false !== $end && $end > $start ) {
+						$html = substr( $full, $start + strlen( WMD_Render::WC_START ), $end - $start - strlen( WMD_Render::WC_START ) );
+					}
 				}
 
 				ob_start();
@@ -276,7 +282,7 @@ class WMD_Ajax {
 				'items'  => WMD_Render::order_items_data( $order ),
 				'totals' => WMD_Render::order_totals_data( $order ),
 				'fields' => self::order_fields( $order ),
-				'why'    => '' === $html ? __( 'WooCommerce\'i sisu ei õnnestunud renderdada.', 'wonom-meilidisainer' ) : '',
+				'why'    => ( $needs_html && '' === $html ) ? __( 'WooCommerce\'i sisu ei õnnestunud renderdada.', 'wonom-meilidisainer' ) : '',
 			)
 		);
 	}

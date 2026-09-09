@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.14.0
+Stable tag: 0.14.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,9 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.14.1 =
+* Parandus: täisrežiimis („terve meil ise") näitasid plokid „Tooted (oma tabel)" ja „Kokkuvõte (oma tabel)" kujundajas näidistooteid, mitte valitud tellimuse päris ridu. Tellimuse andmeid ei küsitud serverist, sest täisrežiimis ei ole WooCommerce'i sisuosa vaja — aga tellimuse read on. Nüüd tuuakse need mõlemas režiimis.
 
 = 0.14.0 =
 * Parandus: makseviiside juhised ei jõudnud kunagi serverisse. Tühi PHP massiiv jõuab JavaScripti massiivina, mitte objektina, ja massiivile lisatud võtmed kadusid salvestamisel vaikselt ära. Kõik, mis vahekaardile „Makseviisid" kirjutati, läks kaotsi.
