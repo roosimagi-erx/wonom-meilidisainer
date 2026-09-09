@@ -270,12 +270,65 @@ class WMD_Ajax {
 
 		wp_send_json_success(
 			array(
-				'html'  => $html,
-				'css'   => $css,
-				'order' => $order->get_id(),
-				'why'   => '' === $html ? __( 'WooCommerce\'i sisu ei õnnestunud renderdada.', 'wonom-meilidisainer' ) : '',
+				'html'   => $html,
+				'css'    => $css,
+				'order'  => $order->get_id(),
+				'items'  => WMD_Render::order_items_data( $order ),
+				'totals' => WMD_Render::order_totals_data( $order ),
+				'fields' => self::order_fields( $order ),
+				'why'    => '' === $html ? __( 'WooCommerce\'i sisu ei õnnestunud renderdada.', 'wonom-meilidisainer' ) : '',
 			)
 		);
+	}
+
+	/**
+	 * Selle tellimuse enda väljad, et kujundaja väljavalik ei oleks üldine
+	 * nimekiri, vaid näitaks seda, mis päriselt olemas on.
+	 *
+	 * @param WC_Order $order Tellimus.
+	 * @return array
+	 */
+	protected static function order_fields( $order ) {
+		$out = array();
+
+		if ( ! $order || ! is_a( $order, 'WC_Order' ) ) {
+			return $out;
+		}
+
+		foreach ( $order->get_meta_data() as $meta ) {
+			$data = $meta->get_data();
+
+			if ( empty( $data['key'] ) ) {
+				continue;
+			}
+
+			$value = $data['value'];
+
+			// Massiivid ja objektid ei sobi meili teksti — jätame need nimekirjast välja.
+			if ( ! is_scalar( $value ) ) {
+				continue;
+			}
+
+			$value = trim( (string) $value );
+
+			if ( '' === $value ) {
+				continue;
+			}
+
+			$out[] = array(
+				'key'    => (string) $data['key'],
+				'sample' => mb_substr( wp_strip_all_tags( $value ), 0, 60 ),
+			);
+		}
+
+		usort(
+			$out,
+			function ( $a, $b ) {
+				return strcmp( $a['key'], $b['key'] );
+			}
+		);
+
+		return $out;
 	}
 
 	/**

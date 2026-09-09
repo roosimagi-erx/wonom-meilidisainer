@@ -67,6 +67,34 @@ class WMD_Tags {
 					'label'  => __( 'Tarneviis', 'wonom-meilidisainer' ),
 					'sample' => __( 'Pakiautomaat', 'wonom-meilidisainer' ),
 				),
+				'billing_phone'       => array(
+					'label'  => __( 'Kliendi telefon', 'wonom-meilidisainer' ),
+					'sample' => '5551234',
+				),
+				'billing_company'     => array(
+					'label'  => __( 'Kliendi ettevõte', 'wonom-meilidisainer' ),
+					'sample' => 'Näidis OÜ',
+				),
+				'billing_address'     => array(
+					'label'  => __( 'Arveaadress ühes reas', 'wonom-meilidisainer' ),
+					'sample' => 'Pikk 12-4, 10123 Tallinn',
+				),
+				'shipping_address'    => array(
+					'label'  => __( 'Tarneaadress ühes reas', 'wonom-meilidisainer' ),
+					'sample' => 'Türi Grossi pakiautomaat, Viljandi',
+				),
+				'order_status'        => array(
+					'label'  => __( 'Tellimuse olek', 'wonom-meilidisainer' ),
+					'sample' => __( 'Töötlemisel', 'wonom-meilidisainer' ),
+				),
+				'item_count'          => array(
+					'label'  => __( 'Toodete arv', 'wonom-meilidisainer' ),
+					'sample' => '3',
+				),
+				'customer_note'       => array(
+					'label'  => __( 'Kliendi märkus', 'wonom-meilidisainer' ),
+					'sample' => __( 'Palun jätke pakiautomaati.', 'wonom-meilidisainer' ),
+				),
 				'my_account_url'      => array(
 					'label'  => __( 'Minu konto link', 'wonom-meilidisainer' ),
 					'sample' => 'https://naidispood.ee/minu-konto',
@@ -128,6 +156,13 @@ class WMD_Tags {
 		$ctx['order_url']           = $order->get_view_order_url();
 		$ctx['payment_method']      = $order->get_payment_method_title();
 		$ctx['shipping_method']     = $order->get_shipping_method();
+		$ctx['billing_phone']       = $order->get_billing_phone();
+		$ctx['billing_company']     = $order->get_billing_company();
+		$ctx['billing_address']     = trim( preg_replace( '/\s*,\s*/', ', ', wp_strip_all_tags( str_replace( '<br/>', ', ', $order->get_formatted_billing_address() ) ) ) );
+		$ctx['shipping_address']    = trim( preg_replace( '/\s*,\s*/', ', ', wp_strip_all_tags( str_replace( '<br/>', ', ', $order->get_formatted_shipping_address() ) ) ) );
+		$ctx['order_status']        = function_exists( 'wc_get_order_status_name' ) ? wc_get_order_status_name( $order->get_status() ) : $order->get_status();
+		$ctx['item_count']          = (string) $order->get_item_count();
+		$ctx['customer_note']       = $order->get_customer_note();
 
 		// WooCommerce'i plokid ja {{meta:...}} vajavad tellimust ennast.
 		$ctx['__order'] = $order;

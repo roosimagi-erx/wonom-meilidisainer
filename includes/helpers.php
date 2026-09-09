@@ -437,7 +437,7 @@ function wmd_block_types() {
 		// WooCommerce'i enda osad. Neid renderdab WooCommerce, meie ütleme ainult,
 		// kuhu need meilis lähevad. Eelvaates näidatakse näidisandmeid.
 		'order_table'  => array(
-			'label'  => __( 'Tellimuse tabel', 'wonom-meilidisainer' ),
+			'label'  => __( 'Tellimuse tabel (WooCommerce)', 'wonom-meilidisainer' ),
 			'icon'   => '#',
 			'woo'    => true,
 			'fields' => array(
@@ -470,8 +470,110 @@ function wmd_block_types() {
 				'pad'        => $pad,
 			),
 		),
+		// Ise kokku pandav toodete tabel. Erinevalt „Tellimuse tabelist" ei tule
+		// see WooCommerce'i mallist, vaid veerud valid ise.
+		'order_items'  => array(
+			'label'  => __( 'Tooted (oma tabel)', 'wonom-meilidisainer' ),
+			'icon'   => '▤',
+			'woo'    => true,
+			'fields' => array(
+				'cols'     => array(
+					'type'    => 'columns',
+					'label'   => __( 'Veerud', 'wonom-meilidisainer' ),
+					'options' => wmd_item_columns(),
+					'default' => wmd_default_columns( wmd_item_columns(), array( 'sku', 'unit' ) ),
+				),
+				'header'   => array(
+					'type'    => 'toggle',
+					'label'   => __( 'Näita päiserida', 'wonom-meilidisainer' ),
+					'default' => 1,
+				),
+				'img_size' => array(
+					'type'    => 'range',
+					'label'   => __( 'Pildi laius (px)', 'wonom-meilidisainer' ),
+					'min'     => 32,
+					'max'     => 160,
+					'step'    => 4,
+					'default' => 64,
+				),
+				'link'     => array(
+					'type'    => 'toggle',
+					'label'   => __( 'Toote nimi lingiks', 'wonom-meilidisainer' ),
+					'default' => 0,
+				),
+				'lines'    => array(
+					'type'    => 'select',
+					'label'   => __( 'Jooned', 'wonom-meilidisainer' ),
+					'options' => array(
+						'rows' => __( 'Ridade vahel', 'wonom-meilidisainer' ),
+						'grid' => __( 'Täisvõrgustik', 'wonom-meilidisainer' ),
+						'none' => __( 'Ilma joonteta', 'wonom-meilidisainer' ),
+					),
+					'default' => 'rows',
+				),
+				'pad'      => $pad,
+			),
+		),
+		'order_totals' => array(
+			'label'  => __( 'Kokkuvõte (oma tabel)', 'wonom-meilidisainer' ),
+			'icon'   => 'Σ',
+			'woo'    => true,
+			'fields' => array(
+				'rows'       => array(
+					'type'    => 'columns',
+					'label'   => __( 'Read', 'wonom-meilidisainer' ),
+					'options' => wmd_total_rows(),
+					'default' => wmd_default_columns( wmd_total_rows() ),
+				),
+				'align'      => array(
+					'type'    => 'select',
+					'label'   => __( 'Paigutus', 'wonom-meilidisainer' ),
+					'options' => array(
+						'right' => __( 'Paremal', 'wonom-meilidisainer' ),
+						'full'  => __( 'Terve laius', 'wonom-meilidisainer' ),
+					),
+					'default' => 'right',
+				),
+				'bold_total' => array(
+					'type'    => 'toggle',
+					'label'   => __( 'Lõppsumma rasvaselt', 'wonom-meilidisainer' ),
+					'default' => 1,
+				),
+				'lines'      => array(
+					'type'    => 'select',
+					'label'   => __( 'Jooned', 'wonom-meilidisainer' ),
+					'options' => array(
+						'rows' => __( 'Ridade vahel', 'wonom-meilidisainer' ),
+						'none' => __( 'Ilma joonteta', 'wonom-meilidisainer' ),
+					),
+					'default' => 'rows',
+				),
+				'pad'        => $pad,
+			),
+		),
+		// Sinu enda tekst makseviisi kohta. Sisu kirjutatakse ühe korra
+		// vahekaardil „Makseviisid" ja see plokk toob õige teksti kirja.
+		'payment_note' => array(
+			'label'  => __( 'Makseviisi juhised (oma tekst)', 'wonom-meilidisainer' ),
+			'icon'   => '¤',
+			'woo'    => true,
+			'fields' => array(
+				'title' => array(
+					'type'    => 'text',
+					'label'   => __( 'Pealkiri', 'wonom-meilidisainer' ),
+					'default' => __( 'Makse juhised', 'wonom-meilidisainer' ),
+					'tags'    => true,
+				),
+				'box'   => array(
+					'type'    => 'toggle',
+					'label'   => __( 'Raamitud kastis', 'wonom-meilidisainer' ),
+					'default' => 1,
+				),
+				'pad'   => $pad,
+			),
+		),
 		'payment_info' => array(
-			'label'  => __( 'Makseviisi juhised', 'wonom-meilidisainer' ),
+			'label'  => __( 'Makseviisi juhised (WooCommerce)', 'wonom-meilidisainer' ),
 			'icon'   => '€',
 			'woo'    => true,
 			'fields' => array(
@@ -510,6 +612,66 @@ function wmd_block_types() {
 			),
 		),
 	);
+}
+
+/**
+ * Toodete tabeli veerud, mida saab ise valida ja järjestada.
+ *
+ * @return array<string,string>
+ */
+function wmd_item_columns() {
+	return apply_filters(
+		'wmd_item_columns',
+		array(
+			'image' => __( 'Pilt', 'wonom-meilidisainer' ),
+			'name'  => __( 'Toode', 'wonom-meilidisainer' ),
+			'sku'   => __( 'Tootekood', 'wonom-meilidisainer' ),
+			'meta'  => __( 'Variandid ja lisaväljad', 'wonom-meilidisainer' ),
+			'qty'   => __( 'Kogus', 'wonom-meilidisainer' ),
+			'unit'  => __( 'Ühiku hind', 'wonom-meilidisainer' ),
+			'total' => __( 'Rea summa', 'wonom-meilidisainer' ),
+		)
+	);
+}
+
+/**
+ * Kokkuvõtte read. Võtmed tulevad WooCommerce'i get_order_item_totals() pealt.
+ *
+ * @return array<string,string>
+ */
+function wmd_total_rows() {
+	return apply_filters(
+		'wmd_total_rows',
+		array(
+			'cart_subtotal'  => __( 'Vahesumma', 'wonom-meilidisainer' ),
+			'discount'       => __( 'Allahindlus', 'wonom-meilidisainer' ),
+			'shipping'       => __( 'Tarne', 'wonom-meilidisainer' ),
+			'payment_method' => __( 'Makseviis', 'wonom-meilidisainer' ),
+			'tax'            => __( 'Käibemaks', 'wonom-meilidisainer' ),
+			'order_total'    => __( 'Kokku', 'wonom-meilidisainer' ),
+		)
+	);
+}
+
+/**
+ * Veergude vaikeväärtus: kõik sisse, WooCommerce'i sildid.
+ *
+ * @param array $options   Võti => silt.
+ * @param array $off       Võtmed, mis on vaikimisi välja lülitatud.
+ * @return array
+ */
+function wmd_default_columns( $options, $off = array() ) {
+	$out = array();
+
+	foreach ( $options as $key => $label ) {
+		$out[] = array(
+			'key'   => $key,
+			'label' => $label,
+			'on'    => in_array( $key, $off, true ) ? 0 : 1,
+		);
+	}
+
+	return $out;
 }
 
 /**
@@ -802,11 +964,12 @@ function wmd_default_design() {
 	);
 
 	return array(
-		'version' => 1,
-		'brand'   => $brand,
-		'header'  => $header,
-		'footer'  => $footer,
-		'emails'  => $emails,
+		'version'  => 1,
+		'brand'    => $brand,
+		'header'   => $header,
+		'footer'   => $footer,
+		'emails'   => $emails,
+		'payments' => array(),
 	);
 }
 

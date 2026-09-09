@@ -800,6 +800,68 @@
 	opacity: 0.55;
 }
 
+/* Veergude toimeti */
+
+.wmd-cols {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border: 1px solid var(--wmd-line);
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.wmd-colrow {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 5px 7px;
+	border-bottom: 1px solid var(--wmd-line);
+	background: #fff;
+}
+
+.wmd-colrow:last-child {
+	border-bottom: 0;
+}
+
+.wmd-collabel {
+	flex: 1 1 auto;
+	min-height: 26px;
+	font-size: 12px;
+}
+
+.wmd-colmove {
+	display: flex;
+	gap: 2px;
+}
+
+.wmd-colmove button {
+	border: 1px solid var(--wmd-line);
+	background: #fff;
+	border-radius: 4px;
+	width: 22px;
+	height: 24px;
+	cursor: pointer;
+	line-height: 1;
+	color: #55606a;
+}
+
+.wmd-colmove button:disabled {
+	opacity: 0.35;
+	cursor: default;
+}
+
+.wmd-tags-head {
+	padding: 6px 7px 3px;
+	font-size: 10px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--wmd-muted);
+	border-top: 1px solid var(--wmd-line);
+	margin-top: 4px;
+}
+
 .wmd-server-note.is-warn {
 	background: #fff4e0;
 	border-color: #edd6a8;

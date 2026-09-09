@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.12.0
+Stable tag: 0.13.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,16 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.13.0 =
+* Uus plokk „Tooted (oma tabel)" — sina valid, millised veerud kirja lähevad (pilt, toode, tootekood, variandid, kogus, ühiku hind, rea summa), millises järjekorras ja mis sildiga. Enam ei pea leppima WooCommerce'i malliga.
+* Uus plokk „Kokkuvõte (oma tabel)" — vali, millised read näidatakse (vahesumma, allahindlus, tarne, makseviis, käibemaks, kokku), muuda silte, vali paigutus ja jooned.
+* Uus vahekaart „Makseviisid" — iga makseviisi juures on väli, kuhu kirjutada juhised, nt pangaülekande rekvisiidid ja märkus, millal tooted broneeritakse. Kirja toob need plokk „Makseviisi juhised (oma tekst)", mis näitab alati selle tellimuse makseviisi teksti.
+* Väljavalik ({ } nupu all) näitab nüüd ka selle tellimuse päris välju koos näidisväärtusega — tarnepluginate jälgimiskoodid jm on nimekirjas leitavad, võtmeid ei pea peast teadma.
+* Uued märgendid: kliendi telefon, ettevõte, arve- ja tarneaadress ühes reas, tellimuse olek, toodete arv, kliendi märkus.
+* „Kontrolli serverist" nupp on kadunud. Tellimuse valik ülaribal toobki serverist selle tellimuse andmed — WooCommerce'i sisu, tooteread, kokkuvõtte ja väljade nimekirja. Kõrvale jäi nupp „Värskenda serverist", kui tahad andmed uuesti küsida.
+* Parandus: veergude nimekiri sattus üldise väljasidumise alla ja kirjutati üle, mistõttu veeru sisse-välja lülitamine ei mõjunud.
+* Parandus: uued plokid jagasid vaikeväärtuste massiivi, mistõttu ühe ploki veergude muutmine oleks muutnud ka teisi.
 
 = 0.12.0 =
 * Kujundaja kanvas näitab nüüd WooCommerce'i enda sisu päriselt, mitte näidist. Nii on kohe näha, kui su enda plokk ütleb sama, mida WooCommerce'i mall — varem tuli selle avastamiseks eraldi serveri eelvaadet vaadata.

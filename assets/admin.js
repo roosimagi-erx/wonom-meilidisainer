@@ -25,15 +25,11 @@
 		enabled: !! cfg.enabled,
 		dirty: false,
 		toast: '',
-		serverHtml: null,
 		scroll: 0,
 		updates: cfg.updates || { source: 'off', repo: '', json: '', token: '', current: '', remote: '' },
 		updateLog: [],
 		// Eelvaate tellimus: 0 = poe viimane.
 		order: 0,
-		// Serveri eelvaade on režiim, mitte ühekordne vaade — jääb sisse, kuni välja lülitad.
-		serverMode: false,
-		serverBusy: false,
 	};
 
 	var previewTimer = null;
@@ -120,9 +116,15 @@
 	function makeBlock( type ) {
 		var def = cfg.blockTypes[ type ];
 		var props = {};
+
 		Object.keys( def.fields ).forEach( function ( key ) {
-			props[ key ] = def.fields[ key ].default;
+			var value = def.fields[ key ].default;
+
+			// Massiivid (nt veerud) tuleb kopeerida, muidu jagaksid kõik plokid
+			// sama nimekirja ja ühe muutmine muudaks kõiki.
+			props[ key ] = ( value && typeof value === 'object' ) ? JSON.parse( JSON.stringify( value ) ) : value;
 		} );
+
 		return { id: newId(), type: type, props: props, cond: { pay: [] } };
 	}
 
@@ -182,13 +184,23 @@
 		return list[ 0 ];
 	}
 
-	function previewCtx() {
+	/**
+	 * Eelvaate kontekst. Makseviis on siin selleks, et brauser oskaks plokkide
+	 * nähtavustingimust sama moodi hinnata nagu server; read ja kokkuvõte
+	 * tulevad serverist, kui need on juba käes.
+	 *
+	 * @param {Object} wc Serverist toodud tellimuse andmed.
+	 * @return {Object} Kontekst.
+	 */
+	function previewCtx( wc ) {
 		var ctx = cfg.sampleCtx || {};
 		var order = currentOrder();
 
-		// Makseviis läheb konteksti, et brauseri eelvaade oskaks plokkide
-		// nähtavustingimust sama moodi hinnata nagu server.
-		return Object.assign( {}, ctx, { __payment: order ? order.payment : '' } );
+		return Object.assign( {}, ctx, {
+			__payment: order ? order.payment : '',
+			__items: wc && wc.items && wc.items.length ? wc.items : null,
+			__totals: wc && wc.totals && wc.totals.length ? wc.totals : null,
+		} );
 	}
 
 	/**
@@ -211,41 +223,7 @@
 
 	function schedulePreview() {
 		clearTimeout( previewTimer );
-
-		// Serverirežiimis on iga värskendus päring, seega ootame kauem.
-		previewTimer = setTimeout( state.serverMode ? fetchServerPreview : updatePreview, state.serverMode ? 700 : 180 );
-	}
-
-	/**
-	 * Küsib serverilt renderduse praeguse meili ja tellimuse kohta.
-	 */
-	function fetchServerPreview() {
-		if ( ! state.serverMode ) {
-			return;
-		}
-
-		state.serverBusy = true;
-		markServerBusy( true );
-
-		post( 'wmd_preview', {
-			email: state.email,
-			order: state.order || 0,
-			mode: 'real',
-			design: JSON.stringify( state.design ),
-		} ).then( function ( res ) {
-			if ( ! state.serverMode ) {
-				return;
-			}
-			state.serverHtml = res.html;
-			state.serverSource = res.source;
-			updatePreview();
-			markServerBusy( false );
-		} ).catch( function ( err ) {
-			state.serverMode = false;
-			state.serverHtml = null;
-			toast( err, 'error' );
-			render();
-		} );
+		previewTimer = setTimeout( updatePreview, 180 );
 	}
 
 	function wcKey() {
@@ -289,22 +267,33 @@
 			order: state.order || 0,
 			design: JSON.stringify( state.design ),
 		} ).then( function ( res ) {
-			wcCache[ key ] = { pending: false, html: res.html || '', css: res.css || '', why: res.why || '' };
+			wcCache[ key ] = {
+				pending: false,
+				html: res.html || '',
+				css: res.css || '',
+				items: res.items || [],
+				totals: res.totals || [],
+				fields: res.fields || [],
+				why: res.why || '',
+			};
 
 			if ( wcKey() === key ) {
-				updatePreview();
+				render();
 			}
 		} ).catch( function () {
-			wcCache[ key ] = { pending: false, html: '', css: '', why: 'Ei saanud WooCommerce\'i sisu kätte.' };
+			wcCache[ key ] = { pending: false, html: '', css: '', items: [], totals: [], fields: [], why: 'Ei saanud WooCommerce\'i sisu kätte.' };
 		} );
 	}
 
-	function markServerBusy( busy ) {
-		var note = root.querySelector( '.wmd-server-note' );
-		if ( note ) {
-			note.classList.toggle( 'is-busy', !! busy );
-		}
+	/**
+	 * Selle tellimuse päris väljad väljavaliku jaoks.
+	 */
+	function orderFields() {
+		var wc = wcCache[ wcKey() ];
+
+		return wc && wc.fields ? wc.fields : [];
 	}
+
 
 	function updatePreview() {
 		var frame = root.querySelector( '.wmd-frame' );
@@ -312,28 +301,23 @@
 			return;
 		}
 
-		var html;
-		if ( state.serverHtml ) {
-			html = state.serverHtml;
-		} else {
-			ensureWcPart();
+		ensureWcPart();
 
-			var wc = wcCache[ wcKey() ];
-			var full = emailSettings().mode === 'full';
+		var wc = wcCache[ wcKey() ];
+		var full = emailSettings().mode === 'full';
 
-			html = window.WMDRender.full(
-				state.design,
-				state.email,
-				previewCtx(),
-				wcDefault( state.email, 'heading' ),
-				// Päris WooCommerce'i sisu, kui see on käes. Muidu näidis.
-				( wc && ! wc.pending && wc.html ) ? wc.html : undefined,
-				{
-					extraCss: wc && wc.css ? wc.css : '',
-					markWc: ! full,
-				}
-			);
-		}
+		var html = window.WMDRender.full(
+			state.design,
+			state.email,
+			previewCtx( wc ),
+			wcDefault( state.email, 'heading' ),
+			// Päris WooCommerce'i sisu, kui see on käes. Muidu näidis.
+			( wc && ! wc.pending && wc.html ) ? wc.html : undefined,
+			{
+				extraCss: wc && wc.css ? wc.css : '',
+				markWc: ! full,
+			}
+		);
 
 		var doc = frame.contentDocument;
 		doc.open();
@@ -442,9 +426,43 @@
 				'<code>{{' + esc( key ) + '}}</code><span>' + esc( cfg.tags[ key ].label ) + '</span></button>';
 		} ).join( '' );
 
+		// Selle tellimuse enda väljad — nii ei pea võtmeid peast teadma.
+		var fields = orderFields();
+
+		if ( fields.length ) {
+			items += '<div class="wmd-tags-head">Selle tellimuse väljad</div>' +
+				fields.map( function ( f ) {
+					return '<button type="button" class="wmd-tag" data-tag="meta:' + esc( f.key ) + '">' +
+						'<code>{{meta:' + esc( f.key ) + '}}</code><span>' + esc( f.sample ) + '</span></button>';
+				} ).join( '' );
+		}
+
 		return '<div class="wmd-tags" data-for="' + esc( target ) + '">' +
 			'<button type="button" class="wmd-tags-toggle" title="Lisa muutuja">{ }</button>' +
 			'<div class="wmd-tags-menu" hidden>' + items + '</div></div>';
+	}
+
+	/**
+	 * Veergude toimeti: lülita sisse-välja, muuda silti, tõsta järjekorras.
+	 */
+	function columnsHtml( scope, key, field, value ) {
+		var options = field.options || {};
+		var cols = Array.isArray( value ) && value.length ? value : [];
+
+		var rows = cols.map( function ( col, index ) {
+			return '<li class="wmd-colrow" data-index="' + index + '">' +
+				'<label class="wmd-colon"><input type="checkbox" data-col-on="' + index + '"' + ( col.on ? ' checked' : '' ) + ' /></label>' +
+				'<input type="text" class="wmd-input wmd-collabel" data-col-label="' + index + '" value="' + esc( col.label ) + '" ' +
+				'placeholder="' + esc( options[ col.key ] || col.key ) + '" />' +
+				'<span class="wmd-colmove">' +
+				'<button type="button" data-col-up="' + index + '" title="Üles"' + ( index === 0 ? ' disabled' : '' ) + '>↑</button>' +
+				'<button type="button" data-col-down="' + index + '" title="Alla"' + ( index === cols.length - 1 ? ' disabled' : '' ) + '>↓</button>' +
+				'</span></li>';
+		} ).join( '' );
+
+		return '<div class="wmd-field"><label class="wmd-label">' + esc( field.label ) + '</label>' +
+			'<ul class="wmd-cols" data-scope="' + esc( scope ) + '" data-key="' + esc( key ) + '">' + rows + '</ul>' +
+			'<p class="wmd-hint">Linnuke näitab, kas veerg läheb kirja. Silti saab ümber kirjutada, nooltega järjekorda muuta.</p></div>';
 	}
 
 	function fieldHtml( scope, key, field, value ) {
@@ -452,6 +470,10 @@
 		var label = '<label class="wmd-label" for="' + esc( id ) + '">' + esc( field.label ) + '</label>';
 		var attrs = 'id="' + esc( id ) + '" data-scope="' + esc( scope ) + '" data-key="' + esc( key ) + '"';
 		var body = '';
+
+		if ( field.type === 'columns' ) {
+			return columnsHtml( scope, key, field, value );
+		}
 
 		switch ( field.type ) {
 			case 'text':
@@ -686,6 +708,44 @@
 		];
 	}
 
+	/* ---------------------------------------------------- makseviisid */
+
+	function paymentsPanelHtml() {
+		var gateways = cfg.gateways || {};
+		var keys = Object.keys( gateways );
+
+		if ( ! keys.length ) {
+			return '<div class="wmd-intro">Poes ei leitud ühtegi makseviisi.</div>';
+		}
+
+		if ( ! state.design.payments ) {
+			state.design.payments = {};
+		}
+
+		var html = '<div class="wmd-intro">Kirjuta iga makseviisi juhised üks kord siia. Kirja toob need plokk <strong>„Makseviisi juhised (oma tekst)"</strong> — see näitab alati selle tellimuse makseviisi teksti. Tühjaks jäetud makseviisi puhul plokk lihtsalt ei ilmu.</div>';
+
+		keys.forEach( function ( id ) {
+			var value = state.design.payments[ id ] || '';
+			var fid = 'wmd-pay-' + id;
+
+			html += '<div class="wmd-field">' +
+				'<label class="wmd-label" for="' + esc( fid ) + '">' + esc( gateways[ id ] ) + ' <code>' + esc( id ) + '</code></label>' +
+				'<div class="wmd-rich">' +
+				'<div class="wmd-rich-bar">' +
+				'<button type="button" data-wrap="strong" title="Rasvane"><b>B</b></button>' +
+				'<button type="button" data-wrap="em" title="Kaldkiri"><i>I</i></button>' +
+				'<button type="button" data-wrap="br" title="Reavahetus">↵</button>' +
+				'<button type="button" data-wrap="a" title="Link">🔗</button>' +
+				tagPicker( fid ) +
+				'</div>' +
+				'<textarea class="wmd-input wmd-textarea" rows="5" id="' + esc( fid ) + '" data-scope="payment" data-key="' + esc( id ) + '" ' +
+				'placeholder="Nt: Palun tee ülekanne oma pangast otse meie kontole…">' + esc( value ) + '</textarea>' +
+				'</div></div>';
+		} );
+
+		return html;
+	}
+
 	/* ------------------------------------------------------ uuendused */
 
 	function updatesPanelHtml() {
@@ -894,6 +954,7 @@
 			[ 'header', 'Päis' ],
 			[ 'footer', 'Jalus' ],
 			[ 'emails', 'Meilid' ],
+			[ 'payments', 'Makseviisid' ],
 			[ 'updates', 'Uuendused' ],
 		].map( function ( t ) {
 			return '<button type="button" class="wmd-tab' + ( state.tab === t[ 0 ] ? ' is-active' : '' ) + '" data-tab="' + t[ 0 ] + '">' + t[ 1 ] + '</button>';
@@ -906,6 +967,8 @@
 			panel = '<div class="wmd-intro">Päis on kõigi meilide ülaosas ühesugune.</div>' + blockListHtml( 'header', '', '' );
 		} else if ( state.tab === 'footer' ) {
 			panel = '<div class="wmd-intro">Jalus on kõigi meilide all ühesugune.</div>' + blockListHtml( 'footer', '', '' );
+		} else if ( state.tab === 'payments' ) {
+			panel = paymentsPanelHtml();
 		} else if ( state.tab === 'updates' ) {
 			panel = updatesPanelHtml();
 		} else {
@@ -941,9 +1004,7 @@
 			'</div></div>' +
 			'<div class="wmd-bar-right">' +
 			'<label class="wmd-switch wmd-switch-inline" title="Kas kujundus rakendub päris meilidele"><input type="checkbox" class="wmd-enabled"' + ( state.enabled ? ' checked' : '' ) + ' /><span></span>Kujundus sees</label>' +
-			'<button type="button" class="button wmd-server' + ( state.serverMode ? ' button-primary' : '' ) + '" ' +
-			'title="Renderdab kirja serveris. Kanvas näitab niikuinii päris sisu — see on lisakontroll.">' +
-			( state.serverMode ? 'Serverikontroll sees' : 'Kontrolli serverist' ) + '</button>' +
+			'<button type="button" class="button wmd-refresh" title="Küsi selle tellimuse andmed serverist uuesti">Värskenda serverist</button>' +
 			'<button type="button" class="button wmd-test">Saada testmeil</button>' +
 			'<button type="button" class="button button-primary wmd-save">Salvesta</button>' +
 			'<button type="button" class="button-link wmd-reset" title="Lähtesta kujundus">Lähtesta</button>' +
@@ -951,9 +1012,7 @@
 			'<div class="wmd-body">' +
 			'<aside class="wmd-left"><div class="wmd-tabs">' + tabs + '</div><div class="wmd-panel">' + panel + '</div></aside>' +
 			'<main class="wmd-canvas' + ( state.device === 'mobile' ? ' is-mobile' : '' ) + '">' +
-			( state.serverMode ? '<div class="wmd-server-note">Serverikontroll: kogu kiri on renderdatud PHP-ga, sama koodiga mis saatmisel' +
-				( state.serverSource === 'real' ? '' : ' (näidissisuga — päris tellimust ei leitud)' ) +
-				'. Klõpsamine ja plokkide märgistus siin ei tööta. <button type="button" class="button-link wmd-server-off">Tagasi kujundajasse</button></div>' : wcNoteHtml() ) +
+			wcNoteHtml() +
 			'<div class="wmd-frame-wrap"><iframe class="wmd-frame" title="Meili eelvaade"></iframe></div></main>' +
 			'<aside class="wmd-right">' + inspectorHtml() + '</aside>' +
 			'</div>' +
@@ -968,6 +1027,11 @@
 	function setValue( scope, key, value ) {
 		if ( scope === 'brand' ) {
 			state.design.brand[ key ] = value;
+		} else if ( scope === 'payment' ) {
+			if ( ! state.design.payments ) {
+				state.design.payments = {};
+			}
+			state.design.payments[ key ] = value;
 		} else if ( scope === 'email' ) {
 			if ( ! state.design.emails[ state.email ] ) {
 				state.design.emails[ state.email ] = { subject: '', heading: '', before: [], after: [] };
@@ -984,13 +1048,11 @@
 	}
 
 	/**
-	 * Serverirežiimis tuleb pärast struktuurimuudatust uus renderdus küsida.
-	 * Kujundajavaates teeb render() juba kõik ise.
+	 * Struktuurimuudatuse järel piisab tavalisest värskendusest — WooCommerce'i
+	 * osa on juba mälus ja ülejäänu joonistab render().
 	 */
 	function invalidatePreview() {
-		if ( state.serverMode ) {
-			schedulePreview();
-		}
+		schedulePreview();
 	}
 
 	function bind() {
@@ -1003,16 +1065,12 @@
 		} );
 
 		// Eelvaate meilivalik.
-		// Meili vahetamine ei vii enam kujundajavaatesse tagasi — kui serveri
-		// eelvaade on sees, laeme lihtsalt uue meili serverist.
+		// render() kutsub ensureWcPart(), mis toob uue meili WooCommerce'i sisu
+		// serverist, kui seda veel mälus pole.
 		function switchEmail( id ) {
 			state.email = id;
 			state.selected = null;
 			render();
-
-			if ( state.serverMode ) {
-				fetchServerPreview();
-			}
 		}
 
 		var pick = root.querySelector( '.wmd-preview-pick' );
@@ -1032,12 +1090,11 @@
 		var orderPick = root.querySelector( '.wmd-order-pick' );
 		if ( orderPick ) {
 			orderPick.addEventListener( 'change', function () {
+				// Tellimuse vahetus toobki serverist selle tellimuse andmed:
+				// WooCommerce'i sisu, tooteread, kokkuvõtte ja väljade nimekirja.
 				state.order = parseInt( orderPick.value, 10 ) || 0;
+				state.selected = null;
 				render();
-
-				if ( state.serverMode ) {
-					fetchServerPreview();
-				}
 			} );
 		}
 
@@ -1050,7 +1107,9 @@
 		} );
 
 		// Väljad.
-		root.querySelectorAll( '.wmd-panel [data-scope], .wmd-right [data-scope]' ).forEach( function ( input ) {
+		// Veergude nimekirjal on oma sidumine — muidu püüaks üldine sidumine
+		// tema sees toimuva kinni ja kirjutaks väärtuse üle.
+		root.querySelectorAll( '.wmd-panel [data-scope]:not(.wmd-cols), .wmd-right [data-scope]:not(.wmd-cols)' ).forEach( function ( input ) {
 			var scope = input.getAttribute( 'data-scope' );
 			var key = input.getAttribute( 'data-key' );
 
@@ -1092,6 +1151,70 @@
 
 			input.addEventListener( 'input', function () {
 				setValue( scope, key, input.value );
+			} );
+		} );
+
+		// Veergude toimeti.
+		root.querySelectorAll( '.wmd-cols' ).forEach( function ( list ) {
+			var scope = list.getAttribute( 'data-scope' );
+			var key = list.getAttribute( 'data-key' );
+
+			function cols() {
+				var block = findBlock( state.selected );
+				return block ? block.props[ key ] : null;
+			}
+
+			function commit( rerender ) {
+				markDirty();
+				schedulePreview();
+				if ( rerender ) {
+					render();
+				}
+			}
+
+			list.querySelectorAll( '[data-col-on]' ).forEach( function ( box ) {
+				box.addEventListener( 'change', function () {
+					var c = cols();
+					if ( c ) {
+						c[ parseInt( box.getAttribute( 'data-col-on' ), 10 ) ].on = box.checked ? 1 : 0;
+						commit( false );
+					}
+				} );
+			} );
+
+			list.querySelectorAll( '[data-col-label]' ).forEach( function ( input ) {
+				input.addEventListener( 'input', function () {
+					var c = cols();
+					if ( c ) {
+						c[ parseInt( input.getAttribute( 'data-col-label' ), 10 ) ].label = input.value;
+						commit( false );
+					}
+				} );
+			} );
+
+			function move( index, delta ) {
+				var c = cols();
+				var to = index + delta;
+
+				if ( ! c || to < 0 || to >= c.length ) {
+					return;
+				}
+
+				var moved = c.splice( index, 1 )[ 0 ];
+				c.splice( to, 0, moved );
+				commit( true );
+			}
+
+			list.querySelectorAll( '[data-col-up]' ).forEach( function ( btn ) {
+				btn.addEventListener( 'click', function () {
+					move( parseInt( btn.getAttribute( 'data-col-up' ), 10 ), -1 );
+				} );
+			} );
+
+			list.querySelectorAll( '[data-col-down]' ).forEach( function ( btn ) {
+				btn.addEventListener( 'click', function () {
+					move( parseInt( btn.getAttribute( 'data-col-down' ), 10 ), 1 );
+				} );
 			} );
 		} );
 
@@ -1372,8 +1495,7 @@
 					state.design = res.design;
 					state.selected = null;
 					state.dirty = false;
-					state.serverMode = false;
-					state.serverHtml = null;
+					wcCache = {};
 					render();
 					toast( i18n.saved, 'ok' );
 				} );
@@ -1390,43 +1512,19 @@
 			} );
 		}
 
-		var server = root.querySelector( '.wmd-server' );
-		if ( server ) {
-			server.addEventListener( 'click', function () {
-				if ( state.serverMode ) {
-					state.serverMode = false;
-					state.serverHtml = null;
-					render();
-					return;
-				}
+		var refresh = root.querySelector( '.wmd-refresh' );
+		if ( refresh ) {
+			refresh.addEventListener( 'click', function () {
+				delete wcCache[ wcKey() ];
+				refresh.disabled = true;
+				refresh.textContent = 'Küsin…';
+				ensureWcPart();
 
-				state.serverMode = true;
-				server.disabled = true;
-				server.textContent = 'Renderdan…';
-
-				post( 'wmd_preview', {
-					email: state.email,
-					order: state.order || 0,
-					mode: 'real',
-					design: JSON.stringify( state.design ),
-				} ).then( function ( res ) {
-					state.serverHtml = res.html;
-					state.serverSource = res.source;
+				setTimeout( function () {
+					refresh.disabled = false;
+					refresh.textContent = 'Värskenda serverist';
 					render();
-				} ).catch( function ( err ) {
-					state.serverMode = false;
-					toast( err, 'error' );
-					render();
-				} );
-			} );
-		}
-
-		var off = root.querySelector( '.wmd-server-off' );
-		if ( off ) {
-			off.addEventListener( 'click', function () {
-				state.serverMode = false;
-				state.serverHtml = null;
-				render();
+				}, 900 );
 			} );
 		}
 

@@ -30,9 +30,16 @@ WooCommerce oma malle uuendab.
   sisumalli ei kasutata.
 - **Plokid** — pealkiri, tekstilõik, nupp, pilt, joon, tühi ruum, kaks veergu,
   sotsiaalmeedia, oma HTML. Lohistamisega järjestatavad.
+- **Oma tooteplokk** — „Tooted (oma tabel)" ja „Kokkuvõte (oma tabel)": sina
+  valid veerud ja read, nende järjekorra ja sildid. Andmed tulevad päris
+  tellimuselt, kujundus on sinu.
 - **WooCommerce'i plokid** — tellimuse tabel, aadressid, kliendi märkus ja
-  makseviisi juhised. Neid renderdab endiselt WooCommerce ise, seega maksuread,
-  allahindlused ja makselahenduste lisandused jäävad alles.
+  makseviisi juhised. Neid renderdab WooCommerce ise, seega maksuread,
+  allahindlused ja makselahenduste lisandused jäävad alles. Kasuta neid siis,
+  kui tahad WooCommerce'i vaikevälimust, ja oma plokke siis, kui tahad kontrolli.
+- **Makseviiside juhised** — eraldi vahekaart, kus iga makseviisi juurde saab
+  kirjutada oma teksti (nt pangaülekande rekvisiidid). Plokk „Makseviisi
+  juhised (oma tekst)" toob kirja alati selle tellimuse makseviisi teksti.
 - **Tellimuse väli** — toob meili suvalise tellimuse välja, näiteks paki
   jälgimiskoodi, koos sildi ja valikulise lingiga (`{{value}}` asendub
   väärtusega). Tühja välja saab automaatselt peita.

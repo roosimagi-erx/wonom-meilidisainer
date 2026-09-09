@@ -497,6 +497,50 @@ class WMD_Render {
 				$body = WMD_Tags::replace( $code, $ctx );
 				break;
 
+			case 'order_items':
+				$order = isset( $ctx['__order'] ) ? $ctx['__order'] : null;
+				$rows  = $order ? self::order_items_data( $order ) : self::sample_items( $brand );
+				$body  = self::items_table( $rows, $p, $brand );
+
+				if ( '' === $body ) {
+					return '';
+				}
+				break;
+
+			case 'order_totals':
+				$order = isset( $ctx['__order'] ) ? $ctx['__order'] : null;
+				$rows  = $order ? self::order_totals_data( $order ) : self::sample_totals();
+				$body  = self::totals_table( $rows, $p, $brand );
+
+				if ( '' === $body ) {
+					return '';
+				}
+				break;
+
+			case 'payment_note':
+				$order   = isset( $ctx['__order'] ) ? $ctx['__order'] : null;
+				$gateway = $order ? $order->get_payment_method() : ( isset( $ctx['__payment'] ) ? $ctx['__payment'] : '' );
+				$note    = '' !== $gateway ? WMD_Design::payment_note( $gateway ) : '';
+
+				if ( '' === trim( wp_strip_all_tags( $note ) ) ) {
+					return '';
+				}
+
+				$inner = '';
+
+				if ( '' !== trim( (string) $p['title'] ) ) {
+					$inner .= '<div style="font-family:' . $font . ';font-size:' . max( 15, (int) $brand['base_size'] ) . 'px;font-weight:700;color:' . esc_attr( $brand['heading_color'] ) . ';margin-bottom:6px;">'
+						. esc_html( WMD_Tags::replace( $p['title'], $ctx ) ) . '</div>';
+				}
+
+				$inner .= '<div style="font-family:' . $font . ';font-size:' . (int) $brand['base_size'] . 'px;line-height:1.6;color:' . esc_attr( $brand['text_color'] ) . ';">'
+					. self::linkify( WMD_Tags::replace( $note, $ctx ), $brand ) . '</div>';
+
+				$body = empty( $p['box'] )
+					? $inner
+					: '<div style="border:1px solid ' . esc_attr( $brand['border_color'] ) . ';border-left:3px solid ' . esc_attr( $brand['accent'] ) . ';border-radius:6px;padding:12px 14px;">' . $inner . '</div>';
+				break;
+
 			case 'order_table':
 			case 'addresses':
 			case 'payment_info':
@@ -586,6 +630,228 @@ class WMD_Render {
 		}
 
 		return '<tr><td ' . self::attr( array( 'style' => self::style( $cell ) ) ) . '>' . $body . '</td></tr>';
+	}
+
+	/**
+	 * Tellimuse read kujul, mida nii PHP kui kujundaja oskavad renderdada.
+	 *
+	 * @param WC_Order $order Tellimus.
+	 * @return array
+	 */
+	public static function order_items_data( $order ) {
+		$rows = array();
+
+		if ( ! $order || ! is_a( $order, 'WC_Order' ) ) {
+			return $rows;
+		}
+
+		foreach ( $order->get_items() as $item ) {
+			$product = is_callable( array( $item, 'get_product' ) ) ? $item->get_product() : null;
+			$image   = '';
+
+			if ( $product && $product->get_image_id() ) {
+				$image = wp_get_attachment_image_url( $product->get_image_id(), 'woocommerce_thumbnail' );
+			}
+
+			$rows[] = array(
+				'image' => $image ? $image : '',
+				'name'  => $item->get_name(),
+				'url'   => $product ? $product->get_permalink() : '',
+				'sku'   => $product ? (string) $product->get_sku() : '',
+				'meta'  => wc_display_item_meta( $item, array( 'echo' => false ) ),
+				'qty'   => (string) $item->get_quantity(),
+				'unit'  => wc_price( $order->get_item_subtotal( $item, false, true ), array( 'currency' => $order->get_currency() ) ),
+				'total' => $order->get_formatted_line_subtotal( $item ),
+			);
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * Kokkuvõtte read WooCommerce'i enda arvutuse pealt.
+	 *
+	 * @param WC_Order $order Tellimus.
+	 * @return array
+	 */
+	public static function order_totals_data( $order ) {
+		$rows = array();
+
+		if ( ! $order || ! is_a( $order, 'WC_Order' ) ) {
+			return $rows;
+		}
+
+		foreach ( $order->get_order_item_totals() as $key => $total ) {
+			$rows[] = array(
+				'key'   => (string) $key,
+				'label' => isset( $total['label'] ) ? $total['label'] : '',
+				'value' => isset( $total['value'] ) ? $total['value'] : '',
+			);
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * Ise kokku pandud toodete tabel.
+	 *
+	 * @param array $rows  Tellimuse read.
+	 * @param array $p     Ploki seaded.
+	 * @param array $brand Bränd.
+	 * @return string
+	 */
+	public static function items_table( $rows, $p, $brand ) {
+		$cols = array();
+
+		foreach ( (array) $p['cols'] as $col ) {
+			if ( ! empty( $col['on'] ) ) {
+				$cols[] = $col;
+			}
+		}
+
+		if ( empty( $cols ) || empty( $rows ) ) {
+			return '';
+		}
+
+		$f      = $brand['font_family'];
+		$fs     = (int) $brand['base_size'];
+		$border = 'none' === $p['lines'] ? '' : '1px solid ' . $brand['border_color'];
+		$grid   = 'grid' === $p['lines'];
+		$cell   = 'padding:10px 8px;font-family:' . $f . ';font-size:' . $fs . 'px;line-height:1.5;vertical-align:top;';
+
+		$out = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;">';
+
+		if ( ! empty( $p['header'] ) ) {
+			$out .= '<thead><tr>';
+			foreach ( $cols as $col ) {
+				$align = in_array( $col['key'], array( 'qty', 'unit', 'total' ), true ) ? 'right' : 'left';
+				$style = $cell . 'text-align:' . $align . ';font-weight:700;color:' . $brand['heading_color'] . ';';
+				if ( $border ) {
+					$style .= 'border-bottom:2px solid ' . $brand['border_color'] . ';';
+				}
+				if ( $grid && $border ) {
+					$style .= 'border:' . $border . ';';
+				}
+				$out .= '<th style="' . esc_attr( $style ) . '">' . esc_html( $col['label'] ) . '</th>';
+			}
+			$out .= '</tr></thead>';
+		}
+
+		$out .= '<tbody>';
+
+		foreach ( $rows as $row ) {
+			$out .= '<tr>';
+
+			foreach ( $cols as $col ) {
+				$key   = $col['key'];
+				$align = in_array( $key, array( 'qty', 'unit', 'total' ), true ) ? 'right' : 'left';
+				$style = $cell . 'text-align:' . $align . ';color:' . $brand['text_color'] . ';';
+
+				if ( $border ) {
+					$style .= $grid ? 'border:' . $border . ';' : 'border-bottom:' . $border . ';';
+				}
+
+				$out .= '<td style="' . esc_attr( $style ) . '">' . self::item_cell( $key, $row, $p, $brand ) . '</td>';
+			}
+
+			$out .= '</tr>';
+		}
+
+		return $out . '</tbody></table>';
+	}
+
+	/**
+	 * Ühe lahtri sisu toodete tabelis.
+	 *
+	 * @param string $key   Veeru võti.
+	 * @param array  $row   Rea andmed.
+	 * @param array  $p     Ploki seaded.
+	 * @param array  $brand Bränd.
+	 * @return string
+	 */
+	protected static function item_cell( $key, $row, $p, $brand ) {
+		$value = isset( $row[ $key ] ) ? $row[ $key ] : '';
+
+		switch ( $key ) {
+			case 'image':
+				if ( '' === $value ) {
+					return '&nbsp;';
+				}
+				$w = (int) $p['img_size'];
+				return '<img src="' . esc_url( $value ) . '" alt="" width="' . $w . '" style="width:' . $w . 'px;max-width:100%;height:auto;display:block;border:0;border-radius:4px;" />';
+
+			case 'name':
+				$name = esc_html( $value );
+				if ( ! empty( $p['link'] ) && ! empty( $row['url'] ) ) {
+					$name = '<a href="' . esc_url( $row['url'] ) . '" style="color:' . esc_attr( $brand['accent'] ) . ';text-decoration:none;">' . $name . '</a>';
+				}
+				return $name;
+
+			case 'meta':
+				// wc_display_item_meta annab juba valmis HTML-i.
+				return '' !== $value ? '<span style="font-size:' . max( 11, (int) $brand['base_size'] - 2 ) . 'px;color:' . esc_attr( $brand['muted_color'] ) . ';">' . wp_kses_post( $value ) . '</span>' : '&nbsp;';
+
+			case 'unit':
+			case 'total':
+				return wp_kses_post( $value );
+
+			default:
+				return esc_html( $value );
+		}
+	}
+
+	/**
+	 * Ise kokku pandud kokkuvõte.
+	 *
+	 * @param array $rows  Kokkuvõtte read.
+	 * @param array $p     Ploki seaded.
+	 * @param array $brand Bränd.
+	 * @return string
+	 */
+	public static function totals_table( $rows, $p, $brand ) {
+		if ( empty( $rows ) ) {
+			return '';
+		}
+
+		$wanted = array();
+		foreach ( (array) $p['rows'] as $r ) {
+			$wanted[ $r['key'] ] = array(
+				'on'    => ! empty( $r['on'] ),
+				'label' => $r['label'],
+			);
+		}
+
+		$f      = $brand['font_family'];
+		$fs     = (int) $brand['base_size'];
+		$border = 'none' === $p['lines'] ? '' : '1px solid ' . $brand['border_color'];
+		$width  = 'full' === $p['align'] ? '100%' : '60%';
+		$table  = 'right' === $p['align'] ? 'width:' . $width . ';margin-left:auto;' : 'width:100%;';
+
+		$out = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="' . esc_attr( $table ) . 'border-collapse:collapse;">';
+
+		foreach ( $rows as $row ) {
+			$key = $row['key'];
+
+			// Tundmatuid ridu (nt maksuread) näitame alati — parem liiga palju.
+			if ( isset( $wanted[ $key ] ) && ! $wanted[ $key ]['on'] ) {
+				continue;
+			}
+
+			$label = ( isset( $wanted[ $key ] ) && '' !== $wanted[ $key ]['label'] ) ? $wanted[ $key ]['label'] : $row['label'];
+			$last  = 'order_total' === $key && ! empty( $p['bold_total'] );
+			$cell  = 'padding:8px 8px;font-family:' . $f . ';font-size:' . $fs . 'px;line-height:1.5;';
+
+			if ( $border ) {
+				$cell .= 'border-bottom:' . $border . ';';
+			}
+
+			$out .= '<tr>'
+				. '<th style="' . esc_attr( $cell . 'text-align:left;font-weight:' . ( $last ? '700' : '600' ) . ';color:' . $brand['heading_color'] . ';' ) . '">' . esc_html( wp_strip_all_tags( $label ) ) . '</th>'
+				. '<td style="' . esc_attr( $cell . 'text-align:right;color:' . $brand['text_color'] . ';font-weight:' . ( $last ? '700' : '400' ) . ';' ) . '">' . wp_kses_post( $row['value'] ) . '</td>'
+				. '</tr>';
+		}
+
+		return $out . '</table>';
 	}
 
 	/**
@@ -766,6 +1032,52 @@ class WMD_Render {
 		$out .= '</tfoot></table>';
 
 		return $out;
+	}
+
+	/**
+	 * Näidistooted, kui tellimust pole.
+	 *
+	 * @param array $brand Bränd.
+	 * @return array
+	 */
+	public static function sample_items( $brand ) {
+		return array(
+			array(
+				'image' => '',
+				'name'  => __( 'Puuvillane T-särk', 'wonom-meilidisainer' ),
+				'url'   => '',
+				'sku'   => 'TS-100',
+				'meta'  => __( 'Suurus: M', 'wonom-meilidisainer' ),
+				'qty'   => '2',
+				'unit'  => '19,90 €',
+				'total' => '39,80 €',
+			),
+			array(
+				'image' => '',
+				'name'  => __( 'Villane sall', 'wonom-meilidisainer' ),
+				'url'   => '',
+				'sku'   => 'SL-042',
+				'meta'  => __( 'Värv: hall', 'wonom-meilidisainer' ),
+				'qty'   => '1',
+				'unit'  => '42,60 €',
+				'total' => '42,60 €',
+			),
+		);
+	}
+
+	/**
+	 * Näidiskokkuvõte, kui tellimust pole.
+	 *
+	 * @return array
+	 */
+	public static function sample_totals() {
+		return array(
+			array( 'key' => 'cart_subtotal', 'label' => __( 'Vahesumma:', 'wonom-meilidisainer' ), 'value' => '82,40 €' ),
+			array( 'key' => 'discount', 'label' => __( 'Allahindlus:', 'wonom-meilidisainer' ), 'value' => '-8,00 €' ),
+			array( 'key' => 'shipping', 'label' => __( 'Tarne:', 'wonom-meilidisainer' ), 'value' => '5,00 €' ),
+			array( 'key' => 'payment_method', 'label' => __( 'Makseviis:', 'wonom-meilidisainer' ), 'value' => __( 'Panga ülekanne', 'wonom-meilidisainer' ) ),
+			array( 'key' => 'order_total', 'label' => __( 'Kokku:', 'wonom-meilidisainer' ), 'value' => '79,40 €' ),
+		);
 	}
 
 	/**

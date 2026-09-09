@@ -5,6 +5,10 @@
 ( function ( global ) {
 	'use strict';
 
+	// Makseviiside juhised. Plokk vajab neid, aga plokini kujundust ei anta,
+	// seega hoiame neid siin ja full() värskendab iga renderdusega.
+	var design_payments = {};
+
 	function esc( str ) {
 		return String( str == null ? '' : str )
 			.replace( /&/g, '&amp;' )
@@ -235,6 +239,39 @@
 				body = sampleAddresses( brand );
 				break;
 
+			case 'order_items':
+				body = itemsTable( ( ctx && ctx.__items ) || sampleItems(), p, brand );
+				if ( ! body ) {
+					return '';
+				}
+				break;
+
+			case 'order_totals':
+				body = totalsTable( ( ctx && ctx.__totals ) || sampleTotals(), p, brand );
+				if ( ! body ) {
+					return '';
+				}
+				break;
+
+			case 'payment_note':
+				var gw = ctx && ctx.__payment ? ctx.__payment : '';
+				var note = ( design_payments && gw && design_payments[ gw ] ) ? design_payments[ gw ] : '';
+
+				if ( ! String( note ).replace( /<[^>]*>/g, '' ).trim() ) {
+					return '';
+				}
+
+				var inner = '';
+				if ( p.title ) {
+					inner += '<div style="font-family:' + font + ';font-size:' + Math.max( 15, num( brand.base_size, 15 ) ) + 'px;font-weight:700;color:' + escAttr( brand.heading_color ) + ';margin-bottom:6px;">' + esc( tags( p.title, ctx ) ) + '</div>';
+				}
+				inner += '<div style="font-family:' + font + ';font-size:' + num( brand.base_size, 15 ) + 'px;line-height:1.6;color:' + escAttr( brand.text_color ) + ';">' + linkify( tags( note, ctx ), brand ) + '</div>';
+
+				body = p.box
+					? '<div style="border:1px solid ' + escAttr( brand.border_color ) + ';border-left:3px solid ' + escAttr( brand.accent ) + ';border-radius:6px;padding:12px 14px;">' + inner + '</div>'
+					: inner;
+				break;
+
 			case 'payment_info':
 				body = '<div style="' + escAttr( style( {
 					'font-family': font,
@@ -320,6 +357,140 @@
 			} ) ) + '" /></td></tr></table>';
 	}
 
+	function sampleItems() {
+		return [
+			{ image: '', name: 'Puuvillane T-särk', url: '', sku: 'TS-100', meta: 'Suurus: M', qty: '2', unit: '19,90 €', total: '39,80 €' },
+			{ image: '', name: 'Villane sall', url: '', sku: 'SL-042', meta: 'Värv: hall', qty: '1', unit: '42,60 €', total: '42,60 €' },
+		];
+	}
+
+	function sampleTotals() {
+		return [
+			{ key: 'cart_subtotal', label: 'Vahesumma:', value: '82,40 €' },
+			{ key: 'discount', label: 'Allahindlus:', value: '-8,00 €' },
+			{ key: 'shipping', label: 'Tarne:', value: '5,00 €' },
+			{ key: 'payment_method', label: 'Makseviis:', value: 'Panga ülekanne' },
+			{ key: 'order_total', label: 'Kokku:', value: '79,40 €' },
+		];
+	}
+
+	var RIGHT_COLS = [ 'qty', 'unit', 'total' ];
+
+	function itemsTable( rows, p, brand ) {
+		var cols = ( p.cols || [] ).filter( function ( c ) {
+			return c.on;
+		} );
+
+		if ( ! cols.length || ! rows.length ) {
+			return '';
+		}
+
+		var f = brand.font_family;
+		var fs = num( brand.base_size, 15 );
+		var border = p.lines === 'none' ? '' : '1px solid ' + brand.border_color;
+		var grid = p.lines === 'grid';
+		var cell = 'padding:10px 8px;font-family:' + f + ';font-size:' + fs + 'px;line-height:1.5;vertical-align:top;';
+		var out = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;">';
+
+		if ( p.header ) {
+			out += '<thead><tr>';
+			cols.forEach( function ( c ) {
+				var s = cell + 'text-align:' + ( RIGHT_COLS.indexOf( c.key ) !== -1 ? 'right' : 'left' ) + ';font-weight:700;color:' + brand.heading_color + ';';
+				if ( border ) {
+					s += 'border-bottom:2px solid ' + brand.border_color + ';';
+				}
+				if ( grid && border ) {
+					s += 'border:' + border + ';';
+				}
+				out += '<th style="' + escAttr( s ) + '">' + esc( c.label ) + '</th>';
+			} );
+			out += '</tr></thead>';
+		}
+
+		out += '<tbody>';
+
+		rows.forEach( function ( row ) {
+			out += '<tr>';
+			cols.forEach( function ( c ) {
+				var s = cell + 'text-align:' + ( RIGHT_COLS.indexOf( c.key ) !== -1 ? 'right' : 'left' ) + ';color:' + brand.text_color + ';';
+				if ( border ) {
+					s += grid ? 'border:' + border + ';' : 'border-bottom:' + border + ';';
+				}
+				out += '<td style="' + escAttr( s ) + '">' + itemCell( c.key, row, p, brand ) + '</td>';
+			} );
+			out += '</tr>';
+		} );
+
+		return out + '</tbody></table>';
+	}
+
+	function itemCell( key, row, p, brand ) {
+		var value = row[ key ] === undefined ? '' : row[ key ];
+
+		if ( key === 'image' ) {
+			if ( ! value ) {
+				return '<div style="width:' + num( p.img_size, 64 ) + 'px;height:' + num( p.img_size, 64 ) + 'px;background:' + brand.border_color + ';border-radius:4px;"></div>';
+			}
+			var w = num( p.img_size, 64 );
+			return '<img src="' + escAttr( value ) + '" alt="" width="' + w + '" style="width:' + w + 'px;max-width:100%;height:auto;display:block;border:0;border-radius:4px;" />';
+		}
+
+		if ( key === 'name' ) {
+			var name = esc( value );
+			return ( p.link && row.url ) ? '<a href="' + escAttr( row.url ) + '" style="color:' + escAttr( brand.accent ) + ';text-decoration:none;">' + name + '</a>' : name;
+		}
+
+		if ( key === 'meta' ) {
+			return value ? '<span style="font-size:' + Math.max( 11, num( brand.base_size, 15 ) - 2 ) + 'px;color:' + escAttr( brand.muted_color ) + ';">' + value + '</span>' : '&nbsp;';
+		}
+
+		// unit ja total tulevad WooCommerce'ilt juba HTML-ina.
+		if ( key === 'unit' || key === 'total' ) {
+			return value || '&nbsp;';
+		}
+
+		return esc( value );
+	}
+
+	function totalsTable( rows, p, brand ) {
+		if ( ! rows.length ) {
+			return '';
+		}
+
+		var wanted = {};
+		( p.rows || [] ).forEach( function ( r ) {
+			wanted[ r.key ] = r;
+		} );
+
+		var f = brand.font_family;
+		var fs = num( brand.base_size, 15 );
+		var border = p.lines === 'none' ? '' : '1px solid ' + brand.border_color;
+		var table = p.align === 'right' ? 'width:60%;margin-left:auto;' : 'width:100%;';
+		var out = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="' + escAttr( table ) + 'border-collapse:collapse;">';
+
+		rows.forEach( function ( row ) {
+			var w = wanted[ row.key ];
+
+			if ( w && ! w.on ) {
+				return;
+			}
+
+			var label = ( w && w.label ) ? w.label : row.label;
+			var last = row.key === 'order_total' && p.bold_total;
+			var cell = 'padding:8px 8px;font-family:' + f + ';font-size:' + fs + 'px;line-height:1.5;';
+
+			if ( border ) {
+				cell += 'border-bottom:' + border + ';';
+			}
+
+			out += '<tr><th style="' + escAttr( cell + 'text-align:left;font-weight:' + ( last ? '700' : '600' ) + ';color:' + brand.heading_color + ';' ) + '">' +
+				esc( String( label ).replace( /<[^>]*>/g, '' ) ) + '</th>' +
+				'<td style="' + escAttr( cell + 'text-align:right;color:' + brand.text_color + ';font-weight:' + ( last ? '700' : '400' ) + ';' ) + '">' + row.value + '</td></tr>';
+		} );
+
+		return out + '</table>';
+	}
+
 	function sampleBody( brand ) {
 		return sampleOrderTable( brand ) + sampleAddresses( brand );
 	}
@@ -393,6 +564,7 @@
 
 	function full( design, emailId, ctx, heading, bodyHtml, opts ) {
 		opts = opts || {};
+		design_payments = design.payments || {};
 		var brand = design.brand;
 		var settings = ( design.emails && design.emails[ emailId ] ) || { heading: '', before: [], after: [] };
 		var width = num( brand.width, 600 );

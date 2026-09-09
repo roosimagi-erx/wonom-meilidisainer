@@ -164,7 +164,21 @@ class WMD_Design {
 			);
 		}
 
+		$out['payments'] = isset( $design['payments'] ) && is_array( $design['payments'] ) ? $design['payments'] : array();
+
 		return $out;
+	}
+
+	/**
+	 * Ühe makseviisi juhised.
+	 *
+	 * @param string $gateway_id Makselahenduse id.
+	 * @return string
+	 */
+	public static function payment_note( $gateway_id ) {
+		$design = self::get();
+
+		return isset( $design['payments'][ $gateway_id ] ) ? (string) $design['payments'][ $gateway_id ] : '';
 	}
 
 	/**
@@ -179,12 +193,25 @@ class WMD_Design {
 		}
 
 		$out = array(
-			'version' => 1,
-			'brand'   => array(),
-			'header'  => array(),
-			'footer'  => array(),
-			'emails'  => array(),
+			'version'  => 1,
+			'brand'    => array(),
+			'header'   => array(),
+			'footer'   => array(),
+			'emails'   => array(),
+			'payments' => array(),
 		);
+
+		if ( isset( $design['payments'] ) && is_array( $design['payments'] ) ) {
+			foreach ( $design['payments'] as $gateway => $note ) {
+				$gateway = sanitize_key( $gateway );
+
+				if ( '' === $gateway ) {
+					continue;
+				}
+
+				$out['payments'][ $gateway ] = wp_kses( (string) $note, wmd_allowed_html() );
+			}
+		}
 
 		foreach ( wmd_brand_schema() as $key => $field ) {
 			$value              = isset( $design['brand'][ $key ] ) ? $design['brand'][ $key ] : $field['default'];
@@ -256,6 +283,56 @@ class WMD_Design {
 	}
 
 	/**
+	 * Veergude nimekirja puhastus.
+	 *
+	 * Järjekord tuleb kasutaja käest, aga võtmed peavad olema skeemis lubatud.
+	 * Puuduvad veerud lisame lõppu välja lülitatuna, et uus versioon ei kaotaks
+	 * kasutaja seadeid ega peidaks uusi valikuid.
+	 *
+	 * @param mixed $value Toores nimekiri.
+	 * @param array $field Välja kirjeldus.
+	 * @return array
+	 */
+	protected static function sanitize_columns( $value, $field ) {
+		$options = isset( $field['options'] ) ? $field['options'] : array();
+		$out     = array();
+		$seen    = array();
+
+		if ( is_array( $value ) ) {
+			foreach ( $value as $col ) {
+				if ( ! is_array( $col ) || empty( $col['key'] ) ) {
+					continue;
+				}
+
+				$key = sanitize_key( $col['key'] );
+
+				if ( ! isset( $options[ $key ] ) || isset( $seen[ $key ] ) ) {
+					continue;
+				}
+
+				$seen[ $key ] = true;
+				$out[]        = array(
+					'key'   => $key,
+					'label' => isset( $col['label'] ) ? sanitize_text_field( $col['label'] ) : $options[ $key ],
+					'on'    => empty( $col['on'] ) ? 0 : 1,
+				);
+			}
+		}
+
+		foreach ( $options as $key => $label ) {
+			if ( ! isset( $seen[ $key ] ) ) {
+				$out[] = array(
+					'key'   => $key,
+					'label' => $label,
+					'on'    => 0,
+				);
+			}
+		}
+
+		return $out;
+	}
+
+	/**
 	 * Ploki nähtavuse tingimus.
 	 *
 	 * Tühi nimekiri tähendab „näita alati". Praegu on ainus tingimus makseviis,
@@ -288,6 +365,9 @@ class WMD_Design {
 	 */
 	protected static function sanitize_value( $value, $field ) {
 		switch ( $field['type'] ) {
+			case 'columns':
+				return self::sanitize_columns( $value, $field );
+
 			case 'color':
 				return wmd_sanitize_color( $value );
 
