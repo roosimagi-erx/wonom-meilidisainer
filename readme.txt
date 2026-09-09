@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.15.1
+Stable tag: 0.16.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,11 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.16.0 =
+* Uus plokk „Tellimuse andmed (tabel)" — silt-väärtus read ühes või kahes veerus. Väärtuse valid { } menüüst, kus on nii üldised märgendid kui selle tellimuse päris väljad (nt Montonio jälgimiskood). Igale reale saab lisada lingi, kus {{value}} asendub väärtusega. Tühjaks jäänud read peidetakse.
+* Parandus: JavaScripti pool ei osanud märgendit {{meta:võti}} lahendada — see töötas ainult päris kirjas. Kujundajas jäi väärtus tühjaks ja peitmise korral kadus terve rida.
+* Parandus: muutujavaliku ({ }) sisestus kirjutas väärtuse ainult ekraanile, mitte andmetesse, kui väli ei olnud tavaline ploki väli. Nüüd teatab väli ise oma muutusest, seega valik jõuab kohale igal pool.
 
 = 0.15.1 =
 * Parandus: plokk „Tellimuse väli" näitas kujundajas kriipsu, kui välja võti oli määramata või tellimusel puudus — päris kirjas peitis ta end ära. Nüüd käitub kujundaja täpselt nagu päris kiri.

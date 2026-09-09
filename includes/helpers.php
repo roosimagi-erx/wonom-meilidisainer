@@ -626,8 +626,53 @@ function wmd_block_types() {
 				'pad' => $pad,
 			),
 		),
+		// Mitmerealine andmekast: silt + väärtus, väärtus valitakse nimekirjast
+		// või kirjutatakse ise märgenditega.
+		'order_details' => array(
+			'label'  => __( 'Tellimuse andmed (tabel)', 'wonom-meilidisainer' ),
+			'icon'   => '▦',
+			'woo'    => true,
+			'fields' => array(
+				'rows'       => array(
+					'type'    => 'pairs',
+					'label'   => __( 'Read', 'wonom-meilidisainer' ),
+					'default' => array(
+						array(
+							'label' => __( 'Tellimuse number', 'wonom-meilidisainer' ),
+							'value' => '#{{order_number}}',
+							'link'  => '',
+						),
+						array(
+							'label' => __( 'Makseviis', 'wonom-meilidisainer' ),
+							'value' => '{{payment_method}}',
+							'link'  => '',
+						),
+					),
+				),
+				'cols'       => array(
+					'type'    => 'select',
+					'label'   => __( 'Veerge', 'wonom-meilidisainer' ),
+					'options' => array(
+						'1' => __( 'Üks veerg', 'wonom-meilidisainer' ),
+						'2' => __( 'Kaks veergu', 'wonom-meilidisainer' ),
+					),
+					'default' => '2',
+				),
+				'hide_empty' => array(
+					'type'    => 'toggle',
+					'label'   => __( 'Peida tühjaks jäänud read', 'wonom-meilidisainer' ),
+					'default' => 1,
+				),
+				'box'        => array(
+					'type'    => 'toggle',
+					'label'   => __( 'Raamitud kastis', 'wonom-meilidisainer' ),
+					'default' => 0,
+				),
+				'pad'        => $pad,
+			),
+		),
 		'order_meta'   => array(
-			'label'  => __( 'Tellimuse väli', 'wonom-meilidisainer' ),
+			'label'  => __( 'Tellimuse väli (üks rida)', 'wonom-meilidisainer' ),
 			'icon'   => '»',
 			'woo'    => true,
 			'fields' => array(

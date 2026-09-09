@@ -531,6 +531,14 @@ class WMD_Render {
 					: '<div style="border:1px solid ' . esc_attr( $brand['border_color'] ) . ';border-left:3px solid ' . esc_attr( $brand['accent'] ) . ';border-radius:6px;padding:12px 14px;">' . $inner . '</div>';
 				break;
 
+			case 'order_details':
+				$body = self::details_block( $p, $brand, $ctx );
+
+				if ( '' === $body ) {
+					return '';
+				}
+				break;
+
 			case 'addresses':
 				$order = isset( $ctx['__order'] ) ? $ctx['__order'] : null;
 				$body  = self::addresses_block( self::address_data( $order ), $p, $brand );
@@ -796,6 +804,83 @@ class WMD_Render {
 			default:
 				return esc_html( $value );
 		}
+	}
+
+	/**
+	 * Silt-väärtus andmekast, üks või kaks veergu.
+	 *
+	 * @param array $p     Ploki seaded.
+	 * @param array $brand Bränd.
+	 * @param array $ctx   Kontekst.
+	 * @return string
+	 */
+	public static function details_block( $p, $brand, $ctx ) {
+		$cells = array();
+
+		foreach ( (array) $p['rows'] as $row ) {
+			$value = trim( WMD_Tags::replace( $row['value'], $ctx ) );
+
+			if ( '' === $value && ! empty( $p['hide_empty'] ) ) {
+				continue;
+			}
+
+			$shown = esc_html( '' === $value ? '—' : $value );
+			$link  = trim( (string) $row['link'] );
+
+			if ( '' !== $link && '' !== $value ) {
+				$url   = WMD_Tags::replace( str_replace( '{{value}}', rawurlencode( $value ), $link ), $ctx );
+				$shown = '<a href="' . esc_url( $url ) . '" style="color:' . esc_attr( $brand['accent'] ) . ';">' . esc_html( $value ) . '</a>';
+			}
+
+			$cells[] = array(
+				'label' => $row['label'],
+				'value' => $shown,
+			);
+		}
+
+		if ( empty( $cells ) ) {
+			return '';
+		}
+
+		$f     = $brand['font_family'];
+		$fs    = (int) $brand['base_size'];
+		$label = 'font-family:' . $f . ';font-size:' . $fs . 'px;font-weight:700;color:' . $brand['heading_color'] . ';';
+		$val   = 'font-family:' . $f . ';font-size:' . $fs . 'px;line-height:1.6;color:' . $brand['text_color'] . ';';
+		$cols  = ( '2' === (string) $p['cols'] ) ? 2 : 1;
+		$width = 2 === $cols ? '50%' : '100%';
+
+		$rows = '';
+
+		for ( $i = 0; $i < count( $cells ); $i += $cols ) {
+			$rows .= '<tr>';
+
+			for ( $c = 0; $c < $cols; $c++ ) {
+				$cell = isset( $cells[ $i + $c ] ) ? $cells[ $i + $c ] : null;
+				$side = ( 2 === $cols && 0 === $c ) ? 'padding-right:12px;' : '';
+				$side .= ( 2 === $cols && $c > 0 ) ? 'padding-left:12px;' : '';
+
+				$rows .= '<td class="wmd-col" style="' . esc_attr( 'vertical-align:top;width:' . $width . ';padding-bottom:10px;' . $side ) . '">';
+
+				if ( $cell ) {
+					$rows .= '<div style="' . esc_attr( $label ) . '">' . esc_html( $cell['label'] ) . '</div>'
+						. '<div style="' . esc_attr( $val ) . '">' . $cell['value'] . '</div>';
+				} else {
+					$rows .= '&nbsp;';
+				}
+
+				$rows .= '</td>';
+			}
+
+			$rows .= '</tr>';
+		}
+
+		$table = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;">' . $rows . '</table>';
+
+		if ( empty( $p['box'] ) ) {
+			return $table;
+		}
+
+		return '<div style="border:1px solid ' . esc_attr( $brand['border_color'] ) . ';border-radius:6px;padding:14px;">' . $table . '</div>';
 	}
 
 	/**

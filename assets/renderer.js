@@ -38,12 +38,30 @@
 
 	function tags( text, ctx ) {
 		text = String( text == null ? '' : text );
+
 		if ( text.indexOf( '{{' ) === -1 ) {
 			return text;
 		}
-		return text.replace( /\{\{\s*([a-z0-9_]+)\s*\}\}/gi, function ( m, key ) {
+
+		return text.replace( /\{\{\s*([a-z0-9_:\-]+)\s*\}\}/gi, function ( m, key ) {
+			// {{meta:võti}} loeb tellimuse välja. Võti on tõstutundlik, seega
+			// väiketäheliseks teeme ainult tavalised märgendid.
+			if ( key.toLowerCase().indexOf( 'meta:' ) === 0 ) {
+				var metaKey = key.slice( 5 ).trim();
+				var fields = ( ctx && ctx.__fields ) || [];
+
+				for ( var i = 0; i < fields.length; i++ ) {
+					if ( fields[ i ].key === metaKey ) {
+						return String( fields[ i ].sample );
+					}
+				}
+
+				return '';
+			}
+
 			var k = key.toLowerCase();
-			return ctx && ctx[ k ] !== undefined ? String( ctx[ k ] ) : '';
+
+			return ( ctx && typeof ctx[ k ] !== 'object' && ctx[ k ] !== undefined ) ? String( ctx[ k ] ) : '';
 		} );
 	}
 
@@ -259,6 +277,13 @@
 			// need käes pole, näitame näidist.
 			case 'order_table':
 				body = wooPart( ctx, 'order_table' ) || sampleOrderTable( brand );
+				break;
+
+			case 'order_details':
+				body = detailsBlock( p, brand, ctx );
+				if ( ! body ) {
+					return '';
+				}
 				break;
 
 			case 'addresses':
@@ -552,6 +577,65 @@
 
 	function sampleBody( brand ) {
 		return sampleOrderTable( brand ) + sampleAddresses( brand );
+	}
+
+	/**
+	 * Silt-väärtus andmekast. Peegeldab WMD_Render::details_block.
+	 */
+	function detailsBlock( p, brand, ctx ) {
+		var cells = [];
+
+		( p.rows || [] ).forEach( function ( row ) {
+			var value = tags( row.value, ctx ).trim();
+
+			if ( ! value && p.hide_empty ) {
+				return;
+			}
+
+			var shown = esc( value || '—' );
+
+			if ( row.link && value ) {
+				shown = '<a style="color:' + escAttr( brand.accent ) + ';">' + esc( value ) + '</a>';
+			}
+
+			cells.push( { label: row.label, value: shown } );
+		} );
+
+		if ( ! cells.length ) {
+			return '';
+		}
+
+		var f = brand.font_family;
+		var fs = num( brand.base_size, 15 );
+		var labelCss = 'font-family:' + f + ';font-size:' + fs + 'px;font-weight:700;color:' + brand.heading_color + ';';
+		var valCss = 'font-family:' + f + ';font-size:' + fs + 'px;line-height:1.6;color:' + brand.text_color + ';';
+		var cols = String( p.cols ) === '2' ? 2 : 1;
+		var width = cols === 2 ? '50%' : '100%';
+		var rows = '';
+
+		for ( var i = 0; i < cells.length; i += cols ) {
+			rows += '<tr>';
+
+			for ( var c = 0; c < cols; c++ ) {
+				var cell = cells[ i + c ];
+				var side = ( cols === 2 && c === 0 ) ? 'padding-right:12px;' : '';
+				side += ( cols === 2 && c > 0 ) ? 'padding-left:12px;' : '';
+
+				rows += '<td class="wmd-col" style="' + escAttr( 'vertical-align:top;width:' + width + ';padding-bottom:10px;' + side ) + '">';
+				rows += cell
+					? '<div style="' + escAttr( labelCss ) + '">' + esc( cell.label ) + '</div><div style="' + escAttr( valCss ) + '">' + cell.value + '</div>'
+					: '&nbsp;';
+				rows += '</td>';
+			}
+
+			rows += '</tr>';
+		}
+
+		var table = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;">' + rows + '</table>';
+
+		return p.box
+			? '<div style="border:1px solid ' + escAttr( brand.border_color ) + ';border-radius:6px;padding:14px;">' + table + '</div>'
+			: table;
 	}
 
 	function sampleAddressData() {

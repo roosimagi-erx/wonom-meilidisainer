@@ -503,6 +503,38 @@
 			'<p class="wmd-hint">Linnuke näitab, kas veerg läheb kirja. Silti saab ümber kirjutada, nooltega järjekorda muuta.</p></div>';
 	}
 
+	/**
+	 * Silt-väärtus ridade toimeti. Väärtuse saab valida { } menüüst, kus on
+	 * nii üldised märgendid kui selle tellimuse päris väljad.
+	 */
+	function pairsHtml( scope, key, field, value ) {
+		var rows = Array.isArray( value ) ? value : [];
+
+		var items = rows.map( function ( row, index ) {
+			var vid = 'wmd-pair-' + index;
+
+			return '<li class="wmd-pair" data-index="' + index + '">' +
+				'<div class="wmd-pair-top">' +
+				'<input type="text" class="wmd-input wmd-pair-label" data-pair-label="' + index + '" value="' + esc( row.label ) + '" placeholder="Silt" />' +
+				'<span class="wmd-colmove">' +
+				'<button type="button" data-pair-up="' + index + '" title="Üles"' + ( index === 0 ? ' disabled' : '' ) + '>↑</button>' +
+				'<button type="button" data-pair-down="' + index + '" title="Alla"' + ( index === rows.length - 1 ? ' disabled' : '' ) + '>↓</button>' +
+				'<button type="button" data-pair-del="' + index + '" title="Kustuta rida">✕</button>' +
+				'</span></div>' +
+				'<div class="wmd-inline">' +
+				'<input type="text" class="wmd-input wmd-small" id="' + esc( vid ) + '" data-pair-value="' + index + '" value="' + esc( row.value ) + '" placeholder="Väärtus või {{muutuja}}" />' +
+				tagPicker( vid ) +
+				'</div>' +
+				'<input type="text" class="wmd-input wmd-small" data-pair-link="' + index + '" value="' + esc( row.link || '' ) + '" placeholder="Link (valikuline), {{value}} = väärtus" />' +
+				'</li>';
+		} ).join( '' );
+
+		return '<div class="wmd-field"><label class="wmd-label">' + esc( field.label ) + '</label>' +
+			'<ul class="wmd-pairs" data-scope="' + esc( scope ) + '" data-key="' + esc( key ) + '">' + items + '</ul>' +
+			'<button type="button" class="wmd-mini wmd-pair-add">+ Lisa rida</button>' +
+			'<p class="wmd-hint">Väärtuse saab valida { } nupu alt — seal on ka selle tellimuse päris väljad, nagu jälgimiskood.</p></div>';
+	}
+
 	function fieldHtml( scope, key, field, value ) {
 		var id = 'wmd-f-' + scope + '-' + key;
 		var label = '<label class="wmd-label" for="' + esc( id ) + '">' + esc( field.label ) + '</label>';
@@ -511,6 +543,10 @@
 
 		if ( field.type === 'columns' ) {
 			return columnsHtml( scope, key, field, value );
+		}
+
+		if ( field.type === 'pairs' ) {
+			return pairsHtml( scope, key, field, value );
 		}
 
 		switch ( field.type ) {
@@ -1148,7 +1184,7 @@
 		// Väljad.
 		// Veergude nimekirjal on oma sidumine — muidu püüaks üldine sidumine
 		// tema sees toimuva kinni ja kirjutaks väärtuse üle.
-		root.querySelectorAll( '.wmd-panel [data-scope]:not(.wmd-cols), .wmd-right [data-scope]:not(.wmd-cols)' ).forEach( function ( input ) {
+		root.querySelectorAll( '.wmd-panel [data-scope]:not(.wmd-cols):not(.wmd-pairs), .wmd-right [data-scope]:not(.wmd-cols):not(.wmd-pairs)' ).forEach( function ( input ) {
 			var scope = input.getAttribute( 'data-scope' );
 			var key = input.getAttribute( 'data-key' );
 
@@ -1255,6 +1291,84 @@
 					move( parseInt( btn.getAttribute( 'data-col-down' ), 10 ), 1 );
 				} );
 			} );
+		} );
+
+		// Silt-väärtus ridade toimeti.
+		root.querySelectorAll( '.wmd-pairs' ).forEach( function ( list ) {
+			var key = list.getAttribute( 'data-key' );
+
+			function rows() {
+				var block = findBlock( state.selected );
+				return block ? block.props[ key ] : null;
+			}
+
+			function bindField( attr, prop ) {
+				list.querySelectorAll( '[' + attr + ']' ).forEach( function ( input ) {
+					input.addEventListener( 'input', function () {
+						var r = rows();
+						if ( r ) {
+							r[ parseInt( input.getAttribute( attr ), 10 ) ][ prop ] = input.value;
+							markDirty();
+							schedulePreview();
+						}
+					} );
+				} );
+			}
+
+			bindField( 'data-pair-label', 'label' );
+			bindField( 'data-pair-value', 'value' );
+			bindField( 'data-pair-link', 'link' );
+
+			function commit() {
+				markDirty();
+				render();
+				invalidatePreview();
+			}
+
+			list.querySelectorAll( '[data-pair-del]' ).forEach( function ( btn ) {
+				btn.addEventListener( 'click', function () {
+					var r = rows();
+					if ( r ) {
+						r.splice( parseInt( btn.getAttribute( 'data-pair-del' ), 10 ), 1 );
+						commit();
+					}
+				} );
+			} );
+
+			function move( index, delta ) {
+				var r = rows();
+				var to = index + delta;
+
+				if ( ! r || to < 0 || to >= r.length ) {
+					return;
+				}
+
+				r.splice( to, 0, r.splice( index, 1 )[ 0 ] );
+				commit();
+			}
+
+			list.querySelectorAll( '[data-pair-up]' ).forEach( function ( btn ) {
+				btn.addEventListener( 'click', function () {
+					move( parseInt( btn.getAttribute( 'data-pair-up' ), 10 ), -1 );
+				} );
+			} );
+
+			list.querySelectorAll( '[data-pair-down]' ).forEach( function ( btn ) {
+				btn.addEventListener( 'click', function () {
+					move( parseInt( btn.getAttribute( 'data-pair-down' ), 10 ), 1 );
+				} );
+			} );
+
+			var add = list.parentNode.querySelector( '.wmd-pair-add' );
+			if ( add ) {
+				add.addEventListener( 'click', function () {
+					var r = rows();
+					if ( r ) {
+						r.push( { label: '', value: '', link: '' } );
+						commit();
+					}
+				} );
+			}
 		} );
 
 		// Ploki nähtavustingimus makseviisi järgi.
@@ -1532,7 +1646,7 @@
 				area.value = area.value.slice( 0, start ) + insert + area.value.slice( end );
 				area.focus();
 				area.selectionStart = area.selectionEnd = start + insert.length;
-				setValue( area.getAttribute( 'data-scope' ), area.getAttribute( 'data-key' ), area.value );
+				area.dispatchEvent( new Event( 'input', { bubbles: true } ) );
 			} );
 		} );
 	}
@@ -1564,7 +1678,10 @@
 					target.focus();
 					target.selectionStart = target.selectionEnd = start + token.length;
 					menu.hidden = true;
-					setValue( target.getAttribute( 'data-scope' ), target.getAttribute( 'data-key' ), target.value );
+
+					// Laseme väljal endal teatada — nii jõuab väärtus kohale
+					// olenemata sellest, kes selle välja sidus.
+					target.dispatchEvent( new Event( 'input', { bubbles: true } ) );
 				} );
 			} );
 		} );

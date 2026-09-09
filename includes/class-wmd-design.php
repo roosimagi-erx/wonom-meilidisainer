@@ -353,6 +353,44 @@ class WMD_Design {
 	}
 
 	/**
+	 * Silt-väärtus ridade puhastus.
+	 *
+	 * Väärtus võib sisaldada märgendeid, seega ei tohi seda URL-ina puhastada.
+	 *
+	 * @param mixed $value Toores nimekiri.
+	 * @return array
+	 */
+	protected static function sanitize_pairs( $value ) {
+		$out = array();
+
+		if ( ! is_array( $value ) ) {
+			return $out;
+		}
+
+		foreach ( $value as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+
+			$label = isset( $row['label'] ) ? sanitize_text_field( $row['label'] ) : '';
+			$val   = isset( $row['value'] ) ? sanitize_text_field( $row['value'] ) : '';
+			$link  = isset( $row['link'] ) ? sanitize_text_field( $row['link'] ) : '';
+
+			if ( '' === $label && '' === $val ) {
+				continue;
+			}
+
+			$out[] = array(
+				'label' => $label,
+				'value' => $val,
+				'link'  => $link,
+			);
+		}
+
+		return $out;
+	}
+
+	/**
 	 * Ploki nähtavuse tingimus.
 	 *
 	 * Tühi nimekiri tähendab „näita alati". Praegu on ainus tingimus makseviis,
@@ -387,6 +425,9 @@ class WMD_Design {
 		switch ( $field['type'] ) {
 			case 'columns':
 				return self::sanitize_columns( $value, $field );
+
+			case 'pairs':
+				return self::sanitize_pairs( $value );
 
 			case 'color':
 				return wmd_sanitize_color( $value );

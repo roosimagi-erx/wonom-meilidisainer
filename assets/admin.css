@@ -851,6 +851,44 @@
 	cursor: default;
 }
 
+/* Silt-väärtus read */
+
+.wmd-pairs {
+	margin: 0 0 6px;
+	padding: 0;
+	list-style: none;
+}
+
+.wmd-pair {
+	border: 1px solid var(--wmd-line);
+	border-radius: 6px;
+	padding: 7px;
+	margin-bottom: 6px;
+	background: #fff;
+}
+
+.wmd-pair-top {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+	margin-bottom: 5px;
+}
+
+.wmd-pair-label {
+	flex: 1 1 auto;
+	min-height: 26px;
+	font-weight: 600;
+	font-size: 12px;
+}
+
+.wmd-pair .wmd-small {
+	margin-top: 5px;
+}
+
+.wmd-pair .wmd-inline .wmd-small {
+	margin-top: 0;
+}
+
 .wmd-tags-head {
 	padding: 6px 7px 3px;
 	font-size: 10px;
