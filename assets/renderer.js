@@ -84,6 +84,31 @@
 		return current ? pay.indexOf( current ) !== -1 : true;
 	}
 
+	/**
+	 * WooCommerce'i osa serverilt, kui see on juba käes.
+	 */
+	function wooPart( ctx, key ) {
+		return ( ctx && ctx.__parts && ctx.__parts[ key ] ) ? ctx.__parts[ key ] : '';
+	}
+
+	/**
+	 * Tellimuse välja väärtus serverilt. Tagastab null, kui välju veel ei tea —
+	 * siis näitab plokk näidist, mitte tühja.
+	 */
+	function orderField( ctx, key ) {
+		if ( ! ctx || ! ctx.__fields || ! key ) {
+			return null;
+		}
+
+		for ( var i = 0; i < ctx.__fields.length; i++ ) {
+			if ( ctx.__fields[ i ].key === key ) {
+				return ctx.__fields[ i ].sample;
+			}
+		}
+
+		return '';
+	}
+
 	function block( b, brand, ctx, defaultColor ) {
 		if ( ! visible( b, ctx ) ) {
 			return '';
@@ -230,12 +255,14 @@
 				break;
 
 			// WooCommerce'i osad: eelvaates näidis, päris meilis renderdab WooCommerce.
+			// WooCommerce'i osad tulevad serverist päris tellimuse pealt; kuni
+			// need käes pole, näitame näidist.
 			case 'order_table':
-				body = sampleOrderTable( brand );
+				body = wooPart( ctx, 'order_table' ) || sampleOrderTable( brand );
 				break;
 
 			case 'addresses':
-				body = sampleAddresses( brand );
+				body = wooPart( ctx, 'addresses' ) || sampleAddresses( brand );
 				break;
 
 			case 'order_items':
@@ -272,17 +299,35 @@
 				break;
 
 			case 'payment_info':
-				body = '<div style="' + escAttr( style( {
-					'font-family': font,
-					'font-size': num( brand.base_size, 15 ) + 'px',
-					'line-height': '1.6',
-					color: brand.muted_color,
-					border: '1px dashed ' + brand.border_color,
-					padding: '10px 14px',
-				} ) ) + '">Makselahenduse juhised (nt pangaülekande rekvisiidid) ilmuvad siia päris meilis, kui makselahendus neid saadab.</div>';
+				body = wooPart( ctx, 'payment_info' );
+
+				if ( ! body ) {
+					// Server ei ole veel vastanud või makselahendus ei lisa midagi.
+					body = '<div style="' + escAttr( style( {
+						'font-family': font,
+						'font-size': num( brand.base_size, 15 ) + 'px',
+						'line-height': '1.6',
+						color: brand.muted_color,
+						border: '1px dashed ' + brand.border_color,
+						padding: '10px 14px',
+					} ) ) + '">Makselahenduse juhised (nt pangaülekande rekvisiidid) ilmuvad siia päris meilis, kui makselahendus neid saadab.</div>';
+				}
 				break;
 
 			case 'customer_note':
+				var noteText = ( ctx && typeof ctx.customer_note === 'string' ) ? ctx.customer_note.trim() : null;
+
+				if ( noteText === '' ) {
+					if ( p.hide_empty ) {
+						return '';
+					}
+					noteText = '(märkust ei ole)';
+				}
+
+				if ( noteText === null ) {
+					noteText = 'Palun jätke pakk pakiautomaati.';
+				}
+
 				body = '<div style="' + escAttr( style( {
 					'border-left': '3px solid ' + brand.accent,
 					'background-color': '#00000008',
@@ -293,11 +338,17 @@
 					color: brand.text_color,
 				} ) ) + '">' +
 					( p.title ? '<strong style="color:' + escAttr( brand.heading_color ) + ';">' + esc( p.title ) + '</strong><br>' : '' ) +
-					'Palun jätke pakk pakiautomaati.</div>';
+					esc( noteText ).replace( /\n/g, '<br>' ) + '</div>';
 				break;
 
 			case 'order_meta':
-				var sample = p.key ? 'CC123456789EE' : '—';
+				var real = orderField( ctx, p.key );
+				var sample = real !== null ? real : ( p.key ? 'CC123456789EE' : '—' );
+
+				if ( real === '' && p.hide_empty ) {
+					return '';
+				}
+
 				var shown = p.link ? '<a style="color:' + escAttr( brand.accent ) + ';">' + esc( sample ) + '</a>' : esc( sample );
 				cell[ 'text-align' ] = p.align;
 				body = '<div style="' + escAttr( style( {

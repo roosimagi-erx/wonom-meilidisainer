@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.14.1
+Stable tag: 0.14.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,12 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.14.2 =
+* Parandus: kujundaja näitas muutujate asemel alati näidisväärtusi — „Tere Mari" ja „tellimus #1042" ka siis, kui ülariba tellimusevalikus oli päris tellimus. Nüüd saadab server valitud tellimuse päris väärtused ja need kirjutavad näidise üle.
+* Parandus: plokid „Aadressid", „Tellimuse tabel (WooCommerce)" ja „Makseviisi juhised (WooCommerce)" näitasid kujundajas alati näidissisu. Nüüd renderdab server need valitud tellimuse pealt ja kanvas näitab päris andmeid.
+* Parandus: plokk „Kliendi märkus" näitas kujundajas väljamõeldud märkust. Nüüd tuleb tellimuse päris märkus, ja kui seda pole, käitub plokk sama moodi nagu päris meilis.
+* Parandus: plokk „Tellimuse väli" näitas kujundajas alati näidisjälgimiskoodi. Nüüd näitab valitud tellimuse tegelikku väärtust ja peidab end, kui väli on tühi.
 
 = 0.14.1 =
 * Parandus: täisrežiimis („terve meil ise") näitasid plokid „Tooted (oma tabel)" ja „Kokkuvõte (oma tabel)" kujundajas näidistooteid, mitte valitud tellimuse päris ridu. Tellimuse andmeid ei küsitud serverist, sest täisrežiimis ei ole WooCommerce'i sisuosa vaja — aga tellimuse read on. Nüüd tuuakse need mõlemas režiimis.

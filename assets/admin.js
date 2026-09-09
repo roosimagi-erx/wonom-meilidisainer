@@ -215,14 +215,23 @@
 	 * @return {Object} Kontekst.
 	 */
 	function previewCtx( wc ) {
-		var ctx = cfg.sampleCtx || {};
 		var order = currentOrder();
 
-		return Object.assign( {}, ctx, {
-			__payment: order ? order.payment : '',
-			__items: wc && wc.items && wc.items.length ? wc.items : null,
-			__totals: wc && wc.totals && wc.totals.length ? wc.totals : null,
-		} );
+		// Näidisväärtused on ainult varuvariant. Kui server on valitud tellimuse
+		// andmed saatnud, kirjutavad need näidise üle — muidu jääks kanvasele
+		// „Tere Mari, tellimus #1042" ka siis, kui vaatad päris tellimust.
+		return Object.assign(
+			{},
+			cfg.sampleCtx || {},
+			( wc && wc.ctx ) || {},
+			{
+				__payment: order ? order.payment : '',
+				__items: wc && wc.items && wc.items.length ? wc.items : null,
+				__totals: wc && wc.totals && wc.totals.length ? wc.totals : null,
+				__parts: ( wc && wc.parts ) || null,
+				__fields: ( wc && wc.fields ) || null,
+			}
+		);
 	}
 
 	/**
@@ -298,6 +307,8 @@
 				items: res.items || [],
 				totals: res.totals || [],
 				fields: res.fields || [],
+				ctx: res.ctx || {},
+				parts: res.parts || {},
 				why: res.why || '',
 			};
 
@@ -305,7 +316,7 @@
 				render();
 			}
 		} ).catch( function () {
-			wcCache[ key ] = { pending: false, html: '', css: '', items: [], totals: [], fields: [], why: 'Ei saanud WooCommerce\'i sisu kätte.' };
+			wcCache[ key ] = { pending: false, html: '', css: '', items: [], totals: [], fields: [], ctx: {}, parts: {}, why: 'Ei saanud WooCommerce\'i sisu kätte.' };
 		} );
 	}
 

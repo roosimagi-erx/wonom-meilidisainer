@@ -274,6 +274,25 @@ class WMD_Ajax {
 
 		WMD_Render::$mark_wc = false;
 
+		// Kogu ülejäänu, mida kujundaja vajab, et mitte näidata näidisandmeid:
+		// märgendite väärtused ja WooCommerce'i osad päris tellimuse pealt.
+		$ctx = WMD_Tags::order_context( $order );
+
+		$ctx['__email']         = self::find_email( $email_id );
+		$ctx['__sent_to_admin'] = false;
+
+		$parts = array();
+
+		try {
+			$parts = array(
+				'order_table'  => WMD_Render::woo_part( 'order_table', $ctx ),
+				'addresses'    => WMD_Render::woo_part( 'addresses', $ctx ),
+				'payment_info' => WMD_Render::woo_part( 'payment_info', $ctx ),
+			);
+		} catch ( Throwable $e ) {
+			$parts = array();
+		}
+
 		wp_send_json_success(
 			array(
 				'html'   => $html,
@@ -282,6 +301,8 @@ class WMD_Ajax {
 				'items'  => WMD_Render::order_items_data( $order ),
 				'totals' => WMD_Render::order_totals_data( $order ),
 				'fields' => self::order_fields( $order ),
+				'ctx'    => array_filter( $ctx, 'is_scalar' ),
+				'parts'  => $parts,
 				'why'    => ( $needs_html && '' === $html ) ? __( 'WooCommerce\'i sisu ei õnnestunud renderdada.', 'wonom-meilidisainer' ) : '',
 			)
 		);

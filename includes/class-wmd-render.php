@@ -881,7 +881,7 @@ class WMD_Render {
 	 * @param array  $ctx  Kontekst.
 	 * @return string
 	 */
-	protected static function woo_part( $type, $ctx ) {
+	public static function woo_part( $type, $ctx ) {
 		$order = isset( $ctx['__order'] ) ? $ctx['__order'] : null;
 		$brand = WMD_Design::brand();
 
