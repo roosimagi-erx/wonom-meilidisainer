@@ -113,7 +113,29 @@
 	 * Tellimuse välja väärtus serverilt. Tagastab null, kui välju veel ei tea —
 	 * siis näitab plokk näidist, mitte tühja.
 	 */
-	function orderField( ctx, key ) {
+	/**
+	 * Koorib märgendi kuju maha: {{meta:võti}} või meta:võti -> võti.
+	 * Peegeldab wmd_meta_key() PHP pool.
+	 */
+	function metaKey( key ) {
+		key = String( key || '' ).trim();
+
+		var m = key.match( /^\{\{\s*(?:meta:)?(.+?)\s*\}\}$/ );
+
+		if ( m ) {
+			key = m[ 1 ].trim();
+		}
+
+		if ( key.toLowerCase().indexOf( 'meta:' ) === 0 ) {
+			key = key.slice( 5 ).trim();
+		}
+
+		return key;
+	}
+
+	function orderField( ctx, rawKey ) {
+		var key = metaKey( rawKey );
+
 		if ( ! ctx || ! ctx.__fields || ! key ) {
 			return null;
 		}
@@ -370,12 +392,13 @@
 				break;
 
 			case 'order_meta':
-				var real = orderField( ctx, p.key );
-				var sample = real !== null ? real : ( p.key ? 'CC123456789EE' : '' );
+				var metaK = metaKey( p.key );
+				var real = orderField( ctx, metaK );
+				var sample = real !== null ? real : ( metaK ? 'CC123456789EE' : '' );
 
 				// Sama reegel nagu päris kirjas: tühi väli (või määramata võti)
 				// peidab ploki ära, kui peitmine on sisse lülitatud.
-				if ( ( real === '' || ! p.key ) && p.hide_empty ) {
+				if ( ( real === '' || ! metaK ) && p.hide_empty ) {
 					return '';
 				}
 
@@ -383,7 +406,10 @@
 					sample = '—';
 				}
 
-				var shown = p.link ? '<a style="color:' + escAttr( brand.accent ) + ';">' + esc( sample ) + '</a>' : esc( sample );
+				var metaHref = p.link ? tags( String( p.link ).replace( /\{\{value\}\}/g, encodeURIComponent( sample ) ), ctx ) : '';
+				var shown = metaHref
+					? '<a href="' + escAttr( metaHref ) + '" style="color:' + escAttr( brand.accent ) + ';">' + esc( sample ) + '</a>'
+					: esc( sample );
 				cell[ 'text-align' ] = p.align;
 				body = '<div style="' + escAttr( style( {
 					'font-family': font,

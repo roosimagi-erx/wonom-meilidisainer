@@ -600,6 +600,22 @@
 			return pairsHtml( scope, key, field, value );
 		}
 
+		// Tellimuse välja võti: vaba tekst, aga nimekirjas on selle tellimuse
+		// päris võtmed koos väärtusega.
+		if ( field.type === 'metakey' ) {
+			var listId = 'wmd-metakeys';
+			var options = orderFields().map( function ( f ) {
+				return '<option value="' + esc( f.key ) + '">' + esc( f.sample ) + '</option>';
+			} ).join( '' );
+
+			return '<div class="wmd-field">' +
+				'<label class="wmd-label" for="' + esc( id ) + '">' + esc( field.label ) + '</label>' +
+				'<input type="text" class="wmd-input" list="' + listId + '" ' + attrs + ' value="' + esc( value ) + '" placeholder="_tracking_number" />' +
+				'<datalist id="' + listId + '">' + options + '</datalist>' +
+				( field.hint ? '<p class="wmd-hint">' + esc( field.hint ) + '</p>' : '' ) +
+				'</div>';
+		}
+
 		switch ( field.type ) {
 			case 'text':
 			case 'url':

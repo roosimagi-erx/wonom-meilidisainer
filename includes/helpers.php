@@ -677,9 +677,9 @@ function wmd_block_types() {
 			'woo'    => true,
 			'fields' => array(
 				'key'        => array(
-					'type'    => 'text',
+					'type'    => 'metakey',
 					'label'   => __( 'Välja võti tellimusel', 'wonom-meilidisainer' ),
-					'hint'    => __( 'Nt _tracking_number. Küsi vajadusel tarnepluginalt.', 'wonom-meilidisainer' ),
+					'hint'    => __( 'Vali nimekirjast või kirjuta ise. Töötab ka kujul {{meta:võti}}.', 'wonom-meilidisainer' ),
 					'default' => '',
 				),
 				'title'      => array(
@@ -1105,6 +1105,31 @@ function wmd_allowed_html() {
 		'li'     => array( 'style' => array() ),
 		'p'      => array( 'style' => array() ),
 	);
+}
+
+/**
+ * Teeb tellimuse välja võtmest toore võtme.
+ *
+ * Muutujate nimekirjast kopeerides tuleb kaasa märgendi kuju
+ * `{{meta:_tracking_number}}`. See väli tahab ainult `_tracking_number`,
+ * seega lubame mõlemat ja koorime ümbrise ise maha.
+ *
+ * @param string $key Sisend.
+ * @return string
+ */
+function wmd_meta_key( $key ) {
+	$key = trim( (string) $key );
+
+	if ( preg_match( '/^\{\{\s*(?:meta:)?(.+?)\s*\}\}$/', $key, $m ) ) {
+		$key = trim( $m[1] );
+	}
+
+	// Ka ilma looksulgudeta kirjutatud „meta:võti" on arusaadav.
+	if ( 0 === stripos( $key, 'meta:' ) ) {
+		$key = trim( substr( $key, 5 ) );
+	}
+
+	return $key;
 }
 
 /**

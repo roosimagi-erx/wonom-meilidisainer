@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.17.0
+Stable tag: 0.17.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,11 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.17.1 =
+* Parandus: plokk „Tellimuse väli (üks rida)" ootas toorest võtit (_tracking_number), aga Muutujad-vahekaardilt kopeerides tuleb kaasa märgendi kuju {{meta:_tracking_number}}. Kaks sarnase väljanägemisega välja ootasid erinevat sisu ja tulemus oli vaikne kriips. Nüüd töötavad mõlemad kujud.
+* Välja võtme lahtris on nüüd rippnimekiri selle tellimuse päris väljadega koos väärtusega — ei pea enam võtit peast teadma ega mujalt kopeerima.
+* Parandus: kujundaja eelvaates ei olnud „Tellimuse väli" plokil päris linki, ainult lingi välimus. Nüüd on link sama, mis kirja läheb.
 
 = 0.17.0 =
 * Märgendeid on nüüd 50 asemel 20: kõik arve- ja tarneaadressi väljad eraldi (linn, sihtnumber, riik, ettevõte, aadressiread), tellimuse ID ja võti, olek, vahesumma, allahindlus, tarne summa, käibemaks, valuuta, maksmise kuupäev, maksmise link, makseviisi tunnus eraldi nimest.

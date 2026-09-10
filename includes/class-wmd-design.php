@@ -429,6 +429,9 @@ class WMD_Design {
 			case 'pairs':
 				return self::sanitize_pairs( $value );
 
+			case 'metakey':
+				return wmd_meta_key( sanitize_text_field( (string) $value ) );
+
 			case 'color':
 				return wmd_sanitize_color( $value );
 

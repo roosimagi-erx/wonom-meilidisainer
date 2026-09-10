@@ -591,7 +591,9 @@ class WMD_Render {
 				break;
 
 			case 'order_meta':
-				$key   = trim( (string) $p['key'] );
+				// Lubame ka märgendi kuju, sest muutujate nimekirjast kopeerides
+				// tuleb kaasa {{meta:võti}}.
+				$key   = wmd_meta_key( $p['key'] );
 				$order = isset( $ctx['__order'] ) ? $ctx['__order'] : null;
 				$value = ( $key && $order ) ? trim( (string) $order->get_meta( $key, true ) ) : '';
 
