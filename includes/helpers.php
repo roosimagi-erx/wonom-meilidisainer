@@ -934,15 +934,19 @@ function wmd_email_list() {
 				'group'    => 'customer',
 				'template' => 'emails/customer-note.php',
 			),
+			// Kontomeilidel ei ole tellimust: „order => false" peidab kujundajas
+			// tellimuse valiku ja hoiab tellimuse ka renderdusest eemal.
 			'customer_reset_password'   => array(
 				'label'    => __( 'Parooli lähtestamine', 'wonom-meilidisainer' ),
 				'group'    => 'account',
 				'template' => 'emails/customer-reset-password.php',
+				'order'    => false,
 			),
 			'customer_new_account'      => array(
 				'label'    => __( 'Uus konto', 'wonom-meilidisainer' ),
 				'group'    => 'account',
 				'template' => 'emails/customer-new-account.php',
+				'order'    => false,
 			),
 			'new_order'                 => array(
 				'label'    => __( 'Uus tellimus (poele)', 'wonom-meilidisainer' ),
@@ -961,6 +965,25 @@ function wmd_email_list() {
 			),
 		)
 	);
+}
+
+/**
+ * Kas see meil käib tellimuse pealt.
+ *
+ * Kontomeilid (uus konto, parooli lähtestamine) ei tea tellimusest midagi —
+ * neil ei tohi tellimuse valik sisu muuta ega neile tellimust kaasa anda.
+ *
+ * @param string $email_id Meili id.
+ * @return bool
+ */
+function wmd_email_uses_order( $email_id ) {
+	$list = wmd_email_list();
+
+	if ( ! isset( $list[ $email_id ] ) ) {
+		return true;
+	}
+
+	return ! isset( $list[ $email_id ]['order'] ) || (bool) $list[ $email_id ]['order'];
 }
 
 /**

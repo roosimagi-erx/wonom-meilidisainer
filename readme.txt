@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.19.1
+Stable tag: 0.20.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,12 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.20.0 =
+* Parandus: salvestus katkes veateatega „SyntaxError … is not valid JSON", kui mõnes meilis oli „Oma HTML" plokk <script> või <style> märgendiga. Serveri tulemüür blokeeris sellise päringu enne WordPressi jõudmist. Kujundus saadetakse nüüd base64-kujul, nii et tulemüür ei näe seda ründena. Sisu ise puhastatakse endiselt serveris.
+* Parandus: kui server vastab midagi muud kui JSON-i, ütleb kujundaja nüüd otse, mis juhtus (nt „Serveri tulemüür blokeeris päringu"), mitte ei näita JSON-i parsimisviga.
+* Parandus: „Võta üle" ei teinud midagi, kui meilis oli juba plokke — nii jäid lingid ja WooCommerce'i tekst tulemata. Nüüd küsib nupp kinnitust ja toob WooCommerce'i sisu serverist just sel hetkel, koos kõigi linkidega.
+* Kontomeilidel (uus konto, parooli lähtestamine) ei ole enam tellimuse valikut. Need kirjad ei käi tellimuse pealt, seega ei saa tellimuse vahetamine nende sisu enam muuta ja tellimuse muutujad on tühjad, mitte näidistellimuse omad.
 
 = 0.19.1 =
 * Parandus: režiimi vahetamine ei värskendanud eelvaate vahemälu, mistõttu wrap-režiimi tagasi minnes jäi kanvasele näidissisu. Vahemälu võti sisaldab nüüd kõike, mis serveri vastust mõjutab — režiimi ja lisateksti lülitit —, seega seda viga ei saa enam tekkida.

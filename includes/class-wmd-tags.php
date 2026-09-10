@@ -151,6 +151,26 @@ class WMD_Tags {
 	}
 
 	/**
+	 * Kontekst kirjale, millel tellimust ei olegi.
+	 *
+	 * Poe märgendid on olemas, kõik tellimuse omad tühjad. Nii ei jää kanvasele
+	 * näidistellimuse „Tere Mari" kirja, mis tellimusest midagi ei tea.
+	 *
+	 * @return array<string,string>
+	 */
+	public static function orderless_context() {
+		$ctx = self::shop_context();
+
+		foreach ( self::all() as $key => $tag ) {
+			if ( 'shop' !== $tag['group'] && ! isset( $ctx[ $key ] ) ) {
+				$ctx[ $key ] = '';
+			}
+		}
+
+		return $ctx;
+	}
+
+	/**
 	 * Kontekst päris tellimusest.
 	 *
 	 * @param WC_Order|null $order Tellimus.

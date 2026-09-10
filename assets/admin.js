@@ -187,10 +187,40 @@
 	/**
 	 * Valitud eelvaate tellimus, või null kui poes tellimusi pole.
 	 */
+	/**
+	 * Kas see meil käib tellimuse pealt.
+	 *
+	 * Kontomeilidel (uus konto, parooli lähtestamine) ei ole tellimust: neil ei
+	 * tohi tellimuse valik midagi muuta ja seepärast on valik ka peidus.
+	 *
+	 * @param {string} id Meili id; vaikimisi praegu avatud meil.
+	 * @return {boolean}
+	 */
+	function usesOrder( id ) {
+		var meta = cfg.emails[ id || state.email ];
+
+		return ! meta || false !== meta.order;
+	}
+
+	/**
+	 * Tellimuse id serveri päringutesse ja vahemälu võtmesse.
+	 *
+	 * Kontomeilidel on see alati 0 — nii ei tekita tellimuse vahetamine neile
+	 * uut vahemälukirjet ega uut päringut.
+	 *
+	 * @return {number}
+	 */
+	function orderParam() {
+		return usesOrder() ? ( state.order || 0 ) : 0;
+	}
+
+	/**
+	 * Tellimus, mille pealt eelvaadet täidetakse. Kontomeilidel ei ole seda.
+	 */
 	function currentOrder() {
 		var list = cfg.orders || [];
 
-		if ( ! list.length ) {
+		if ( ! list.length || ! usesOrder() ) {
 			return null;
 		}
 
@@ -264,7 +294,7 @@
 	 * juhtuda, et seade muutub, aga kanvasele jääb vana vastus.
 	 */
 	function wcKeyFor( mode, additional ) {
-		return [ state.email, state.order || 0, mode, additional ? 1 : 0 ].join( '|' );
+		return [ state.email, orderParam(), mode, additional ? 1 : 0 ].join( '|' );
 	}
 
 	function wcKey() {
@@ -309,7 +339,7 @@
 
 		post( 'wmd_wc_part', {
 			email: state.email,
-			order: state.order || 0,
+			order: orderParam(),
 			design: JSON.stringify( state.design ),
 		} ).then( function ( res ) {
 			wcCache[ key ] = {
@@ -398,21 +428,10 @@
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			var e = emailSettings();
-			e.mode = 'full';
-
-			if ( ! e.body.length ) {
-				// WooCommerce'i praegune sisu plokkidena, sinu enda plokid ümber.
-				// Wrap-režiimi plokid jäävad alles, nii et tagasi minnes ei ole
-				// midagi kadunud.
-				e.body = bodyFromCurrentEmail( e );
-			}
-
-			state.selected = null;
-			markDirty();
-			render();
-			invalidatePreview();
-			toast( 'Meil on nüüd täisrežiimis — WooCommerce\'i oma tekst enam kirja ei lähe', 'ok' );
+			// WooCommerce'i praegune sisu plokkidena, sinu enda plokid ümber.
+			// Wrap-režiimi plokid jäävad alles, nii et tagasi minnes ei ole
+			// midagi kadunud.
+			takeOverFromWc( { keepAround: true } );
 		}, true );
 
 		doc.addEventListener( 'click', function ( ev ) {
@@ -974,28 +993,99 @@
 	}
 
 	/**
-	 * Keha, millega „terve meil ise" alustab: WooCommerce'i praegune sisu
-	 * plokkidena, ja selle ümber kasutaja enda olemasolevad plokid.
+	 * Küsib serverilt selle meili WooCommerce'i sisu ja annab selle plokkidena.
+	 *
+	 * Sisu küsitakse alati wrap-kujul: täisrežiimis jätab server WooCommerce'i
+	 * sisuosa hoopis renderdamata, sest kirja paneb siis kokku kujundaja. Just
+	 * täisrežiimi minnes on seda sisu aga vaja — nii et küsime seda eraldi.
+	 *
+	 * @param {Function} done Saab plokkide massiivi; tühi massiiv = ei saanud.
 	 */
-	function bodyFromCurrentEmail( e ) {
-		// WooCommerce'i sisu tuuakse ainult wrap-režiimis, seega vaatame just
-		// selle vahemälukirje poole — ka siis, kui meil on juba täisrežiimis.
-		var wc = wcCache[ wcKeyFor( 'wrap', e.additional ) ];
-		var middle = ( wc && ! wc.pending && wc.html ) ? blocksFromWcHtml( wc.html ) : [];
+	function loadWcBlocks( done ) {
+		var probe = JSON.parse( JSON.stringify( state.design ) );
 
-		if ( ! middle.length ) {
-			middle = seedBody().slice( 1 );
+		probe.emails[ state.email ] = probe.emails[ state.email ] || {};
+		probe.emails[ state.email ].mode = 'wrap';
+		probe.emails[ state.email ].body = [];
+
+		post( 'wmd_wc_part', {
+			email: state.email,
+			order: orderParam(),
+			design: JSON.stringify( probe ),
+		} ).then( function ( res ) {
+			done( blocksFromWcHtml( res.html || '' ) );
+		} ).catch( function ( err ) {
+			toast( err || 'WooCommerce\'i sisu ei õnnestunud laadida', 'error' );
+			done( [] );
+		} );
+	}
+
+	/**
+	 * „Võta üle": lülitab meili täisrežiimi ja toob WooCommerce'i sisu sisse.
+	 *
+	 * Sisu tuuakse serverist just selle vajutuse hetkel, mitte vahemälust — nii
+	 * tuleb kaasa täpselt see kiri, mille WooCommerce praegu saadaks, koos
+	 * kõigi linkidega. Enne ülekirjutamist küsime kinnitust, kui kehas on juba
+	 * plokke; vaikselt tegemata jätta ei tohi, sest siis jääks nupp mõjuta.
+	 *
+	 * @param {Object} opts keepAround: kas jätta enne-/pärast-plokid ümber,
+	 *                      button: nupp, mis ootamise ajaks kinni panna.
+	 */
+	function takeOverFromWc( opts ) {
+		opts = opts || {};
+
+		var e = emailSettings();
+
+		if ( e.body.length && ! window.confirm( 'Selles meilis on juba ' + e.body.length + ' plokki. Asendan need WooCommerce\'i praeguse sisuga?' ) ) {
+			return;
 		}
 
-		var before = JSON.parse( JSON.stringify( e.before || [] ) );
-		var after = JSON.parse( JSON.stringify( e.after || [] ) );
-		var body = before.concat( middle, after );
+		var btn   = opts.button || null;
+		var label = btn ? btn.textContent : '';
 
-		body.forEach( function ( b ) {
-			b.id = newId();
+		if ( btn ) {
+			btn.disabled = true;
+			btn.textContent = 'Laen…';
+		}
+
+		loadWcBlocks( function ( middle ) {
+			if ( ! middle.length && ! opts.fallback ) {
+				toast( 'WooCommerce\'i sisu ei õnnestunud plokkideks võtta', 'error' );
+
+				if ( btn ) {
+					btn.disabled = false;
+					btn.textContent = label;
+				}
+
+				return;
+			}
+
+			// Režiimi vahetusel ei tohi jääda tühja lehe peale seisma: kui
+			// WooCommerce'i sisu ei saanud, alustame vaikeplokkidest.
+			if ( ! middle.length ) {
+				middle = seedBody().slice( 1 );
+				toast( 'WooCommerce\'i sisu ei saanud — alustame vaikeplokkidest', 'error' );
+			}
+
+			var body = middle;
+
+			if ( opts.keepAround ) {
+				body = JSON.parse( JSON.stringify( e.before || [] ) )
+					.concat( middle, JSON.parse( JSON.stringify( e.after || [] ) ) );
+			}
+
+			body.forEach( function ( b ) {
+				b.id = newId();
+			} );
+
+			e.mode = 'full';
+			e.body = body;
+			state.selected = null;
+			markDirty();
+			render();
+			invalidatePreview();
+			toast( body.length + ' plokki laaditud — WooCommerce\'i oma tekst enam kirja ei lähe', 'ok' );
 		} );
-
-		return body;
 	}
 
 	/* ------------------------------------------------------- muutujad */
@@ -1003,9 +1093,14 @@
 	function varsPanelHtml() {
 		var order = currentOrder();
 
-		var html = '<div class="wmd-intro">Kõik muutujad, mida kirjas kasutada saab. Väärtus on valitud tellimuse pealt' +
-			( order ? ' (<strong>' + esc( order.label ) + '</strong>)' : '' ) +
-			'. Klõps kopeerib muutuja — saad selle kleepida ükskõik millisesse välja, ka „Oma HTML" plokki või lisa-CSS-i.</div>';
+		var source = order
+			? 'Väärtus on valitud tellimuse pealt (<strong>' + esc( order.label ) + '</strong>).'
+			: ( usesOrder()
+				? 'Väärtus on valitud tellimuse pealt.'
+				: 'See kiri ei käi tellimuse pealt, seega tellimuse muutujatel siin väärtust ei ole.' );
+
+		var html = '<div class="wmd-intro">Kõik muutujad, mida kirjas kasutada saab. ' + source +
+			' Klõps kopeerib muutuja — saad selle kleepida ükskõik millisesse välja, ka „Oma HTML" plokki või lisa-CSS-i.</div>';
 
 		html += '<div class="wmd-field"><input type="text" class="wmd-input wmd-var-search" placeholder="Otsi muutujat…" value="' + esc( state.varQuery ) + '" /></div>';
 
@@ -1518,7 +1613,8 @@
 			return '<option value="' + esc( id ) + '"' + ( id === state.email ? ' selected' : '' ) + '>' + esc( cfg.emails[ id ].label ) + '</option>';
 		} ).join( '' );
 
-		var orders = cfg.orders || [];
+		// Tellimuse valik on ainult neil meilidel, mis tellimuse pealt käivadki.
+		var orders = usesOrder() ? ( cfg.orders || [] ) : [];
 		var orderPick = '';
 
 		if ( orders.length ) {
@@ -1863,44 +1959,7 @@
 
 		if ( refill ) {
 			refill.addEventListener( 'click', function () {
-				var e = emailSettings();
-
-				if ( e.body.length && ! window.confirm( 'See asendab kõik selle meili plokid WooCommerce\'i praeguse sisuga. Jätkan?' ) ) {
-					return;
-				}
-
-				var probe = JSON.parse( JSON.stringify( state.design ) );
-				probe.emails[ state.email ].mode = 'wrap';
-				probe.emails[ state.email ].body = [];
-
-				refill.disabled = true;
-				refill.textContent = 'Laen…';
-
-				post( 'wmd_wc_part', {
-					email: state.email,
-					order: state.order || 0,
-					design: JSON.stringify( probe ),
-				} ).then( function ( res ) {
-					var blocks = blocksFromWcHtml( res.html || '' );
-
-					if ( ! blocks.length ) {
-						toast( 'WooCommerce\'i sisu ei õnnestunud plokkideks võtta', 'error' );
-						refill.disabled = false;
-						refill.textContent = 'Lae WooCommerce\'i sisu plokkidena';
-						return;
-					}
-
-					emailSettings().body = blocks;
-					state.selected = null;
-					markDirty();
-					render();
-					invalidatePreview();
-					toast( blocks.length + ' plokki laaditud', 'ok' );
-				} ).catch( function ( err ) {
-					toast( err, 'error' );
-					refill.disabled = false;
-					refill.textContent = 'Lae WooCommerce\'i sisu plokkidena';
-				} );
+				takeOverFromWc( { button: refill } );
 			} );
 		}
 
@@ -1914,14 +1973,15 @@
 					return;
 				}
 
-				e.mode = mode;
-
 				// Täisrežiim algab sellest, mida WooCommerce praegu saadab —
-				// plokkidena, mida saab kohe edasi muuta.
+				// plokkidena, mida saab kohe edasi muuta. Sisu tuuakse serverist
+				// alles nüüd, seega on kaasas ka kõik lingid.
 				if ( mode === 'full' && ! e.body.length ) {
-					e.body = bodyFromCurrentEmail( e );
+					takeOverFromWc( { fallback: true } );
+					return;
 				}
 
+				e.mode = mode;
 				state.selected = null;
 				markDirty();
 				render();
@@ -2255,7 +2315,7 @@
 					email: state.email,
 					// Ilma selleta saatis server viimase tellimuse pealt, mitte
 					// selle, mida ülaribal vaatad.
-					order: state.order || 0,
+					order: orderParam(),
 					design: JSON.stringify( state.design ),
 				} ).then( function ( res ) {
 					state.dirty = false;
@@ -2315,11 +2375,37 @@
 		frame.open();
 	}
 
+	/**
+	 * Tekst base64-kujule, UTF-8 kaudu (btoa üksi täpitähtedega ei tule toime).
+	 *
+	 * @param {string} str Tekst.
+	 * @return {string} Base64.
+	 */
+	function toBase64( str ) {
+		var bytes = new TextEncoder().encode( str );
+		var bin = '';
+
+		// Kaupa, sest String.fromCharCode.apply suure massiiviga jookseb kokku.
+		for ( var i = 0; i < bytes.length; i += 8192 ) {
+			bin += String.fromCharCode.apply( null, bytes.subarray( i, i + 8192 ) );
+		}
+
+		return btoa( bin );
+	}
+
 	function post( action, data ) {
 		var body = new FormData();
 		body.append( 'action', action );
 		body.append( 'nonce', cfg.nonce );
 		Object.keys( data ).forEach( function ( key ) {
+			// Kujundus läheb base64-kujul. „Oma HTML" plokis võib olla <script>
+			// või <style>; serveri tulemüür blokeerib sellise POST-i sageli
+			// enne WordPressi ja salvestus katkeks 403-ga.
+			if ( 'design' === key ) {
+				body.append( 'design_b64', toBase64( String( data[ key ] ) ) );
+				return;
+			}
+
 			body.append( key, data[ key ] );
 		} );
 
@@ -2328,12 +2414,30 @@
 			credentials: 'same-origin',
 			body: body,
 		} ).then( function ( r ) {
-			return r.json();
-		} ).then( function ( json ) {
-			if ( ! json || ! json.success ) {
-				throw ( json && json.data && json.data.message ) || i18n.saveFailed;
-			}
-			return json.data;
+			return r.text().then( function ( text ) {
+				var json = null;
+
+				try {
+					json = JSON.parse( text );
+				} catch ( err ) {
+					json = null;
+				}
+
+				// Kui vastus ei ole JSON, ei jõudnud päring WordPressini —
+				// tavaliselt on vahele tulnud serveri tulemüür. Ütleme seda
+				// otse, mitte ei näita kasutajale JSON-i parsimisviga.
+				if ( ! json ) {
+					throw 403 === r.status
+						? 'Serveri tulemüür blokeeris päringu (HTTP 403). Küsi majutajalt, et see aadress lubataks.'
+						: 'Server vastas ootamatult (HTTP ' + r.status + '). Vaata serveri vealogi.';
+				}
+
+				if ( ! json.success ) {
+					throw ( json.data && json.data.message ) || i18n.saveFailed;
+				}
+
+				return json.data;
+			} );
 		} );
 	}
 

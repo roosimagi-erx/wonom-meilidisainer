@@ -105,7 +105,22 @@ class WMD_Ajax {
 	 * @return array
 	 */
 	protected static function posted_design() {
-		$raw = isset( $_POST['design'] ) ? wp_unslash( $_POST['design'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- JSON puhastatakse WMD_Design::sanitize sees.
+		// Kujundus tuleb base64-kujul. Põhjus on praktiline: kujunduses võib
+		// olla „Oma HTML" plokk, kus on <script> või <style>. Paljud serveri
+		// tulemüürid (ModSecurity jt) blokeerivad sellise POST-i enne, kui see
+		// WordPressini jõuab, ja salvestus katkeb 403-ga. Base64 on siin ainult
+		// transpordikiht — sisu ise puhastatakse ikka WMD_Design::sanitize sees.
+		$raw = '';
+
+		if ( isset( $_POST['design_b64'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce kontrollitakse guard() sees.
+			$decoded = base64_decode( (string) wp_unslash( $_POST['design_b64'] ), true ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- JSON puhastatakse WMD_Design::sanitize sees.
+
+			if ( false !== $decoded ) {
+				$raw = $decoded;
+			}
+		} elseif ( isset( $_POST['design'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce kontrollitakse guard() sees.
+			$raw = wp_unslash( $_POST['design'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- JSON puhastatakse WMD_Design::sanitize sees.
+		}
 
 		$design = json_decode( (string) $raw, true );
 
@@ -178,10 +193,10 @@ class WMD_Ajax {
 			}
 		}
 
-		$order = self::preview_order( $order_id );
+		$order = self::preview_order( $order_id, $email_id );
 
 		if ( ! $html ) {
-			$ctx  = $order ? WMD_Tags::order_context( $order ) : WMD_Tags::sample_context();
+			$ctx  = $order ? WMD_Tags::order_context( $order ) : ( wmd_email_uses_order( $email_id ) ? WMD_Tags::sample_context() : WMD_Tags::orderless_context() );
 			$html = WMD_Render::full( $email_id, $ctx );
 		}
 
@@ -218,7 +233,7 @@ class WMD_Ajax {
 			WMD_Design::set_cache( WMD_Design::sanitize( $design ) );
 		}
 
-		$order = self::preview_order( self::posted_order_id() );
+		$order = self::preview_order( self::posted_order_id(), $email_id );
 
 		// Kontomeilidel (uus konto, parooli lähtestamine) ei olegi tellimust,
 		// aga WooCommerce'i sisu on neil ikka olemas — seega renderdame edasi.
@@ -282,34 +297,38 @@ class WMD_Ajax {
 
 		// Kogu ülejäänu, mida kujundaja vajab, et mitte näidata näidisandmeid:
 		// märgendite väärtused ja WooCommerce'i osad päris tellimuse pealt.
-		$ctx = WMD_Tags::order_context( $order );
+		// Kui tellimust ei ole (kontomeilid või tühi pood), saadame tellimuse
+		// märgendid tühjana — muidu jääks kanvasele näidistellimus.
+		$ctx = $order ? WMD_Tags::order_context( $order ) : WMD_Tags::orderless_context();
 
 		$ctx['__email']         = self::find_email( $email_id );
 		$ctx['__sent_to_admin'] = false;
 
 		$parts = array();
 
-		try {
-			$parts = array(
-				'order_table'  => WMD_Render::woo_part( 'order_table', $ctx ),
-				'payment_info' => WMD_Render::woo_part( 'payment_info', $ctx ),
-				'additional'   => self::additional_content( $email_id, $order ),
-			);
-		} catch ( Throwable $e ) {
-			$parts = array();
+		if ( $order ) {
+			try {
+				$parts = array(
+					'order_table'  => WMD_Render::woo_part( 'order_table', $ctx ),
+					'payment_info' => WMD_Render::woo_part( 'payment_info', $ctx ),
+					'additional'   => self::additional_content( $email_id, $order ),
+				);
+			} catch ( Throwable $e ) {
+				$parts = array();
+			}
 		}
 
 		wp_send_json_success(
 			array(
 				'html'   => $html,
 				'css'    => $css,
-				'order'  => $order->get_id(),
-				'items'  => WMD_Render::order_items_data( $order ),
-				'totals' => WMD_Render::order_totals_data( $order ),
-				'fields' => self::order_fields( $order ),
+				'order'  => $order ? $order->get_id() : 0,
+				'items'  => $order ? WMD_Render::order_items_data( $order ) : array(),
+				'totals' => $order ? WMD_Render::order_totals_data( $order ) : array(),
+				'fields' => $order ? self::order_fields( $order ) : array(),
 				'ctx'    => array_filter( $ctx, 'is_scalar' ),
 				'parts'  => $parts,
-				'addr'   => WMD_Render::address_data( $order ),
+				'addr'   => $order ? WMD_Render::address_data( $order ) : null,
 				'why'    => ( $needs_html && '' === $html ) ? __( 'WooCommerce\'i sisu ei õnnestunud renderdada.', 'wonom-meilidisainer' ) : '',
 			)
 		);
@@ -472,7 +491,7 @@ class WMD_Ajax {
 	 * @return string Tühi string, kui ei õnnestunud.
 	 */
 	protected static function render_real( $email_id, $order_id = 0 ) {
-		$order = self::preview_order( $order_id );
+		$order = self::preview_order( $order_id, $email_id );
 
 		if ( ! $order ) {
 			return '';
@@ -515,11 +534,20 @@ class WMD_Ajax {
 	 *
 	 * Kui päringus on tellimuse id, võtame selle. Muidu poe viimase.
 	 *
-	 * @param int $order_id Soovitud tellimus või 0.
+	 * Kontomeilidele (uus konto, parooli lähtestamine) ei anta tellimust üldse:
+	 * neis ei ole tellimuse infot ja võõra tellimuse pealt võetud nimi oleks
+	 * lihtsalt eksitav.
+	 *
+	 * @param int    $order_id Soovitud tellimus või 0.
+	 * @param string $email_id Meil, mille jaoks tellimust küsitakse.
 	 * @return WC_Order|null
 	 */
-	protected static function preview_order( $order_id = 0 ) {
+	protected static function preview_order( $order_id = 0, $email_id = '' ) {
 		if ( ! function_exists( 'wc_get_orders' ) ) {
+			return null;
+		}
+
+		if ( '' !== $email_id && ! wmd_email_uses_order( $email_id ) ) {
 			return null;
 		}
 
@@ -583,7 +611,7 @@ class WMD_Ajax {
 			WMD_Design::save( $design );
 		}
 
-		$order = self::preview_order( self::posted_order_id() );
+		$order = self::preview_order( self::posted_order_id(), $email_id );
 		$sent  = false;
 		$mode  = 'design';
 
@@ -593,7 +621,7 @@ class WMD_Ajax {
 		}
 
 		if ( ! $sent ) {
-			$ctx     = $order ? WMD_Tags::order_context( $order ) : WMD_Tags::sample_context();
+			$ctx     = $order ? WMD_Tags::order_context( $order ) : ( wmd_email_uses_order( $email_id ) ? WMD_Tags::sample_context() : WMD_Tags::orderless_context() );
 			$html    = WMD_Render::full( $email_id, $ctx );
 			$subject = sprintf(
 				/* translators: %s: meili nimi. */
@@ -626,10 +654,8 @@ class WMD_Ajax {
 	 * @return bool
 	 */
 	protected static function send_real( $email_id, $order, $to ) {
-		$list = wmd_email_list();
-
-		// Konto meilid ei käivitu tellimuse pealt — need saadame kujunduse näidisena.
-		if ( isset( $list[ $email_id ]['group'] ) && 'account' === $list[ $email_id ]['group'] ) {
+		// Konto meilid ei käivitu tellimuse pealt — need saadame kujundusega.
+		if ( ! $order || ! wmd_email_uses_order( $email_id ) ) {
 			return false;
 		}
 
