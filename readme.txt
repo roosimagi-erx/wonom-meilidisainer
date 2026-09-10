@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.19.0
+Stable tag: 0.19.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,10 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.19.1 =
+* Parandus: režiimi vahetamine ei värskendanud eelvaate vahemälu, mistõttu wrap-režiimi tagasi minnes jäi kanvasele näidissisu. Vahemälu võti sisaldab nüüd kõike, mis serveri vastust mõjutab — režiimi ja lisateksti lülitit —, seega seda viga ei saa enam tekkida.
+* Uus: täisrežiimis on nupp „Lae WooCommerce'i sisu plokkidena". Kui meil on juba käsitsi kokku pandud, saab sellega WooCommerce'i praeguse sisu uuesti plokkideks võtta.
 
 = 0.19.0 =
 * „Terve meil ise" alustab nüüd WooCommerce'i praeguse sisuga, mitte tühja lehega. Kiri võetakse plokkideks lahti — pealkirjad, tekstilõigud, tellimuse tabel, kokkuvõte ja aadressid — ja edasi saab neid tavaliste plokkidena muuta. Sinu enda plokid jäävad õigetesse kohtadesse ümber.

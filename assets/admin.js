@@ -259,8 +259,18 @@
 		previewTimer = setTimeout( updatePreview, 180 );
 	}
 
+	/**
+	 * Vahemälu võti. Sisaldab kõike, mis serveri vastust mõjutab — nii ei saa
+	 * juhtuda, et seade muutub, aga kanvasele jääb vana vastus.
+	 */
+	function wcKeyFor( mode, additional ) {
+		return [ state.email, state.order || 0, mode, additional ? 1 : 0 ].join( '|' );
+	}
+
 	function wcKey() {
-		return state.email + '|' + ( state.order || 0 );
+		var e = emailSettings();
+
+		return wcKeyFor( e.mode, e.additional );
 	}
 
 	/**
@@ -821,6 +831,8 @@
 
 		if ( full ) {
 			html += '<div class="wmd-intro wmd-warn">Selles režiimis ei kasutata WooCommerce\'i sisumalli. Kõik, mis meilis on, tuleb allolevatest plokkidest — ka tellimuse tabel ja aadressid.</div>';
+			html += '<div class="wmd-updates-actions"><button type="button" class="button wmd-refill">Lae WooCommerce\'i sisu plokkidena</button></div>' +
+				'<p class="wmd-hint">Võtab selle meili praeguse WooCommerce\'i sisu plokkideks lahti ja asendab allolevad plokid. Kasulik, kui tahad alustada uuesti WooCommerce\'i tekstist.</p>';
 			html += blockListHtml( 'body', 'Meili sisu', 'terve keha' );
 		} else {
 			html += blockListHtml( 'before', 'Sisu enne tellimuse tabelit', 'tervitus, info' );
@@ -966,7 +978,9 @@
 	 * plokkidena, ja selle ümber kasutaja enda olemasolevad plokid.
 	 */
 	function bodyFromCurrentEmail( e ) {
-		var wc = wcCache[ wcKey() ];
+		// WooCommerce'i sisu tuuakse ainult wrap-režiimis, seega vaatame just
+		// selle vahemälukirje poole — ka siis, kui meil on juba täisrežiimis.
+		var wc = wcCache[ wcKeyFor( 'wrap', e.additional ) ];
 		var middle = ( wc && ! wc.pending && wc.html ) ? blocksFromWcHtml( wc.html ) : [];
 
 		if ( ! middle.length ) {
@@ -1567,12 +1581,6 @@
 				block.props[ key ] = value;
 			}
 		}
-		// Lisateksti lüliti muudab seda, mida server saadab, seega vahemälu
-		// tuleb ära visata — muidu jääks kanvasele vana vastus.
-		if ( 'email' === scope && 'additional' === key ) {
-			delete wcCache[ wcKey() ];
-		}
-
 		markDirty();
 		schedulePreview();
 	}
@@ -1848,6 +1856,53 @@
 				schedulePreview();
 			} );
 		} );
+
+		// „Lae WooCommerce'i sisu plokkidena" — küsib sisu wrap-režiimi kujul,
+		// sest täisrežiimis WooCommerce'i sisu ei renderdatagi.
+		var refill = root.querySelector( '.wmd-refill' );
+
+		if ( refill ) {
+			refill.addEventListener( 'click', function () {
+				var e = emailSettings();
+
+				if ( e.body.length && ! window.confirm( 'See asendab kõik selle meili plokid WooCommerce\'i praeguse sisuga. Jätkan?' ) ) {
+					return;
+				}
+
+				var probe = JSON.parse( JSON.stringify( state.design ) );
+				probe.emails[ state.email ].mode = 'wrap';
+				probe.emails[ state.email ].body = [];
+
+				refill.disabled = true;
+				refill.textContent = 'Laen…';
+
+				post( 'wmd_wc_part', {
+					email: state.email,
+					order: state.order || 0,
+					design: JSON.stringify( probe ),
+				} ).then( function ( res ) {
+					var blocks = blocksFromWcHtml( res.html || '' );
+
+					if ( ! blocks.length ) {
+						toast( 'WooCommerce\'i sisu ei õnnestunud plokkideks võtta', 'error' );
+						refill.disabled = false;
+						refill.textContent = 'Lae WooCommerce\'i sisu plokkidena';
+						return;
+					}
+
+					emailSettings().body = blocks;
+					state.selected = null;
+					markDirty();
+					render();
+					invalidatePreview();
+					toast( blocks.length + ' plokki laaditud', 'ok' );
+				} ).catch( function ( err ) {
+					toast( err, 'error' );
+					refill.disabled = false;
+					refill.textContent = 'Lae WooCommerce\'i sisu plokkidena';
+				} );
+			} );
+		}
 
 		// Meili kokkupaneku režiim.
 		root.querySelectorAll( '.wmd-modes [data-mode]' ).forEach( function ( btn ) {
