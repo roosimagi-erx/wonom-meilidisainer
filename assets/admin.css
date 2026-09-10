@@ -156,20 +156,24 @@
 
 /* ------------------------------------------------------- vasak paneel */
 
+/* Vahekaarte on rohkem kui ühele reale mahub, seega lubame murduda. */
 .wmd-tabs {
 	display: flex;
+	flex-wrap: wrap;
 	border-bottom: 1px solid var(--wmd-line);
 	flex: 0 0 auto;
 }
 
 .wmd-tab {
-	flex: 1 1 0;
-	padding: 11px 4px;
+	flex: 1 1 auto;
+	min-width: 25%;
+	padding: 9px 6px;
 	background: none;
 	border: 0;
 	border-bottom: 2px solid transparent;
 	cursor: pointer;
-	font-size: 13px;
+	font-size: 12px;
+	white-space: nowrap;
 	color: var(--wmd-muted);
 }
 

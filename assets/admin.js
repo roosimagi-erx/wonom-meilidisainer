@@ -820,7 +820,8 @@
 			'</div></div>';
 
 		if ( full ) {
-			html += '<div class="wmd-intro wmd-warn">Selles režiimis ei kasutata WooCommerce\'i sisumalli. Kõik, mis meilis on, tuleb allolevatest plokkidest — ka tellimuse tabel ja aadressid.</div>';
+			html += '<div class="wmd-intro wmd-warn">Selles režiimis ei kasutata WooCommerce\'i sisumalli. Kõik, mis meilis on, tuleb allolevatest plokkidest — ka tellimuse tabel ja aadressid. ' +
+				'Ainus erand: WooCommerce\'i meiliseadetes olev <strong>lisatekst</strong> läheb endiselt kirja lõppu. Kui sa seda ei taha, tühjenda see WooCommerce → Seaded → Meilid all.</div>';
 			html += blockListHtml( 'body', 'Meili sisu', 'terve keha' );
 		} else {
 			html += blockListHtml( 'before', 'Sisu enne tellimuse tabelit', 'tervitus, info' );
@@ -1894,6 +1895,9 @@
 				post( 'wmd_test_email', {
 					to: to,
 					email: state.email,
+					// Ilma selleta saatis server viimase tellimuse pealt, mitte
+					// selle, mida ülaribal vaatad.
+					order: state.order || 0,
 					design: JSON.stringify( state.design ),
 				} ).then( function ( res ) {
 					state.dirty = false;

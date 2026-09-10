@@ -287,6 +287,7 @@ class WMD_Ajax {
 			$parts = array(
 				'order_table'  => WMD_Render::woo_part( 'order_table', $ctx ),
 				'payment_info' => WMD_Render::woo_part( 'payment_info', $ctx ),
+				'additional'   => self::additional_content( $email_id, $order ),
 			);
 		} catch ( Throwable $e ) {
 			$parts = array();
@@ -356,6 +357,33 @@ class WMD_Ajax {
 		);
 
 		return $out;
+	}
+
+	/**
+	 * WooCommerce'i meiliseadetes olev lisatekst.
+	 *
+	 * Täisrežiimis lisab meie mall selle kirja lõppu, et poe seadistus ei kaoks
+	 * märkamatult. Kujundaja peab seda samuti näitama, muidu kanvas valetab.
+	 *
+	 * @param string   $email_id WC_Email id.
+	 * @param WC_Order $order    Tellimus.
+	 * @return string
+	 */
+	protected static function additional_content( $email_id, $order ) {
+		$email = self::find_email( $email_id );
+
+		if ( ! $email || ! is_callable( array( $email, 'get_additional_content' ) ) ) {
+			return '';
+		}
+
+		$email->object = $order;
+		$text          = trim( (string) $email->get_additional_content() );
+
+		if ( '' === $text ) {
+			return '';
+		}
+
+		return wp_kses_post( wpautop( wptexturize( $text ) ) );
 	}
 
 	/**

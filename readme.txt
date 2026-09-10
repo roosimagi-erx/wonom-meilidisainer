@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.17.1
+Stable tag: 0.17.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,11 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.17.2 =
+* Parandus: testmeil saadeti alati poe viimase tellimuse pealt, mitte selle pealt, mis ülaribal valitud oli. Kujundajas vaatasid üht tellimust, postkasti tuli teine.
+* Parandus: WooCommerce'i meiliseadetes olev lisatekst läks täisrežiimis kirja, aga kujundajas seda ei näidatud. Nüüd on see kanvasel näha ja režiimi selgitus ütleb, kust see tuleb ja kuidas selle ära võtta.
+* Parandus: vahekaardid ei mahtunud vasakusse tulpa ära ja nimed jäid poolikuks. Nüüd murduvad nad kahele reale.
 
 = 0.17.1 =
 * Parandus: plokk „Tellimuse väli (üks rida)" ootas toorest võtit (_tracking_number), aga Muutujad-vahekaardilt kopeerides tuleb kaasa märgendi kuju {{meta:_tracking_number}}. Kaks sarnase väljanägemisega välja ootasid erinevat sisu ja tulemus oli vaikne kriips. Nüüd töötavad mõlemad kujud.

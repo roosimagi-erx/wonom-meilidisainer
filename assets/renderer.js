@@ -872,6 +872,19 @@
 		if ( settings.mode === 'full' ) {
 			// Terve meil tuleb plokkidest — WooCommerce'i enda sisu ei renderdata.
 			out += '<div data-wmd-zone="body">' + blocks( settings.body, brand, ctx ) + '</div>';
+
+			// Poe meiliseadetes olev lisatekst läheb kirja lõppu ka täisrežiimis,
+			// seega peab see olema kanvasel näha.
+			var extra = ( ctx && ctx.__parts && ctx.__parts.additional ) || '';
+
+			if ( extra ) {
+				out += '<div class="wmd-wc-content" data-wmd-zone="additional" style="' + escAttr( style( {
+					'font-family': brand.font_family,
+					'font-size': num( brand.base_size, 15 ) + 'px',
+					'line-height': '1.6',
+					color: brand.text_color,
+				} ) ) + '">' + extra + '</div>';
+			}
 		} else {
 			var wc = '<div class="wmd-wc-content" data-wmd-zone="wc">' + body + '</div>';
 
