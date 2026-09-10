@@ -106,6 +106,7 @@ class WMD_Admin {
 				'emails'      => wmd_email_list(),
 				'emailGroups' => wmd_email_groups(),
 				'tags'        => WMD_Tags::all(),
+				'tagGroups'   => WMD_Tags::groups(),
 				'sampleCtx'   => WMD_Tags::sample_context(),
 				'enabled'     => WMD_Emails::enabled() ? 1 : 0,
 				'testTo'      => wp_get_current_user()->user_email,

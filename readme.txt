@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.16.0
+Stable tag: 0.17.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,11 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.17.0 =
+* Märgendeid on nüüd 50 asemel 20: kõik arve- ja tarneaadressi väljad eraldi (linn, sihtnumber, riik, ettevõte, aadressiread), tellimuse ID ja võti, olek, vahesumma, allahindlus, tarne summa, käibemaks, valuuta, maksmise kuupäev, maksmise link, makseviisi tunnus eraldi nimest.
+* Uus vahekaart „Muutujad" — kõik märgendid rühmade kaupa koos kirjelduse ja valitud tellimuse tegeliku väärtusega. Otsing ja kopeerimisnupp, et saaks kleepida ka sinna, kuhu { } nupp ei ulatu (nt „Oma HTML" plokk või lisa-CSS).
+* { } menüü näitab nüüd samuti rühmi ja valitud tellimuse tegelikke väärtusi, mitte ainult kirjeldusi.
 
 = 0.16.0 =
 * Uus plokk „Tellimuse andmed (tabel)" — silt-väärtus read ühes või kahes veerus. Väärtuse valid { } menüüst, kus on nii üldised märgendid kui selle tellimuse päris väljad (nt Montonio jälgimiskood). Igale reale saab lisada lingi, kus {{value}} asendub väärtusega. Tühjaks jäänud read peidetakse.

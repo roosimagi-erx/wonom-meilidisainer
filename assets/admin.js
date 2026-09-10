@@ -52,6 +52,7 @@
 		updateLog: [],
 		// Eelvaate tellimus: 0 = poe viimane.
 		order: 0,
+		varQuery: '',
 	};
 
 	var previewTimer = null;
@@ -458,22 +459,72 @@
 
 	/* ------------------------------------------------------------- väljad */
 
-	function tagPicker( target ) {
-		var items = Object.keys( cfg.tags || {} ).map( function ( key ) {
-			return '<button type="button" class="wmd-tag" data-tag="' + esc( key ) + '">' +
-				'<code>{{' + esc( key ) + '}}</code><span>' + esc( cfg.tags[ key ].label ) + '</span></button>';
-		} ).join( '' );
+	/**
+	 * Valitud tellimuse tegelik väärtus märgendi kohta, kui see on serverist käes.
+	 */
+	function tagValue( key ) {
+		var wc = wcCache[ wcKey() ];
+
+		if ( wc && wc.ctx && typeof wc.ctx[ key ] === 'string' && wc.ctx[ key ] !== '' ) {
+			return wc.ctx[ key ];
+		}
+
+		return '';
+	}
+
+	/**
+	 * Märgendite nimekiri rühmade kaupa. Kasutab nii { } menüü kui Muutujad-tab.
+	 *
+	 * @param {Function} rowFn Ehitab ühe rea HTML-i.
+	 * @param {string}   query Otsingusõna või tühi.
+	 * @return {string} HTML.
+	 */
+	function tagListHtml( rowFn, query ) {
+		var groups = cfg.tagGroups || {};
+		var tags = cfg.tags || {};
+		var q = ( query || '' ).toLowerCase();
+		var html = '';
+
+		function matches( key, label ) {
+			return ! q || key.toLowerCase().indexOf( q ) !== -1 || String( label ).toLowerCase().indexOf( q ) !== -1;
+		}
+
+		Object.keys( groups ).forEach( function ( g ) {
+			var rows = Object.keys( tags ).filter( function ( key ) {
+				return tags[ key ].group === g && matches( key, tags[ key ].label );
+			} );
+
+			if ( ! rows.length ) {
+				return;
+			}
+
+			html += '<div class="wmd-tags-head">' + esc( groups[ g ] ) + '</div>';
+			rows.forEach( function ( key ) {
+				html += rowFn( key, tags[ key ].label, tagValue( key ) );
+			} );
+		} );
 
 		// Selle tellimuse enda väljad — nii ei pea võtmeid peast teadma.
-		var fields = orderFields();
+		var fields = orderFields().filter( function ( f ) {
+			return matches( f.key, f.sample );
+		} );
 
 		if ( fields.length ) {
-			items += '<div class="wmd-tags-head">Selle tellimuse väljad</div>' +
-				fields.map( function ( f ) {
-					return '<button type="button" class="wmd-tag" data-tag="meta:' + esc( f.key ) + '">' +
-						'<code>{{meta:' + esc( f.key ) + '}}</code><span>' + esc( f.sample ) + '</span></button>';
-				} ).join( '' );
+			html += '<div class="wmd-tags-head">Selle tellimuse väljad</div>';
+			fields.forEach( function ( f ) {
+				html += rowFn( 'meta:' + f.key, 'Tellimuse väli', f.sample );
+			} );
 		}
+
+		return html;
+	}
+
+	function tagPicker( target ) {
+		var items = tagListHtml( function ( key, label, value ) {
+			return '<button type="button" class="wmd-tag" data-tag="' + esc( key ) + '">' +
+				'<code>{{' + esc( key ) + '}}</code>' +
+				'<span>' + esc( value || label ) + '</span></button>';
+		}, '' );
 
 		return '<div class="wmd-tags" data-for="' + esc( target ) + '">' +
 			'<button type="button" class="wmd-tags-toggle" title="Lisa muutuja">{ }</button>' +
@@ -784,6 +835,89 @@
 		];
 	}
 
+	/* ------------------------------------------------------- muutujad */
+
+	function varsPanelHtml() {
+		var order = currentOrder();
+
+		var html = '<div class="wmd-intro">Kõik muutujad, mida kirjas kasutada saab. Väärtus on valitud tellimuse pealt' +
+			( order ? ' (<strong>' + esc( order.label ) + '</strong>)' : '' ) +
+			'. Klõps kopeerib muutuja — saad selle kleepida ükskõik millisesse välja, ka „Oma HTML" plokki või lisa-CSS-i.</div>';
+
+		html += '<div class="wmd-field"><input type="text" class="wmd-input wmd-var-search" placeholder="Otsi muutujat…" value="' + esc( state.varQuery ) + '" /></div>';
+
+		var rows = tagListHtml( function ( key, label, value ) {
+			return '<button type="button" class="wmd-var" data-copy="{{' + esc( key ) + '}}">' +
+				'<code>{{' + esc( key ) + '}}</code>' +
+				'<em>' + esc( label ) + '</em>' +
+				'<span>' + esc( value || '—' ) + '</span></button>';
+		}, state.varQuery );
+
+		html += '<div class="wmd-vars">' + ( rows || '<p class="wmd-hint">Midagi ei leitud.</p>' ) + '</div>';
+
+		return html;
+	}
+
+	function bindVars() {
+		var search = root.querySelector( '.wmd-var-search' );
+
+		if ( search ) {
+			search.addEventListener( 'input', function () {
+				state.varQuery = search.value;
+
+				// Ainult nimekiri joonistatakse uuesti, et otsinguväli fookust ei kaotaks.
+				var list = root.querySelector( '.wmd-vars' );
+
+				if ( list ) {
+					list.innerHTML = tagListHtml( function ( key, label, value ) {
+						return '<button type="button" class="wmd-var" data-copy="{{' + esc( key ) + '}}">' +
+							'<code>{{' + esc( key ) + '}}</code><em>' + esc( label ) + '</em><span>' + esc( value || '—' ) + '</span></button>';
+					}, state.varQuery ) || '<p class="wmd-hint">Midagi ei leitud.</p>';
+					bindVarCopy();
+				}
+			} );
+		}
+
+		bindVarCopy();
+	}
+
+	function bindVarCopy() {
+		root.querySelectorAll( '[data-copy]' ).forEach( function ( btn ) {
+			btn.addEventListener( 'click', function () {
+				var text = btn.getAttribute( 'data-copy' );
+
+				function done() {
+					btn.classList.add( 'is-copied' );
+					setTimeout( function () {
+						btn.classList.remove( 'is-copied' );
+					}, 1200 );
+					toast( 'Kopeeritud: ' + text, 'ok' );
+				}
+
+				if ( navigator.clipboard && navigator.clipboard.writeText ) {
+					navigator.clipboard.writeText( text ).then( done ).catch( fallback );
+				} else {
+					fallback();
+				}
+
+				// Vanemad brauserid ja lubadeta olukorrad.
+				function fallback() {
+					var tmp = document.createElement( 'textarea' );
+					tmp.value = text;
+					document.body.appendChild( tmp );
+					tmp.select();
+					try {
+						document.execCommand( 'copy' );
+						done();
+					} catch ( e ) {
+						toast( 'Kopeerimine ei õnnestunud', 'error' );
+					}
+					document.body.removeChild( tmp );
+				}
+			} );
+		} );
+	}
+
 	/* ---------------------------------------------------- makseviisid */
 
 	function paymentsPanelHtml() {
@@ -1031,6 +1165,7 @@
 			[ 'footer', 'Jalus' ],
 			[ 'emails', 'Meilid' ],
 			[ 'payments', 'Makseviisid' ],
+			[ 'vars', 'Muutujad' ],
 			[ 'updates', 'Uuendused' ],
 		].map( function ( t ) {
 			return '<button type="button" class="wmd-tab' + ( state.tab === t[ 0 ] ? ' is-active' : '' ) + '" data-tab="' + t[ 0 ] + '">' + t[ 1 ] + '</button>';
@@ -1045,6 +1180,8 @@
 			panel = '<div class="wmd-intro">Jalus on kõigi meilide all ühesugune.</div>' + blockListHtml( 'footer', '', '' );
 		} else if ( state.tab === 'payments' ) {
 			panel = paymentsPanelHtml();
+		} else if ( state.tab === 'vars' ) {
+			panel = varsPanelHtml();
 		} else if ( state.tab === 'updates' ) {
 			panel = updatesPanelHtml();
 		} else {
@@ -1525,6 +1662,7 @@
 		bindDrag();
 		bindRich();
 		bindTags();
+		bindVars();
 		bindUpdates();
 		bindBar();
 	}

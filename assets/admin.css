@@ -851,6 +851,68 @@
 	cursor: default;
 }
 
+/* Muutujate nimekiri */
+
+.wmd-vars {
+	border: 1px solid var(--wmd-line);
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.wmd-var {
+	display: block;
+	width: 100%;
+	text-align: left;
+	border: 0;
+	border-bottom: 1px solid var(--wmd-line);
+	background: #fff;
+	padding: 7px 9px;
+	cursor: pointer;
+	line-height: 1.35;
+}
+
+.wmd-var:last-child {
+	border-bottom: 0;
+}
+
+.wmd-var:hover {
+	background: #eef2f6;
+}
+
+.wmd-var.is-copied {
+	background: #e6f4ec;
+}
+
+.wmd-var code {
+	display: block;
+	font-size: 11px;
+	color: var(--wmd-accent);
+	word-break: break-all;
+}
+
+.wmd-var em {
+	font-style: normal;
+	font-size: 11px;
+	color: var(--wmd-muted);
+	margin-right: 6px;
+}
+
+.wmd-var span {
+	font-size: 11px;
+	color: var(--wmd-ink);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: inline-block;
+	max-width: 100%;
+	vertical-align: bottom;
+}
+
+.wmd-vars .wmd-tags-head {
+	margin-top: 0;
+	background: #f6f7f9;
+}
+
 /* Silt-väärtus read */
 
 .wmd-pairs {
