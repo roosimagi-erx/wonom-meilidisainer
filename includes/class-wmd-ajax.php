@@ -195,7 +195,18 @@ class WMD_Ajax {
 		foreach ( $terms as $term ) {
 			$link  = get_term_link( $term );
 			$thumb = get_term_meta( $term->term_id, 'thumbnail_id', true );
-			$image = $thumb ? wp_get_attachment_image_url( (int) $thumb, 'medium' ) : '';
+
+			// WooCommerce'i enda pisipilt on juba ühesuuruseks lõigatud, seega
+			// eelistame seda; muidu võtame keskmise ja lõikame renderdusel.
+			$image = '';
+
+			if ( $thumb ) {
+				$image = wp_get_attachment_image_url( (int) $thumb, 'woocommerce_thumbnail' );
+
+				if ( ! $image ) {
+					$image = wp_get_attachment_image_url( (int) $thumb, 'medium' );
+				}
+			}
 
 			$items[] = array(
 				'id'    => (int) $term->term_id,

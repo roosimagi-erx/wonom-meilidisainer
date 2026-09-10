@@ -115,8 +115,14 @@
 		}
 
 		var inner = Math.max( 240, num( brand.width, 600 ) - ( 2 * num( brand.pad_x, 28 ) ) );
-		var cell = Math.floor( ( inner - ( gap * ( cols - 1 ) ) ) / cols );
+		var cell = Math.floor( ( inner - ( gap * cols ) ) / cols );
 		var pct = Math.round( ( 100 / cols ) * 10000 ) / 10000;
+
+		// Sama kuvasuhtetabel mis PHP-poolel (wmd_card_ratios). Kanvasel lõikab
+		// pildi object-fit; päris kirjas on pilt juba serveris valmis lõigatud.
+		var shapes = { square: [ 400, 400 ], portrait: [ 400, 533 ], landscape: [ 400, 300 ] };
+		var ratio = p.ratio || 'square';
+		var cellH = shapes[ ratio ] ? Math.round( cell * ( shapes[ ratio ][ 1 ] / shapes[ ratio ][ 0 ] ) ) : 0;
 
 		var html = '';
 		var first = true;
@@ -128,16 +134,10 @@
 
 			for ( var i = 0; i < cols; i++ ) {
 				var card = chunk[ i ] || null;
-				var pad = '';
 
-				if ( i > 0 ) {
-					pad += 'padding-left:' + Math.ceil( gap / 2 ) + 'px;';
-				}
-
-				if ( i < cols - 1 ) {
-					pad += 'padding-right:' + Math.floor( gap / 2 ) + 'px;';
-				}
-
+				// Ühesugune polster igal lahtril, muidu jääksid ääremised pildid
+				// laiemaks ja rida ei oleks ühtlane.
+				var pad = 'padding-left:' + Math.round( gap / 2 ) + 'px;padding-right:' + Math.round( gap / 2 ) + 'px;';
 				var tdStyle = 'width:' + pct + '%;vertical-align:top;text-align:center;' + top + pad;
 
 				if ( ! card ) {
@@ -148,18 +148,28 @@
 				var inside = '';
 
 				if ( card.image ) {
-					inside += '<img src="' + escAttr( card.image ) + '" alt="' + escAttr( card.label ) + '" width="' + cell + '" style="' + escAttr( style( {
+					var imgStyle = {
 						width: '100%',
 						'max-width': cell + 'px',
-						height: 'auto',
 						display: 'block',
 						border: '0',
 						'border-radius': rad + 'px',
 						margin: '0 auto',
-					} ) ) + '" />';
+					};
+
+					if ( cellH > 0 ) {
+						imgStyle.height = cellH + 'px';
+						imgStyle[ 'object-fit' ] = 'cover';
+					} else {
+						imgStyle.height = 'auto';
+					}
+
+					inside += '<img src="' + escAttr( card.image ) + '" alt="' + escAttr( card.label ) + '" width="' + cell + '"' +
+						( cellH > 0 ? ' height="' + cellH + '"' : '' ) +
+						' style="' + escAttr( style( imgStyle ) ) + '" />';
 				} else if ( placeholder ) {
-					inside += '<div style="height:' + Math.round( cell * 0.75 ) + 'px;background:' + escAttr( brand.border_color ) +
-						';border-radius:' + rad + 'px;opacity:.35;"></div>';
+					inside += '<div style="height:' + ( cellH > 0 ? cellH : Math.round( cell * 0.75 ) ) + 'px;background:' +
+						escAttr( brand.border_color ) + ';border-radius:' + rad + 'px;opacity:.35;"></div>';
 				}
 
 				if ( card.label ) {
@@ -187,7 +197,7 @@
 			}
 
 			html += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="wmd-cards"' +
-				' style="width:100%;border-collapse:collapse;"><tr>' + cells + '</tr></table>';
+				' style="width:100%;border-collapse:collapse;table-layout:fixed;"><tr>' + cells + '</tr></table>';
 
 			first = false;
 		}

@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.21.0
+Stable tag: 0.22.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,12 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.22.0 =
+* Plokil „Pildid kõrvuti" on nüüd seade „Pildi kuju": ruut, püstine, lamav või originaal. Meediateegis on pildid eri kõrgusega ja rida jäi seetõttu ragiseks — nüüd lõigatakse nad keskelt ühesuuruseks.
+* Meediateegi pildid lõigatakse serveris päriselt valmis, mitte ainult CSS-iga. Nii on nad ühesugused ka Outlooki töölauaversioonis, mis object-fit'i ei tunne. Lõigatud fail tehakse ühe korra ja jääb meediateeki alles.
+* Tootekategooriate pildid võetakse WooCommerce'i enda pisipildi mõõdust, mis on juba ühesuuruseks lõigatud.
+* Parandus: ääremiste piltide lahtritel oli vähem polstrit kui keskmistel, mistõttu need jäid paar pikslit laiemaks. Nüüd on polster ühesugune ja tabeli laiused fikseeritud.
 
 = 0.21.0 =
 * Uus plokk „Pildid kõrvuti": 2, 3 või 4 pilti ühes reas, iga pildi taga link ja all nimi. Sobib tootekategooriate ribaks kirja lõppu.

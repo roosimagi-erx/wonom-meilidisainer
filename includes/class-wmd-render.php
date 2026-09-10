@@ -1158,8 +1158,16 @@ class WMD_Render {
 		// Pildi laius pikslites: meilikliendid tahavad width-atribuuti, mitte
 		// ainult protsenti. Sisu laius on meili laius miinus külgede polster.
 		$inner = max( 240, (int) $brand['width'] - ( 2 * (int) $brand['pad_x'] ) );
-		$cell  = (int) floor( ( $inner - ( $gap * ( $cols - 1 ) ) ) / $cols );
+		$cell  = (int) floor( ( $inner - ( $gap * $cols ) ) / $cols );
 		$pct   = round( 100 / $cols, 4 );
+
+		// Ühesuurune kuju: kõrgus tuleb kuvasuhtest ja pilt lõigatakse keskelt.
+		// Kui suhe on „originaal", jääb igale pildile tema oma kõrgus.
+		$ratio  = isset( $p['ratio'] ) ? (string) $p['ratio'] : 'square';
+		$shapes = wmd_card_ratios();
+		$cell_h = isset( $shapes[ $ratio ] )
+			? (int) round( $cell * ( $shapes[ $ratio ][1] / $shapes[ $ratio ][0] ) )
+			: 0;
 
 		$html  = '';
 		$first = true;
@@ -1173,18 +1181,12 @@ class WMD_Render {
 
 			for ( $i = 0; $i < $cols; $i++ ) {
 				$card = isset( $chunk[ $i ] ) ? $chunk[ $i ] : null;
-				$pad  = array();
 
-				if ( $i > 0 ) {
-					$pad[] = 'padding-left:' . (int) ceil( $gap / 2 ) . 'px';
-				}
-
-				if ( $i < $cols - 1 ) {
-					$pad[] = 'padding-right:' . (int) floor( $gap / 2 ) . 'px';
-				}
-
+				// Polster on igal lahtril ühesugune, muidu jääksid ääremised
+				// pildid teistest laiemaks ja rida ei oleks ühtlane. Rida ise
+				// nihkub servadest poole vahe võrra sissepoole — seda ei märka.
 				$style = 'width:' . $pct . '%;vertical-align:top;text-align:center;' . $top
-					. ( $pad ? implode( ';', $pad ) . ';' : '' );
+					. 'padding-left:' . (int) round( $gap / 2 ) . 'px;padding-right:' . (int) round( $gap / 2 ) . 'px;';
 
 				if ( ! $card ) {
 					// Rida ei täitunud lõpuni — tühi lahter hoiab laiuse paigas.
@@ -1195,25 +1197,34 @@ class WMD_Render {
 				$inside = '';
 
 				if ( '' !== $card['image'] ) {
-					$inside .= '<img src="' . esc_url( $card['image'] ) . '" alt="' . esc_attr( $card['label'] ) . '" width="' . $cell . '" '
-						. self::attr(
-							array(
-								'style' => self::style(
-									array(
-										'width'         => '100%',
-										'max-width'     => $cell . 'px',
-										'height'        => 'auto',
-										'display'       => 'block',
-										'border'        => '0',
-										'border-radius' => $rad . 'px',
-										'margin'        => '0 auto',
-									)
-								),
-							)
-						) . ' />';
+					// Meediateegi pildid lõikame serveris õigeks — nii on nad
+					// ühesugused ka Outlookis, mis object-fit'i ei tunne.
+					$src = wmd_card_image( $card['image'], $ratio );
+
+					$img_style = array(
+						'width'         => '100%',
+						'max-width'     => $cell . 'px',
+						'display'       => 'block',
+						'border'        => '0',
+						'border-radius' => $rad . 'px',
+						'margin'        => '0 auto',
+					);
+
+					$img_attr = 'width="' . $cell . '"';
+
+					if ( $cell_h > 0 ) {
+						$img_style['height']     = $cell_h . 'px';
+						$img_style['object-fit'] = 'cover';
+						$img_attr               .= ' height="' . $cell_h . '"';
+					} else {
+						$img_style['height'] = 'auto';
+					}
+
+					$inside .= '<img src="' . esc_url( $src ) . '" alt="' . esc_attr( $card['label'] ) . '" ' . $img_attr . ' '
+						. self::attr( array( 'style' => self::style( $img_style ) ) ) . ' />';
 				} elseif ( $placeholder ) {
-					$inside .= '<div style="height:' . (int) round( $cell * 0.75 ) . 'px;background:' . esc_attr( $brand['border_color'] )
-						. ';border-radius:' . $rad . 'px;opacity:.35;"></div>';
+					$inside .= '<div style="height:' . ( $cell_h > 0 ? $cell_h : (int) round( $cell * 0.75 ) ) . 'px;background:'
+						. esc_attr( $brand['border_color'] ) . ';border-radius:' . $rad . 'px;opacity:.35;"></div>';
 				}
 
 				if ( '' !== $card['label'] ) {
@@ -1255,7 +1266,7 @@ class WMD_Render {
 			}
 
 			$html .= '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="wmd-cards"'
-				. ' style="width:100%;border-collapse:collapse;"><tr>' . $cells . '</tr></table>';
+				. ' style="width:100%;border-collapse:collapse;table-layout:fixed;"><tr>' . $cells . '</tr></table>';
 
 			$first = false;
 		}

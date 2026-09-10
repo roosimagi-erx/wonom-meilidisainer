@@ -433,6 +433,18 @@ function wmd_block_types() {
 					),
 					'default' => '4',
 				),
+				'ratio'     => array(
+					'type'    => 'select',
+					'label'   => __( 'Pildi kuju', 'wonom-meilidisainer' ),
+					'options' => array(
+						'square'    => __( 'Ruut (1:1)', 'wonom-meilidisainer' ),
+						'portrait'  => __( 'Püstine (3:4)', 'wonom-meilidisainer' ),
+						'landscape' => __( 'Lamav (4:3)', 'wonom-meilidisainer' ),
+						'original'  => __( 'Originaal (igaüks oma kuju)', 'wonom-meilidisainer' ),
+					),
+					'default' => 'square',
+					'hint'    => __( 'Pildid lõigatakse keskelt ühesuuruseks, et rida oleks sirge. „Originaal" jätab igale pildile tema oma kuju.', 'wonom-meilidisainer' ),
+				),
 				'gap'       => array(
 					'type'    => 'range',
 					'label'   => __( 'Vahe piltide vahel (px)', 'wonom-meilidisainer' ),
@@ -1236,6 +1248,131 @@ function wmd_meta_key( $key ) {
 	}
 
 	return $key;
+}
+
+/**
+ * Pildikaardi kuvasuhted: laius ja kõrgus, mille järgi pilt lõigatakse.
+ *
+ * @return array<string,array{0:int,1:int}>
+ */
+function wmd_card_ratios() {
+	return array(
+		'square'    => array( 400, 400 ),
+		'portrait'  => array( 400, 533 ),
+		'landscape' => array( 400, 300 ),
+	);
+}
+
+/**
+ * Ühesuuruseks lõigatud pilt kaardiploki jaoks.
+ *
+ * Meediateegis on pildid eri kuju ja kõrgusega, aga kirjas peavad nad olema
+ * ühesugused. CSS-i object-fit lõikab need küll enamikus postkastides, aga
+ * Outlooki töölauaversioon seda ei tunne ja venitaks pildi laiaks. Seepärast
+ * lõikame pildi serveris päriselt valmis ja anname kirja juba õige faili.
+ *
+ * Lõigatud fail tehakse ühe korra ja jääb meediateeki alles; tulemus läheb
+ * lisaks vahemällu, et iga kirja saatmine ei teeks andmebaasipäringut.
+ *
+ * @param string $url   Pildi aadress.
+ * @param string $ratio Kuvasuhte võti (wmd_card_ratios) või 'original'.
+ * @return string Aadress — lõigatud pildile või sisendile, kui lõigata ei saanud.
+ */
+function wmd_card_image( $url, $ratio ) {
+	$sizes = wmd_card_ratios();
+	$url   = trim( (string) $url );
+
+	if ( '' === $url || ! isset( $sizes[ $ratio ] ) ) {
+		return $url;
+	}
+
+	$key    = 'wmd_card_' . md5( $url . '|' . $ratio );
+	$cached = get_transient( $key );
+
+	if ( is_string( $cached ) && '' !== $cached ) {
+		return $cached;
+	}
+
+	$done = wmd_crop_attachment( $url, $sizes[ $ratio ][0], $sizes[ $ratio ][1] );
+
+	set_transient( $key, $done, WEEK_IN_SECONDS );
+
+	return $done;
+}
+
+/**
+ * Lõikab meediateegi pildi soovitud mõõtu ja annab uue aadressi.
+ *
+ * Väliste piltide puhul ei ole midagi teha — need lõikab postkast ise CSS-iga.
+ *
+ * @param string $url Pildi aadress.
+ * @param int    $w   Laius.
+ * @param int    $h   Kõrgus.
+ * @return string
+ */
+function wmd_crop_attachment( $url, $w, $h ) {
+	$id = attachment_url_to_postid( $url );
+
+	if ( ! $id ) {
+		return $url;
+	}
+
+	$name = 'wmd_card_' . (int) $w . 'x' . (int) $h;
+	$meta = wp_get_attachment_metadata( $id );
+
+	// Kas oleme selle juba varem lõiganud?
+	if ( isset( $meta['sizes'][ $name ]['file'] ) ) {
+		$made = wp_get_attachment_image_src( $id, $name );
+
+		if ( $made && ! empty( $made[0] ) ) {
+			return $made[0];
+		}
+	}
+
+	$file = get_attached_file( $id );
+
+	if ( ! $file || ! file_exists( $file ) ) {
+		return $url;
+	}
+
+	$editor = wp_get_image_editor( $file );
+
+	if ( is_wp_error( $editor ) ) {
+		return $url;
+	}
+
+	$resized = $editor->resize( $w, $h, true );
+
+	if ( is_wp_error( $resized ) ) {
+		return $url;
+	}
+
+	$saved = $editor->save();
+
+	if ( is_wp_error( $saved ) || empty( $saved['file'] ) ) {
+		return $url;
+	}
+
+	// Paneme suuruse metaandmetesse kirja, et järgmine kord uuesti ei lõikaks
+	// ja et pildi kustutamisel läheks ka see fail kaasa.
+	if ( is_array( $meta ) ) {
+		if ( ! isset( $meta['sizes'] ) || ! is_array( $meta['sizes'] ) ) {
+			$meta['sizes'] = array();
+		}
+
+		$meta['sizes'][ $name ] = array(
+			'file'      => $saved['file'],
+			'width'     => $saved['width'],
+			'height'    => $saved['height'],
+			'mime-type' => $saved['mime-type'],
+		);
+
+		wp_update_attachment_metadata( $id, $meta );
+	}
+
+	$base = wp_get_attachment_url( $id );
+
+	return $base ? trailingslashit( dirname( $base ) ) . $saved['file'] : $url;
 }
 
 /**
