@@ -961,6 +961,119 @@
 	margin-top: 0;
 }
 
+/* ------------------------------------------------ pildid kõrvuti (kaardid) */
+
+.wmd-cards-edit {
+	margin: 0 0 6px;
+	padding: 0;
+	list-style: none;
+}
+
+.wmd-card-row {
+	display: flex;
+	gap: 7px;
+	border: 1px solid var(--wmd-line);
+	border-radius: 6px;
+	padding: 7px;
+	margin-bottom: 6px;
+	background: #fff;
+}
+
+.wmd-card-thumb {
+	flex: 0 0 72px;
+	width: 72px;
+}
+
+.wmd-card-thumb img {
+	width: 100%;
+	height: 54px;
+	object-fit: cover;
+	display: block;
+	border: 1px solid var(--wmd-line);
+	border-radius: 5px;
+	background: #fafbfc;
+}
+
+.wmd-card-thumb .wmd-mini {
+	width: 100%;
+	margin-top: 4px;
+}
+
+.wmd-card-fields {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.wmd-card-top {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+	margin-bottom: 5px;
+}
+
+.wmd-card-top .wmd-small {
+	flex: 1 1 auto;
+	min-width: 0;
+	font-weight: 600;
+}
+
+.wmd-card-fields .wmd-small + .wmd-small {
+	margin-top: 5px;
+}
+
+.wmd-card-tools {
+	display: flex;
+	gap: 5px;
+	flex-wrap: wrap;
+}
+
+.wmd-card-catlist {
+	margin-top: 7px;
+	max-height: 220px;
+	overflow-y: auto;
+	border: 1px solid var(--wmd-line);
+	border-radius: 6px;
+	padding: 6px;
+	background: #fff;
+}
+
+.wmd-cat {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	width: 100%;
+	text-align: left;
+	background: none;
+	border: 0;
+	border-radius: 5px;
+	padding: 4px;
+	cursor: pointer;
+	font: inherit;
+	color: inherit;
+}
+
+.wmd-cat:hover {
+	background: #f1f4f8;
+}
+
+.wmd-cat img,
+.wmd-cat .wmd-image-empty {
+	width: 34px;
+	height: 34px;
+	flex: 0 0 34px;
+	object-fit: cover;
+	border-radius: 4px;
+	border: 1px solid var(--wmd-line);
+}
+
+.wmd-cat em {
+	font-style: normal;
+	font-size: 12px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .wmd-tags-head {
 	padding: 6px 7px 3px;
 	font-size: 10px;

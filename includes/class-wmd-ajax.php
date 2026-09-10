@@ -22,6 +22,7 @@ class WMD_Ajax {
 		add_action( 'wp_ajax_wmd_reset', array( __CLASS__, 'reset' ) );
 		add_action( 'wp_ajax_wmd_preview', array( __CLASS__, 'preview' ) );
 		add_action( 'wp_ajax_wmd_wc_part', array( __CLASS__, 'wc_part' ) );
+		add_action( 'wp_ajax_wmd_categories', array( __CLASS__, 'categories' ) );
 		add_action( 'wp_ajax_wmd_test_email', array( __CLASS__, 'test_email' ) );
 		add_action( 'wp_ajax_wmd_toggle', array( __CLASS__, 'toggle' ) );
 		add_action( 'wp_ajax_wmd_save_updates', array( __CLASS__, 'save_updates' ) );
@@ -161,6 +162,50 @@ class WMD_Ajax {
 		update_option( 'wmd_enabled', $on );
 
 		wp_send_json_success( array( 'enabled' => $on ) );
+	}
+
+	/**
+	 * Tootekategooriad pildiploki täitmiseks: nimi, aadress ja pilt.
+	 *
+	 * Kategooria pilt tuleb termi meta väljalt thumbnail_id. Kui seda ei ole,
+	 * jääb pilt tühjaks ja kasutaja valib selle ise meediateegist.
+	 */
+	public static function categories() {
+		self::guard();
+
+		if ( ! taxonomy_exists( 'product_cat' ) ) {
+			wp_send_json_success( array( 'items' => array() ) );
+		}
+
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'product_cat',
+				'hide_empty' => false,
+				'number'     => 200,
+				'orderby'    => 'name',
+			)
+		);
+
+		if ( is_wp_error( $terms ) ) {
+			wp_send_json_success( array( 'items' => array() ) );
+		}
+
+		$items = array();
+
+		foreach ( $terms as $term ) {
+			$link  = get_term_link( $term );
+			$thumb = get_term_meta( $term->term_id, 'thumbnail_id', true );
+			$image = $thumb ? wp_get_attachment_image_url( (int) $thumb, 'medium' ) : '';
+
+			$items[] = array(
+				'id'    => (int) $term->term_id,
+				'name'  => $term->name,
+				'url'   => is_wp_error( $link ) ? '' : $link,
+				'image' => $image ? $image : '',
+			);
+		}
+
+		wp_send_json_success( array( 'items' => $items ) );
 	}
 
 	/**

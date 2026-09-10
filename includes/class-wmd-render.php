@@ -446,6 +446,14 @@ class WMD_Render {
 					. '</tr></table>';
 				break;
 
+			case 'cards':
+				$body = self::cards_table( $p, $ctx, $brand, false );
+
+				if ( '' === $body ) {
+					return '';
+				}
+				break;
+
 			case 'social':
 				// Päris logod PNG-na. Meilikliendid ei renderda SVG-d ega
 				// data-URI-sid, seega peavad ikoonid tulema päris aadressilt.
@@ -1101,6 +1109,161 @@ class WMD_Render {
 	}
 
 	/**
+	 * Pildid kõrvuti: pilt, selle taga link ja all nimi.
+	 *
+	 * Ehitatud tabelitest, sest flexbox ja float ei tööta Outlookis. Iga rida on
+	 * oma tabel, nii et neli pilti ei jää kunagi pooleks — ja väikesel ekraanil
+	 * murrab meili CSS need kaks kaupa (vt email_css).
+	 *
+	 * @param array $p           Ploki seaded.
+	 * @param array $ctx         Märgendite kontekst.
+	 * @param array $brand       Bränd.
+	 * @param bool  $placeholder Kas näidata täitmata kohti (ainult kujundajas).
+	 * @return string Tühi string, kui näidata pole midagi.
+	 */
+	public static function cards_table( $p, $ctx, $brand, $placeholder = false ) {
+		$items = isset( $p['items'] ) && is_array( $p['items'] ) ? $p['items'] : array();
+		$cols  = max( 2, min( 4, (int) ( isset( $p['cols'] ) ? $p['cols'] : 4 ) ) );
+		$gap   = isset( $p['gap'] ) ? (int) $p['gap'] : 10;
+		$rad   = isset( $p['radius'] ) ? (int) $p['radius'] : 0;
+		$size  = ! empty( $p['size'] ) ? (int) $p['size'] : (int) $brand['base_size'];
+		$color = ! empty( $p['color'] ) ? $p['color'] : $brand['text_color'];
+		$deco  = empty( $p['underline'] ) ? 'none' : 'underline';
+		$font  = $brand['font_family'];
+
+		// Päris kirjas jätame täitmata kohad vahele; kujundajas näitame neid,
+		// et plokk ei paistaks kohe pärast lisamist katkisena.
+		$rows = array();
+
+		foreach ( $items as $item ) {
+			$image = isset( $item['image'] ) ? trim( WMD_Tags::replace( $item['image'], $ctx ) ) : '';
+			$label = isset( $item['label'] ) ? trim( WMD_Tags::replace( $item['label'], $ctx ) ) : '';
+			$link  = isset( $item['link'] ) ? trim( WMD_Tags::replace( $item['link'], $ctx ) ) : '';
+
+			if ( '' === $image && '' === $label && ! $placeholder ) {
+				continue;
+			}
+
+			$rows[] = array(
+				'image' => $image,
+				'label' => $label,
+				'link'  => $link,
+			);
+		}
+
+		if ( empty( $rows ) ) {
+			return '';
+		}
+
+		// Pildi laius pikslites: meilikliendid tahavad width-atribuuti, mitte
+		// ainult protsenti. Sisu laius on meili laius miinus külgede polster.
+		$inner = max( 240, (int) $brand['width'] - ( 2 * (int) $brand['pad_x'] ) );
+		$cell  = (int) floor( ( $inner - ( $gap * ( $cols - 1 ) ) ) / $cols );
+		$pct   = round( 100 / $cols, 4 );
+
+		$html  = '';
+		$first = true;
+
+		foreach ( array_chunk( $rows, $cols ) as $chunk ) {
+			$cells = '';
+
+			// Ridade vahe tuleb lahtri polstrist, mitte tabeli marginaalist —
+			// Outlook ei arvesta tabelil marginaali.
+			$top = $first ? '' : 'padding-top:' . $gap . 'px;';
+
+			for ( $i = 0; $i < $cols; $i++ ) {
+				$card = isset( $chunk[ $i ] ) ? $chunk[ $i ] : null;
+				$pad  = array();
+
+				if ( $i > 0 ) {
+					$pad[] = 'padding-left:' . (int) ceil( $gap / 2 ) . 'px';
+				}
+
+				if ( $i < $cols - 1 ) {
+					$pad[] = 'padding-right:' . (int) floor( $gap / 2 ) . 'px';
+				}
+
+				$style = 'width:' . $pct . '%;vertical-align:top;text-align:center;' . $top
+					. ( $pad ? implode( ';', $pad ) . ';' : '' );
+
+				if ( ! $card ) {
+					// Rida ei täitunud lõpuni — tühi lahter hoiab laiuse paigas.
+					$cells .= '<td class="wmd-cardcell" ' . self::attr( array( 'style' => $style ) ) . '>&nbsp;</td>';
+					continue;
+				}
+
+				$inside = '';
+
+				if ( '' !== $card['image'] ) {
+					$inside .= '<img src="' . esc_url( $card['image'] ) . '" alt="' . esc_attr( $card['label'] ) . '" width="' . $cell . '" '
+						. self::attr(
+							array(
+								'style' => self::style(
+									array(
+										'width'         => '100%',
+										'max-width'     => $cell . 'px',
+										'height'        => 'auto',
+										'display'       => 'block',
+										'border'        => '0',
+										'border-radius' => $rad . 'px',
+										'margin'        => '0 auto',
+									)
+								),
+							)
+						) . ' />';
+				} elseif ( $placeholder ) {
+					$inside .= '<div style="height:' . (int) round( $cell * 0.75 ) . 'px;background:' . esc_attr( $brand['border_color'] )
+						. ';border-radius:' . $rad . 'px;opacity:.35;"></div>';
+				}
+
+				if ( '' !== $card['label'] ) {
+					$inside .= '<div ' . self::attr(
+						array(
+							'style' => self::style(
+								array(
+									'font-family' => $font,
+									'font-size'   => $size . 'px',
+									'line-height' => '1.4',
+									'color'       => $color,
+									'padding-top' => '8px',
+								)
+							),
+						)
+					) . '>' . esc_html( $card['label'] ) . '</div>';
+				} elseif ( $placeholder ) {
+					$inside .= '<div style="font-family:' . esc_attr( $font ) . ';font-size:' . $size . 'px;padding-top:8px;color:'
+						. esc_attr( $brand['muted_color'] ) . ';">' . esc_html__( 'Nimi', 'wonom-meilidisainer' ) . '</div>';
+				}
+
+				// Link käib ümber terve kaardi, nii et ka nimi on klõpsatav.
+				if ( '' !== $card['link'] ) {
+					$inside = '<a href="' . esc_url( $card['link'] ) . '" target="_blank" rel="noopener" '
+						. self::attr(
+							array(
+								'style' => self::style(
+									array(
+										'color'           => $color,
+										'text-decoration' => $deco,
+										'display'         => 'block',
+									)
+								),
+							)
+						) . '>' . $inside . '</a>';
+				}
+
+				$cells .= '<td class="wmd-cardcell" ' . self::attr( array( 'style' => $style ) ) . '>' . $inside . '</td>';
+			}
+
+			$html .= '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="wmd-cards"'
+				. ' style="width:100%;border-collapse:collapse;"><tr>' . $cells . '</tr></table>';
+
+			$first = false;
+		}
+
+		return $html;
+	}
+
+	/**
 	 * Annab linkidele brändi aktsentvärvi, kui neil pole oma stiili.
 	 *
 	 * @param string $html  Sisu.
@@ -1141,6 +1304,11 @@ class WMD_Render {
 @media only screen and (max-width: 620px) {
 	.wmd-card { width: 100% !important; }
 	.wmd-col { display: block !important; width: 100% !important; padding: 0 0 12px 0 !important; }
+}
+/* Neli pilti kõrvuti jääb telefonis liiga kitsaks — murrame kaks kaupa. */
+@media only screen and (max-width: 480px) {
+	.wmd-cards tr { display: block !important; }
+	.wmd-cardcell { display: inline-block !important; width: 50% !important; padding: 0 0 12px 0 !important; box-sizing: border-box !important; }
 }
 ';
 

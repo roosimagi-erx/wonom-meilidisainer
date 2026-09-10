@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.20.0
+Stable tag: 0.21.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,11 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.21.0 =
+* Uus plokk „Pildid kõrvuti": 2, 3 või 4 pilti ühes reas, iga pildi taga link ja all nimi. Sobib tootekategooriate ribaks kirja lõppu.
+* Ploki saab täita ühe klõpsuga tootekategooriatest — nimi, aadress ja kategooria pilt tulevad WooCommerce'ist. Nimekiri jääb lahti, nii et neli pilti saab järjest valida.
+* Telefonis murrab neli pilti kaks kaupa, et need liiga kitsaks ei jääks. Outlookis jäävad nad kõrvuti.
 
 = 0.20.0 =
 * Parandus: salvestus katkes veateatega „SyntaxError … is not valid JSON", kui mõnes meilis oli „Oma HTML" plokk <script> või <style> märgendiga. Serveri tulemüür blokeeris sellise päringu enne WordPressi jõudmist. Kujundus saadetakse nüüd base64-kujul, nii et tulemüür ei näe seda ründena. Sisu ise puhastatakse endiselt serveris.

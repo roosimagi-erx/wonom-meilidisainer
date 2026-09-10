@@ -393,6 +393,85 @@ function wmd_block_types() {
 				'pad'   => $pad,
 			),
 		),
+		'cards'   => array(
+			'label'  => __( 'Pildid kõrvuti', 'wonom-meilidisainer' ),
+			'icon'   => '▦',
+			'fields' => array(
+				'items'     => array(
+					'type'    => 'cards',
+					'label'   => __( 'Pildid', 'wonom-meilidisainer' ),
+					'default' => array(
+						array(
+							'image' => '',
+							'link'  => '',
+							'label' => '',
+						),
+						array(
+							'image' => '',
+							'link'  => '',
+							'label' => '',
+						),
+						array(
+							'image' => '',
+							'link'  => '',
+							'label' => '',
+						),
+						array(
+							'image' => '',
+							'link'  => '',
+							'label' => '',
+						),
+					),
+				),
+				'cols'      => array(
+					'type'    => 'select',
+					'label'   => __( 'Mitu ühes reas', 'wonom-meilidisainer' ),
+					'options' => array(
+						'2' => __( '2 kõrvuti', 'wonom-meilidisainer' ),
+						'3' => __( '3 kõrvuti', 'wonom-meilidisainer' ),
+						'4' => __( '4 kõrvuti', 'wonom-meilidisainer' ),
+					),
+					'default' => '4',
+				),
+				'gap'       => array(
+					'type'    => 'range',
+					'label'   => __( 'Vahe piltide vahel (px)', 'wonom-meilidisainer' ),
+					'min'     => 0,
+					'max'     => 24,
+					'step'    => 2,
+					'default' => 10,
+				),
+				'radius'    => array(
+					'type'    => 'range',
+					'label'   => __( 'Nurga ümardus (px)', 'wonom-meilidisainer' ),
+					'min'     => 0,
+					'max'     => 24,
+					'step'    => 2,
+					'default' => 0,
+				),
+				'size'      => array(
+					'type'    => 'range',
+					'label'   => __( 'Nime suurus (px)', 'wonom-meilidisainer' ),
+					'min'     => 10,
+					'max'     => 20,
+					'step'    => 1,
+					'default' => 0,
+					'inherit' => 'base_size',
+				),
+				'color'     => array(
+					'type'    => 'color',
+					'label'   => __( 'Nime värv', 'wonom-meilidisainer' ),
+					'default' => '',
+					'inherit' => 'text_color',
+				),
+				'underline' => array(
+					'type'    => 'toggle',
+					'label'   => __( 'Nimi allajoonitud', 'wonom-meilidisainer' ),
+					'default' => 1,
+				),
+				'pad'       => $pad,
+			),
+		),
 		'social'  => array(
 			'label'  => __( 'Sotsiaalmeedia', 'wonom-meilidisainer' ),
 			'icon'   => '@',

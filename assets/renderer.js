@@ -77,6 +77,124 @@
 		return isNaN( n ) ? fallback : n;
 	}
 
+	/**
+	 * Pildid kõrvuti — sama loogika, mis PHP-poolel WMD_Render::cards_table.
+	 *
+	 * @param {Object}  p           Ploki seaded.
+	 * @param {Object}  ctx         Märgendite kontekst.
+	 * @param {Object}  brand       Bränd.
+	 * @param {boolean} placeholder Kas näidata täitmata kohti.
+	 * @return {string} HTML või tühi string.
+	 */
+	function cardsTable( p, ctx, brand, placeholder ) {
+		var items = Array.isArray( p.items ) ? p.items : [];
+		var cols = Math.max( 2, Math.min( 4, num( p.cols, 4 ) ) );
+		var gap = num( p.gap, 10 );
+		var rad = num( p.radius, 0 );
+		var size = num( p.size, 0 ) || num( brand.base_size, 15 );
+		var color = p.color || brand.text_color;
+		var deco = p.underline ? 'underline' : 'none';
+		var font = brand.font_family;
+
+		var rows = [];
+
+		items.forEach( function ( item ) {
+			var image = String( tags( item.image || '', ctx ) ).trim();
+			var label = String( tags( item.label || '', ctx ) ).trim();
+			var link = String( tags( item.link || '', ctx ) ).trim();
+
+			if ( ! image && ! label && ! placeholder ) {
+				return;
+			}
+
+			rows.push( { image: image, label: label, link: link } );
+		} );
+
+		if ( ! rows.length ) {
+			return '';
+		}
+
+		var inner = Math.max( 240, num( brand.width, 600 ) - ( 2 * num( brand.pad_x, 28 ) ) );
+		var cell = Math.floor( ( inner - ( gap * ( cols - 1 ) ) ) / cols );
+		var pct = Math.round( ( 100 / cols ) * 10000 ) / 10000;
+
+		var html = '';
+		var first = true;
+
+		for ( var start = 0; start < rows.length; start += cols ) {
+			var chunk = rows.slice( start, start + cols );
+			var cells = '';
+			var top = first ? '' : 'padding-top:' + gap + 'px;';
+
+			for ( var i = 0; i < cols; i++ ) {
+				var card = chunk[ i ] || null;
+				var pad = '';
+
+				if ( i > 0 ) {
+					pad += 'padding-left:' + Math.ceil( gap / 2 ) + 'px;';
+				}
+
+				if ( i < cols - 1 ) {
+					pad += 'padding-right:' + Math.floor( gap / 2 ) + 'px;';
+				}
+
+				var tdStyle = 'width:' + pct + '%;vertical-align:top;text-align:center;' + top + pad;
+
+				if ( ! card ) {
+					cells += '<td class="wmd-cardcell" style="' + escAttr( tdStyle ) + '">&nbsp;</td>';
+					continue;
+				}
+
+				var inside = '';
+
+				if ( card.image ) {
+					inside += '<img src="' + escAttr( card.image ) + '" alt="' + escAttr( card.label ) + '" width="' + cell + '" style="' + escAttr( style( {
+						width: '100%',
+						'max-width': cell + 'px',
+						height: 'auto',
+						display: 'block',
+						border: '0',
+						'border-radius': rad + 'px',
+						margin: '0 auto',
+					} ) ) + '" />';
+				} else if ( placeholder ) {
+					inside += '<div style="height:' + Math.round( cell * 0.75 ) + 'px;background:' + escAttr( brand.border_color ) +
+						';border-radius:' + rad + 'px;opacity:.35;"></div>';
+				}
+
+				if ( card.label ) {
+					inside += '<div style="' + escAttr( style( {
+						'font-family': font,
+						'font-size': size + 'px',
+						'line-height': '1.4',
+						color: color,
+						'padding-top': '8px',
+					} ) ) + '">' + esc( card.label ) + '</div>';
+				} else if ( placeholder ) {
+					inside += '<div style="font-family:' + escAttr( font ) + ';font-size:' + size + 'px;padding-top:8px;color:' +
+						escAttr( brand.muted_color ) + ';">Nimi</div>';
+				}
+
+				if ( card.link ) {
+					inside = '<a href="' + escAttr( card.link ) + '" target="_blank" rel="noopener" style="' + escAttr( style( {
+						color: color,
+						'text-decoration': deco,
+						display: 'block',
+					} ) ) + '">' + inside + '</a>';
+				}
+
+				cells += '<td class="wmd-cardcell" style="' + escAttr( tdStyle ) + '">' + inside + '</td>';
+			}
+
+			html += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="wmd-cards"' +
+				' style="width:100%;border-collapse:collapse;"><tr>' + cells + '</tr></table>';
+
+			first = false;
+		}
+
+		return html;
+	}
+
 	function headingSizes( brand ) {
 		var h = num( brand.heading_size, 26 );
 		return {
@@ -260,6 +378,16 @@
 					'<td class="wmd-col" style="' + escAttr( col + 'padding-right:10px;' ) + '">' + linkify( tags( p.left, ctx ), brand ) + '</td>' +
 					'<td class="wmd-col" style="' + escAttr( col + 'padding-left:10px;' ) + '">' + linkify( tags( p.right, ctx ), brand ) + '</td>' +
 					'</tr></table>';
+				break;
+
+			case 'cards':
+				// Kujundajas näitame ka täitmata kohti, et plokk ei paistaks
+				// kohe pärast lisamist katkisena. Päris kirja need ei jõua.
+				body = cardsTable( p, ctx, brand, true );
+
+				if ( ! body ) {
+					return '';
+				}
 				break;
 
 			case 'social':

@@ -363,6 +363,42 @@ class WMD_Design {
 	 * @param mixed $value Toores nimekiri.
 	 * @return array
 	 */
+	/**
+	 * Pildikaartide puhastus: pilt, link ja nimi.
+	 *
+	 * Linki ei aja siin läbi esc_url_raw, sest seal võib olla {{muutuja}} —
+	 * aadressiks tehakse see alles renderdamisel, kui muutuja on asendatud.
+	 *
+	 * @param mixed $value Toored read.
+	 * @return array
+	 */
+	protected static function sanitize_cards( $value ) {
+		$out = array();
+
+		if ( ! is_array( $value ) ) {
+			return $out;
+		}
+
+		foreach ( $value as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+
+			$out[] = array(
+				'image' => isset( $row['image'] ) ? sanitize_text_field( $row['image'] ) : '',
+				'link'  => isset( $row['link'] ) ? sanitize_text_field( $row['link'] ) : '',
+				'label' => isset( $row['label'] ) ? sanitize_text_field( $row['label'] ) : '',
+			);
+
+			// Ülempiir, et vigane import ei kasvataks kujundust lõputult.
+			if ( count( $out ) >= 24 ) {
+				break;
+			}
+		}
+
+		return $out;
+	}
+
 	protected static function sanitize_pairs( $value ) {
 		$out = array();
 
@@ -431,6 +467,9 @@ class WMD_Design {
 
 			case 'pairs':
 				return self::sanitize_pairs( $value );
+
+			case 'cards':
+				return self::sanitize_cards( $value );
 
 			case 'metakey':
 				return wmd_meta_key( sanitize_text_field( (string) $value ) );

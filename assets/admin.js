@@ -53,6 +53,10 @@
 		// Eelvaate tellimus: 0 = poe viimane.
 		order: 0,
 		varQuery: '',
+		// Tootekategooriad pildiploki jaoks: laetakse ühe korra ja jäävad
+		// nimekirja lahti ka pärast valikut, et neli pilti saaks järjest valida.
+		cats: null,
+		catsOpen: false,
 	};
 
 	var previewTimer = null;
@@ -610,6 +614,68 @@
 			'<p class="wmd-hint">Väärtuse saab valida { } nupu alt — seal on ka selle tellimuse päris väljad, nagu jälgimiskood.</p></div>';
 	}
 
+	/**
+	 * Pildikaartide toimeti: pilt, link ja nimi ühe rea kohta.
+	 *
+	 * Ridu saab täita käsitsi või tootekategooriate nimekirjast — siis tulevad
+	 * pilt, link ja nimi kohe WooCommerce'ist.
+	 *
+	 * @param {string} scope Ploki id.
+	 * @param {string} key   Välja võti.
+	 * @param {Object} field Välja kirjeldus.
+	 * @param {Array}  value Read.
+	 * @return {string} HTML.
+	 */
+	function cardsHtml( scope, key, field, value ) {
+		var rows = Array.isArray( value ) ? value : [];
+
+		var items = rows.map( function ( row, index ) {
+			var thumb = row.image
+				? '<img src="' + esc( row.image ) + '" alt="" />'
+				: '<div class="wmd-image-empty">—</div>';
+
+			return '<li class="wmd-card-row" data-index="' + index + '">' +
+				'<div class="wmd-card-thumb">' + thumb +
+				'<button type="button" class="wmd-mini" data-card-media="' + index + '">' + esc( row.image ? i18n.change : i18n.pickImage ) + '</button>' +
+				'</div>' +
+				'<div class="wmd-card-fields">' +
+				'<div class="wmd-card-top">' +
+				'<input type="text" class="wmd-input wmd-small" data-card-label="' + index + '" value="' + esc( row.label || '' ) + '" placeholder="Nimi pildi all" />' +
+				'<span class="wmd-colmove">' +
+				'<button type="button" data-card-up="' + index + '" title="Vasakule"' + ( index === 0 ? ' disabled' : '' ) + '>↑</button>' +
+				'<button type="button" data-card-down="' + index + '" title="Paremale"' + ( index === rows.length - 1 ? ' disabled' : '' ) + '>↓</button>' +
+				'<button type="button" data-card-del="' + index + '" title="Kustuta">✕</button>' +
+				'</span></div>' +
+				'<input type="text" class="wmd-input wmd-small" data-card-link="' + index + '" value="' + esc( row.link || '' ) + '" placeholder="Link, nt kategooria aadress" />' +
+				'<input type="text" class="wmd-input wmd-small" data-card-image="' + index + '" value="' + esc( row.image || '' ) + '" placeholder="Pildi aadress https://…" />' +
+				'</div></li>';
+		} ).join( '' );
+
+		// Kategooriate nimekiri jääb lahti ka pärast valikut, nii et neli pilti
+		// saab järjest välja klõpsata ilma nimekirja iga kord uuesti avamata.
+		var cats = '';
+
+		if ( state.catsOpen && state.cats ) {
+			cats = state.cats.length
+				? '<p class="wmd-hint">Klõps lisab kategooria järgmisse tühja kohta.</p>' +
+					state.cats.map( function ( c, i ) {
+						return '<button type="button" class="wmd-cat" data-cat="' + i + '">' +
+							( c.image ? '<img src="' + esc( c.image ) + '" alt="" />' : '<span class="wmd-image-empty">—</span>' ) +
+							'<em>' + esc( c.name ) + '</em></button>';
+					} ).join( '' )
+				: '<p class="wmd-hint">Tootekategooriaid ei leitud.</p>';
+		}
+
+		return '<div class="wmd-field"><label class="wmd-label">' + esc( field.label ) + '</label>' +
+			'<ul class="wmd-cards-edit" data-scope="' + esc( scope ) + '" data-key="' + esc( key ) + '">' + items + '</ul>' +
+			'<div class="wmd-card-tools">' +
+			'<button type="button" class="wmd-mini wmd-card-add">+ Lisa pilt</button>' +
+			'<button type="button" class="wmd-mini wmd-card-cats">' + ( state.catsOpen ? 'Peida kategooriad' : 'Lae tootekategooriad' ) + '</button>' +
+			'</div>' +
+			'<div class="wmd-card-catlist"' + ( cats ? '' : ' hidden' ) + '>' + cats + '</div>' +
+			'<p class="wmd-hint">Tühjaks jäänud kohti päris kirja ei panda — kujundajas on need näha ainult selleks, et paigutust näeksid.</p></div>';
+	}
+
 	function fieldHtml( scope, key, field, value ) {
 		var id = 'wmd-f-' + scope + '-' + key;
 		var label = '<label class="wmd-label" for="' + esc( id ) + '">' + esc( field.label ) + '</label>';
@@ -622,6 +688,10 @@
 
 		if ( field.type === 'pairs' ) {
 			return pairsHtml( scope, key, field, value );
+		}
+
+		if ( field.type === 'cards' ) {
+			return cardsHtml( scope, key, field, value );
 		}
 
 		// Tellimuse välja võti: vaba tekst, aga nimekirjas on selle tellimuse
@@ -1743,7 +1813,7 @@
 		// Väljad.
 		// Veergude nimekirjal on oma sidumine — muidu püüaks üldine sidumine
 		// tema sees toimuva kinni ja kirjutaks väärtuse üle.
-		root.querySelectorAll( '.wmd-panel [data-scope]:not(.wmd-cols):not(.wmd-pairs), .wmd-right [data-scope]:not(.wmd-cols):not(.wmd-pairs)' ).forEach( function ( input ) {
+		root.querySelectorAll( '.wmd-panel [data-scope]:not(.wmd-cols):not(.wmd-pairs):not(.wmd-cards-edit), .wmd-right [data-scope]:not(.wmd-cols):not(.wmd-pairs):not(.wmd-cards-edit)' ).forEach( function ( input ) {
 			var scope = input.getAttribute( 'data-scope' );
 			var key = input.getAttribute( 'data-key' );
 
@@ -1926,6 +1996,169 @@
 						r.push( { label: '', value: '', link: '' } );
 						commit();
 					}
+				} );
+			}
+		} );
+
+		// Pildikaartide toimeti.
+		root.querySelectorAll( '.wmd-cards-edit' ).forEach( function ( list ) {
+			var key = list.getAttribute( 'data-key' );
+			var tools = list.parentNode;
+
+			function rows() {
+				var block = findBlock( state.selected );
+				return block ? block.props[ key ] : null;
+			}
+
+			function commit() {
+				markDirty();
+				render();
+				invalidatePreview();
+			}
+
+			function bindField( attr, prop ) {
+				list.querySelectorAll( '[' + attr + ']' ).forEach( function ( input ) {
+					input.addEventListener( 'input', function () {
+						var r = rows();
+
+						if ( r && r[ parseInt( input.getAttribute( attr ), 10 ) ] ) {
+							r[ parseInt( input.getAttribute( attr ), 10 ) ][ prop ] = input.value;
+							markDirty();
+							schedulePreview();
+						}
+					} );
+				} );
+			}
+
+			bindField( 'data-card-label', 'label' );
+			bindField( 'data-card-link', 'link' );
+			bindField( 'data-card-image', 'image' );
+
+			list.querySelectorAll( '[data-card-media]' ).forEach( function ( btn ) {
+				btn.addEventListener( 'click', function () {
+					var index = parseInt( btn.getAttribute( 'data-card-media' ), 10 );
+
+					openMediaWith( function ( url ) {
+						var r = rows();
+
+						if ( r && r[ index ] ) {
+							r[ index ].image = url;
+							commit();
+						}
+					} );
+				} );
+			} );
+
+			list.querySelectorAll( '[data-card-del]' ).forEach( function ( btn ) {
+				btn.addEventListener( 'click', function () {
+					var r = rows();
+
+					if ( r ) {
+						r.splice( parseInt( btn.getAttribute( 'data-card-del' ), 10 ), 1 );
+						commit();
+					}
+				} );
+			} );
+
+			function move( index, delta ) {
+				var r = rows();
+				var to = index + delta;
+
+				if ( ! r || to < 0 || to >= r.length ) {
+					return;
+				}
+
+				r.splice( to, 0, r.splice( index, 1 )[ 0 ] );
+				commit();
+			}
+
+			list.querySelectorAll( '[data-card-up]' ).forEach( function ( btn ) {
+				btn.addEventListener( 'click', function () {
+					move( parseInt( btn.getAttribute( 'data-card-up' ), 10 ), -1 );
+				} );
+			} );
+
+			list.querySelectorAll( '[data-card-down]' ).forEach( function ( btn ) {
+				btn.addEventListener( 'click', function () {
+					move( parseInt( btn.getAttribute( 'data-card-down' ), 10 ), 1 );
+				} );
+			} );
+
+			var add = tools.querySelector( '.wmd-card-add' );
+
+			if ( add ) {
+				add.addEventListener( 'click', function () {
+					var r = rows();
+
+					if ( r ) {
+						r.push( { image: '', link: '', label: '' } );
+						commit();
+					}
+				} );
+			}
+
+			// Tootekategooriad WooCommerce'ist: pilt, link ja nimi korraga.
+			var cats = tools.querySelector( '.wmd-card-cats' );
+			var box = tools.querySelector( '.wmd-card-catlist' );
+
+			if ( cats && box ) {
+				cats.addEventListener( 'click', function () {
+					if ( state.catsOpen ) {
+						state.catsOpen = false;
+						render();
+						return;
+					}
+
+					// Kategooriad küsime serverist ainult esimesel korral.
+					if ( state.cats ) {
+						state.catsOpen = true;
+						render();
+						return;
+					}
+
+					cats.disabled = true;
+					cats.textContent = 'Laen…';
+
+					post( 'wmd_categories', {} ).then( function ( res ) {
+						state.cats = ( res && res.items ) || [];
+						state.catsOpen = true;
+						render();
+					} ).catch( function ( err ) {
+						cats.disabled = false;
+						cats.textContent = 'Lae tootekategooriad';
+						toast( err, 'error' );
+					} );
+				} );
+
+				box.querySelectorAll( '[data-cat]' ).forEach( function ( btn ) {
+					btn.addEventListener( 'click', function () {
+						var cat = state.cats[ parseInt( btn.getAttribute( 'data-cat' ), 10 ) ];
+						var r = rows();
+
+						if ( ! r || ! cat ) {
+							return;
+						}
+
+						// Esimene tühi koht ära, muidu lisame lõppu.
+						var slot = null;
+
+						for ( var i = 0; i < r.length; i++ ) {
+							if ( ! r[ i ].image && ! r[ i ].label && ! r[ i ].link ) {
+								slot = r[ i ];
+								break;
+							}
+						}
+
+						if ( ! slot ) {
+							slot = { image: '', link: '', label: '' };
+							r.push( slot );
+						}
+
+						slot.image = cat.image || '';
+						slot.link = cat.url || '';
+						slot.label = cat.name || '';
+						commit();
+					} );
 				} );
 			}
 		} );
@@ -2350,13 +2583,19 @@
 		} );
 	}
 
-	function openMedia( scope, key ) {
+	/**
+	 * Avab meediateegi ja annab valitud pildi aadressi tagasikutsele.
+	 *
+	 * @param {Function} done Saab pildi aadressi.
+	 */
+	function openMediaWith( done ) {
 		if ( ! window.wp || ! window.wp.media ) {
 			var url = window.prompt( 'Pildi aadress', '' );
+
 			if ( url ) {
-				setValue( scope, key, url );
-				render();
+				done( url );
 			}
+
 			return;
 		}
 
@@ -2367,12 +2606,17 @@
 		} );
 
 		frame.on( 'select', function () {
-			var att = frame.state().get( 'selection' ).first().toJSON();
-			setValue( scope, key, att.url );
-			render();
+			done( frame.state().get( 'selection' ).first().toJSON().url );
 		} );
 
 		frame.open();
+	}
+
+	function openMedia( scope, key ) {
+		openMediaWith( function ( url ) {
+			setValue( scope, key, url );
+			render();
+		} );
 	}
 
 	/**
