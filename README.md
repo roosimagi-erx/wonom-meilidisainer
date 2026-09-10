@@ -61,6 +61,8 @@ WooCommerce oma malle uuendab.
   tellimusevalikule, nii näed kohe, kas brauseri eelvaade ja päris meil kattuvad.
 - **Testmeil** — saadab päris WooCommerce'i meili, aga suunab saaja
   testaadressile. Klient ei saa midagi.
+- **Eksport ja import** — kogu kujundus ühes JSON-failis. Seadista ühes poes,
+  impordi teise ja oled kohe sama seadistusega.
 - **Automaatsed uuendused** GitHubi väljalasetest, ilma WordPress.org-ita.
   Uue versiooni saab paigaldada otse kujundajast, Pluginad-lehele minemata.
 

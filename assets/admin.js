@@ -975,9 +975,63 @@
 
 	/* ------------------------------------------------------ uuendused */
 
+	/**
+	 * Kujunduse fail: kogu see, mis kujundajas seadistatud on, koos päisega,
+	 * et importimisel oleks näha, kust ja millal see tuli.
+	 */
+	function exportPayload() {
+		return {
+			_wmd: {
+				version: state.updates.current || '',
+				exported: new Date().toISOString(),
+				site: window.location.hostname,
+			},
+			design: state.design,
+		};
+	}
+
+	function exportFileName() {
+		var d = new Date();
+		var stamp = d.getFullYear() + '-' +
+			String( d.getMonth() + 1 ).padStart( 2, '0' ) + '-' +
+			String( d.getDate() ).padStart( 2, '0' );
+
+		return 'meilidisainer-' + window.location.hostname + '-' + stamp + '.json';
+	}
+
+	function backupPanelHtml() {
+		var json = JSON.stringify( exportPayload(), null, 2 );
+
+		return '<details class="wmd-group" open><summary>Kujunduse eksport ja import</summary><div class="wmd-group-body">' +
+			'<p class="wmd-hint">Kogu kujundus — bränd, päis, jalus, kõik meilid ja makseviiside juhised — ühes failis. Teises poes impordid selle ja oled kohe sama seadistusega.</p>' +
+
+			'<div class="wmd-updates-actions">' +
+			'<button type="button" class="button button-primary wmd-export">Laadi kujundus alla</button>' +
+			'</div>' +
+
+			'<details class="wmd-group"><summary>Näita JSON-i</summary><div class="wmd-group-body">' +
+			'<textarea class="wmd-input wmd-textarea wmd-mono wmd-export-json" rows="8" readonly>' + esc( json ) + '</textarea>' +
+			'</div></details>' +
+
+			'<hr class="wmd-hr" />' +
+
+			'<p class="wmd-hint"><strong>Import kirjutab kogu praeguse kujunduse üle.</strong> Vali fail või kleebi JSON.</p>' +
+			'<div class="wmd-updates-actions">' +
+			'<button type="button" class="button wmd-import-pick">Vali fail…</button>' +
+			'<input type="file" class="wmd-import-file" accept="application/json,.json" hidden />' +
+			'</div>' +
+			'<textarea class="wmd-input wmd-textarea wmd-mono wmd-import-json" rows="4" placeholder="…või kleebi JSON siia"></textarea>' +
+			'<div class="wmd-updates-actions">' +
+			'<button type="button" class="button wmd-import-run">Impordi kleebitud JSON</button>' +
+			'</div>' +
+
+			'<p class="wmd-hint">Logo viitab endiselt lähtepoe meediateegile — teises poes tasub see uuesti üles laadida. Makseviiside juhised kanduvad üle nende tunnuse järgi; kui sihtpoes on teised makselahendused, jäävad need read lihtsalt kasutamata.</p>' +
+			'</div></details>';
+	}
+
 	function updatesPanelHtml() {
 		if ( ! cfg.canUpdate ) {
-			return '<div class="wmd-intro">Uuenduste seadistamiseks on vaja õigust pluginaid uuendada.</div>';
+			return backupPanelHtml() + '<div class="wmd-intro">Uuenduste seadistamiseks on vaja õigust pluginaid uuendada.</div>';
 		}
 
 		var u = state.updates;
@@ -997,7 +1051,10 @@
 
 		var canInstall = u.remote && u.remote !== u.current;
 
-		var html = '<div class="wmd-intro">Plugin ei ole WordPress.org-is, seega uuendused tulevad otse sinu GitHubi väljalasetest. WordPress näitab uuendusteadet tavalisel Pluginad-lehel.</div>';
+		var html = backupPanelHtml();
+
+		html += '<details class="wmd-group" open><summary>Automaatsed uuendused</summary><div class="wmd-group-body">';
+		html += '<p class="wmd-hint">Plugin ei ole WordPress.org-is, seega uuendused tulevad otse sinu GitHubi väljalasetest. WordPress näitab uuendusteadet ka tavalisel Pluginad-lehel.</p>';
 
 		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-u-source">Uuenduste allikas</label>' +
 			'<select class="wmd-input" id="wmd-u-source">' +
@@ -1036,10 +1093,116 @@
 			html += '<pre class="wmd-log">' + esc( state.updateLog.join( '\n' ) ) + '</pre>';
 		}
 
-		return html;
+		return html + '</div></details>';
+	}
+
+	/**
+	 * Võtab imporditud failist kujunduse. Lubame nii meie enda ümbrisega faili
+	 * kui ka paljast kujundust, sest kuskilt kopeerides võib ümbris kaduda.
+	 */
+	function readImport( text ) {
+		var data = JSON.parse( text );
+		var design = ( data && data.design ) ? data.design : data;
+
+		if ( ! design || typeof design !== 'object' || ! design.brand || ! design.emails ) {
+			throw new Error( 'See ei ole Meilidisaineri kujundusfail.' );
+		}
+
+		return design;
+	}
+
+	function applyImport( text ) {
+		var design;
+
+		try {
+			design = readImport( text );
+		} catch ( e ) {
+			toast( e.message || 'Faili ei õnnestunud lugeda', 'error' );
+			return;
+		}
+
+		if ( ! window.confirm( 'Import kirjutab kogu praeguse kujunduse üle — bränd, päis, jalus, kõik meilid ja makseviiside juhised. Jätkan?' ) ) {
+			return;
+		}
+
+		// Server puhastab sisendi ja tagastab selle, mis päriselt salvestus.
+		post( 'wmd_save', { design: JSON.stringify( design ) } ).then( function ( res ) {
+			state.design = normalise( res.design );
+			state.selected = null;
+			state.dirty = false;
+			wcCache = {};
+			render();
+			toast( 'Kujundus imporditud', 'ok' );
+		} ).catch( function ( err ) {
+			toast( err || 'Import ebaõnnestus', 'error' );
+		} );
+	}
+
+	function bindBackup() {
+		var exportBtn = root.querySelector( '.wmd-export' );
+
+		if ( exportBtn ) {
+			exportBtn.addEventListener( 'click', function () {
+				var blob = new Blob( [ JSON.stringify( exportPayload(), null, 2 ) ], { type: 'application/json' } );
+				var url = URL.createObjectURL( blob );
+				var a = document.createElement( 'a' );
+
+				a.href = url;
+				a.download = exportFileName();
+				document.body.appendChild( a );
+				a.click();
+				document.body.removeChild( a );
+				setTimeout( function () {
+					URL.revokeObjectURL( url );
+				}, 1000 );
+
+				toast( 'Kujundus laaditi alla', 'ok' );
+			} );
+		}
+
+		var pick = root.querySelector( '.wmd-import-pick' );
+		var file = root.querySelector( '.wmd-import-file' );
+
+		if ( pick && file ) {
+			pick.addEventListener( 'click', function () {
+				file.click();
+			} );
+
+			file.addEventListener( 'change', function () {
+				if ( ! file.files || ! file.files[ 0 ] ) {
+					return;
+				}
+
+				var reader = new FileReader();
+				reader.onload = function () {
+					applyImport( String( reader.result ) );
+					file.value = '';
+				};
+				reader.onerror = function () {
+					toast( 'Faili lugemine ebaõnnestus', 'error' );
+				};
+				reader.readAsText( file.files[ 0 ] );
+			} );
+		}
+
+		var runBtn = root.querySelector( '.wmd-import-run' );
+		var paste = root.querySelector( '.wmd-import-json' );
+
+		if ( runBtn && paste ) {
+			runBtn.addEventListener( 'click', function () {
+				if ( ! paste.value.trim() ) {
+					toast( 'Kleebi kõigepealt JSON', 'error' );
+					return;
+				}
+
+				applyImport( paste.value );
+			} );
+		}
 	}
 
 	function bindUpdates() {
+		bindBackup();
+
 		var source = root.querySelector( '#wmd-u-source' );
 		if ( ! source ) {
 			return;
@@ -1183,7 +1346,7 @@
 			[ 'emails', 'Meilid' ],
 			[ 'payments', 'Makseviisid' ],
 			[ 'vars', 'Muutujad' ],
-			[ 'updates', 'Uuendused' ],
+			[ 'updates', 'Seaded' ],
 		].map( function ( t ) {
 			return '<button type="button" class="wmd-tab' + ( state.tab === t[ 0 ] ? ' is-active' : '' ) + '" data-tab="' + t[ 0 ] + '">' + t[ 1 ] + '</button>';
 		} ).join( '' );

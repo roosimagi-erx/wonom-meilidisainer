@@ -744,6 +744,12 @@
 	color: #12507e;
 }
 
+.wmd-hr {
+	border: 0;
+	border-top: 1px solid var(--wmd-line);
+	margin: 14px 0;
+}
+
 .wmd-hint {
 	margin: 4px 0 0;
 	font-size: 11px;

@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.17.2
+Stable tag: 0.18.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,11 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.18.0 =
+* Uus: kujunduse eksport ja import. Kogu seadistus — bränd, päis, jalus, kõik meilid ja makseviiside juhised — ühes JSON-failis. Teises poes impordid selle ja oled kohe sama seadistusega.
+* Import võtab vastu nii allalaaditud faili kui kleebitud JSON-i, küsib enne ülekirjutamist kinnitust ja laseb sisendi läbi sama puhastuse mis tavaline salvestamine.
+* Vahekaart „Uuendused" on nüüd „Seaded" ja sisaldab kaht rühma: kujunduse eksport/import ning automaatsed uuendused.
 
 = 0.17.2 =
 * Parandus: testmeil saadeti alati poe viimase tellimuse pealt, mitte selle pealt, mis ülaribal valitud oli. Kujundajas vaatasid üht tellimust, postkasti tuli teine.
