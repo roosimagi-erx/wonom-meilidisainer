@@ -392,15 +392,10 @@
 			e.mode = 'full';
 
 			if ( ! e.body.length ) {
-				// Olemasolev sisu kopeerime kehasse ja jätame ka originaali alles,
-				// et wrap-režiimi tagasi minnes ei oleks midagi kadunud.
-				e.body = JSON.parse( JSON.stringify( e.before ) )
-					.concat( seedBody().slice( 1 ) )
-					.concat( JSON.parse( JSON.stringify( e.after ) ) );
-
-				e.body.forEach( function ( b ) {
-					b.id = newId();
-				} );
+				// WooCommerce'i praegune sisu plokkidena, sinu enda plokid ümber.
+				// Wrap-režiimi plokid jäävad alles, nii et tagasi minnes ei ole
+				// midagi kadunud.
+				e.body = bodyFromCurrentEmail( e );
 			}
 
 			state.selected = null;
@@ -845,8 +840,7 @@
 	}
 
 	/**
-	 * Vaikimisi keha, kui „terve meil ise" valitakse esimest korda — nii ei
-	 * jää kasutaja tühja lehe ette ja tellimuse tabel ei kao kogemata ära.
+	 * Vaikimisi keha, kui WooCommerce'i sisu ei õnnestunud plokkideks võtta.
 	 */
 	function seedBody() {
 		return [
@@ -854,6 +848,140 @@
 			makeBlock( 'order_table' ),
 			makeBlock( 'addresses' ),
 		];
+	}
+
+	/**
+	 * Võtab WooCommerce'i renderdatud sisu lahti meie plokkideks.
+	 *
+	 * Nii ei alusta „terve meil ise" tühjalt lehelt, vaid samast kirjast, mille
+	 * WooCommerce praegu saadab — edasi saab seda tavaliste plokkidena muuta.
+	 *
+	 * @param {string} html WooCommerce'i sisuosa.
+	 * @return {Array} Plokid.
+	 */
+	function blocksFromWcHtml( html ) {
+		if ( ! html || ! window.DOMParser ) {
+			return [];
+		}
+
+		var doc = new DOMParser().parseFromString( '<div id="wmd-root">' + html + '</div>', 'text/html' );
+		var root = doc.getElementById( 'wmd-root' );
+
+		if ( ! root ) {
+			return [];
+		}
+
+		var out = [];
+
+		function text( el ) {
+			return ( el.textContent || '' ).replace( /\s+/g, ' ' ).trim();
+		}
+
+		function push( type, props ) {
+			out.push( makeBlock( type ) );
+			var block = out[ out.length - 1 ];
+			Object.keys( props || {} ).forEach( function ( k ) {
+				block.props[ k ] = props[ k ];
+			} );
+		}
+
+		function isAddressTable( el ) {
+			return el.id === 'addresses' || !! el.querySelector( 'address' );
+		}
+
+		function isOrderTable( el ) {
+			return !! ( el.querySelector( 'thead' ) || el.querySelector( 'tfoot' ) );
+		}
+
+		function walk( node ) {
+			Array.prototype.forEach.call( node.childNodes, function ( child ) {
+				// Puhas tekst ilma märgendita — harv, aga ei tohi kaduda.
+				if ( child.nodeType === 3 ) {
+					var raw = ( child.textContent || '' ).trim();
+					if ( raw ) {
+						push( 'text', { html: raw } );
+					}
+					return;
+				}
+
+				if ( child.nodeType !== 1 ) {
+					return;
+				}
+
+				var tag = child.tagName.toLowerCase();
+
+				if ( tag === 'h1' || tag === 'h2' || tag === 'h3' ) {
+					if ( text( child ) ) {
+						push( 'heading', {
+							text: text( child ),
+							size: tag === 'h1' ? 'lg' : ( tag === 'h2' ? 'md' : 'sm' ),
+						} );
+					}
+					return;
+				}
+
+				if ( tag === 'p' ) {
+					if ( text( child ) ) {
+						push( 'text', { html: child.innerHTML.trim() } );
+					}
+					return;
+				}
+
+				if ( tag === 'ul' || tag === 'ol' ) {
+					push( 'html', { code: child.outerHTML } );
+					return;
+				}
+
+				if ( tag === 'table' ) {
+					if ( isAddressTable( child ) ) {
+						push( 'addresses', {} );
+					} else if ( isOrderTable( child ) ) {
+						push( 'order_items', {} );
+						push( 'order_totals', {} );
+					} else if ( text( child ) ) {
+						push( 'html', { code: child.outerHTML } );
+					}
+					return;
+				}
+
+				// Mähised (div, section) — vaatame nende sisse.
+				if ( tag === 'div' || tag === 'section' || tag === 'header' || tag === 'footer' ) {
+					walk( child );
+					return;
+				}
+
+				if ( text( child ) ) {
+					push( 'html', { code: child.outerHTML } );
+				}
+			} );
+		}
+
+		walk( root );
+
+		return out;
+	}
+
+	/**
+	 * Keha, millega „terve meil ise" alustab: WooCommerce'i praegune sisu
+	 * plokkidena, ja selle ümber kasutaja enda olemasolevad plokid.
+	 */
+	function bodyFromCurrentEmail( e ) {
+		var wc = wcCache[ wcKey() ];
+		var middle = ( wc && ! wc.pending && wc.html ) ? blocksFromWcHtml( wc.html ) : [];
+
+		if ( ! middle.length ) {
+			middle = seedBody().slice( 1 );
+		}
+
+		var before = JSON.parse( JSON.stringify( e.before || [] ) );
+		var after = JSON.parse( JSON.stringify( e.after || [] ) );
+		var body = before.concat( middle, after );
+
+		body.forEach( function ( b ) {
+			b.id = newId();
+		} );
+
+		return body;
 	}
 
 	/* ------------------------------------------------------- muutujad */
@@ -1733,8 +1861,10 @@
 
 				e.mode = mode;
 
+				// Täisrežiim algab sellest, mida WooCommerce praegu saadab —
+				// plokkidena, mida saab kohe edasi muuta.
 				if ( mode === 'full' && ! e.body.length ) {
-					e.body = seedBody();
+					e.body = bodyFromCurrentEmail( e );
 				}
 
 				state.selected = null;

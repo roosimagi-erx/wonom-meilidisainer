@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.18.1
+Stable tag: 0.19.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,10 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.19.0 =
+* „Terve meil ise" alustab nüüd WooCommerce'i praeguse sisuga, mitte tühja lehega. Kiri võetakse plokkideks lahti — pealkirjad, tekstilõigud, tellimuse tabel, kokkuvõte ja aadressid — ja edasi saab neid tavaliste plokkidena muuta. Sinu enda plokid jäävad õigetesse kohtadesse ümber.
+* Parandus: kontomeilidel (uus konto, parooli lähtestamine) näitas kujundaja näidissisu tellimuse tabeliga. Neil meilidel ei olegi tellimust, aga WooCommerce'i sisu on olemas — nüüd renderdatakse see päriselt, koos kasutajanime ja kontolinkidega.
 
 = 0.18.1 =
 * Uus: iga meili juures on lüliti „WooCommerce'i lisatekst kirja lõpus", vaikimisi väljas. Seda teksti („Thanks for shopping with us.") ei saa WooCommerce'i seadetes tühjendada — WC_Settings_API asendab tühja välja vaikeväärtusega ja tekst tuleb tagasi. Nüüd saab selle päriselt välja lülitada.

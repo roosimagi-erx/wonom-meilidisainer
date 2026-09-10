@@ -220,12 +220,14 @@ class WMD_Ajax {
 
 		$order = self::preview_order( self::posted_order_id() );
 
-		if ( ! wmd_woo_active() || ! $order ) {
+		// Kontomeilidel (uus konto, parooli lähtestamine) ei olegi tellimust,
+		// aga WooCommerce'i sisu on neil ikka olemas — seega renderdame edasi.
+		if ( ! wmd_woo_active() ) {
 			wp_send_json_success(
 				array(
 					'html' => '',
 					'css'  => '',
-					'why'  => __( 'Poes ei ole tellimust, mille pealt WooCommerce\'i sisu näidata.', 'wonom-meilidisainer' ),
+					'why'  => __( 'WooCommerce ei ole aktiivne.', 'wonom-meilidisainer' ),
 				)
 			);
 		}
@@ -243,14 +245,18 @@ class WMD_Ajax {
 			$found = self::find_email( $email_id );
 
 			if ( $found ) {
-				$found->object    = $order;
-				$found->recipient = $order->get_billing_email();
+				if ( $order ) {
+					$found->object    = $order;
+					$found->recipient = $order->get_billing_email();
 
-				if ( property_exists( $found, 'placeholders' ) && is_array( $found->placeholders ) ) {
-					$date                                  = $order->get_date_created();
-					$found->placeholders['{order_date}']   = $date ? wc_format_datetime( $date ) : '';
-					$found->placeholders['{order_number}'] = $order->get_order_number();
+					if ( property_exists( $found, 'placeholders' ) && is_array( $found->placeholders ) ) {
+						$date                                  = $order->get_date_created();
+						$found->placeholders['{order_date}']   = $date ? wc_format_datetime( $date ) : '';
+						$found->placeholders['{order_number}'] = $order->get_order_number();
+					}
 				}
+
+				self::prepare_account_email( $found, $order );
 
 				// Stiile ei reastata sisse — eelvaade on brauser, mitte postkast,
 				// ja reastaja võiks markerid ära süüa.
@@ -357,6 +363,59 @@ class WMD_Ajax {
 		);
 
 		return $out;
+	}
+
+	/**
+	 * Täidab kontomeili eelvaate jaoks vajalikud väljad.
+	 *
+	 * Uue konto ja parooli lähtestamise meilid ei käi tellimuse pealt, vaid
+	 * ootavad kasutajanime ja linke. Ilma nendeta tuleks eelvaatesse pooleldi
+	 * tühi kiri, mis ei näita, mida klient päriselt saab.
+	 *
+	 * @param WC_Email      $email Meil.
+	 * @param WC_Order|null $order Tellimus, kui on.
+	 */
+	protected static function prepare_account_email( $email, $order ) {
+		if ( ! property_exists( $email, 'user_login' ) ) {
+			return;
+		}
+
+		$login = '';
+
+		if ( $order && $order->get_customer_id() ) {
+			$user  = get_userdata( $order->get_customer_id() );
+			$login = $user ? $user->user_login : '';
+		}
+
+		if ( '' === $login && $order ) {
+			$login = $order->get_billing_email();
+		}
+
+		if ( '' === $login ) {
+			$login = wp_get_current_user()->user_login;
+		}
+
+		$email->user_login = $login;
+
+		if ( property_exists( $email, 'user_email' ) ) {
+			$email->user_email = $order ? $order->get_billing_email() : wp_get_current_user()->user_email;
+		}
+
+		if ( property_exists( $email, 'user_pass' ) ) {
+			$email->user_pass = '';
+		}
+
+		if ( property_exists( $email, 'password_generated' ) ) {
+			$email->password_generated = false;
+		}
+
+		if ( property_exists( $email, 'set_password_url' ) && ! $email->set_password_url && function_exists( 'wc_get_page_permalink' ) ) {
+			$email->set_password_url = wc_get_page_permalink( 'myaccount' );
+		}
+
+		if ( property_exists( $email, 'reset_key' ) && ! $email->reset_key ) {
+			$email->reset_key = 'NAIDIS';
+		}
 	}
 
 	/**
