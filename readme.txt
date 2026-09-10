@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.18.0
+Stable tag: 0.18.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,11 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.18.1 =
+* Uus: iga meili juures on lüliti „WooCommerce'i lisatekst kirja lõpus", vaikimisi väljas. Seda teksti („Thanks for shopping with us.") ei saa WooCommerce'i seadetes tühjendada — WC_Settings_API asendab tühja välja vaikeväärtusega ja tekst tuleb tagasi. Nüüd saab selle päriselt välja lülitada.
+* Lüliti kehtib mõlemas režiimis ja mõjutab ühtviisi nii päris kirja kui kujundaja eelvaadet.
+* Parandus: seadete muutmine, mis mõjutab serveri vastust, ei visanud eelvaate vahemälu ära, mistõttu lüliti mõju ei olnud kujundajas kohe näha.
 
 = 0.18.0 =
 * Uus: kujunduse eksport ja import. Kogu seadistus — bränd, päis, jalus, kõik meilid ja makseviiside juhised — ühes JSON-failis. Teises poes impordid selle ja oled kohe sama seadistusega.

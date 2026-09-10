@@ -66,12 +66,13 @@ class WMD_Design {
 		}
 
 		return array(
-			'mode'    => 'wrap',
-			'subject' => '',
-			'heading' => '',
-			'before'  => array(),
-			'after'   => array(),
-			'body'    => array(),
+			'mode'       => 'wrap',
+			'subject'    => '',
+			'heading'    => '',
+			'before'     => array(),
+			'after'      => array(),
+			'body'       => array(),
+			'additional' => 0,
 		);
 	}
 
@@ -161,6 +162,7 @@ class WMD_Design {
 				'before'  => isset( $stored['before'] ) && is_array( $stored['before'] ) ? $stored['before'] : array(),
 				'after'   => isset( $stored['after'] ) && is_array( $stored['after'] ) ? $stored['after'] : array(),
 				'body'    => isset( $stored['body'] ) && is_array( $stored['body'] ) ? $stored['body'] : array(),
+				'additional' => empty( $stored['additional'] ) ? 0 : 1,
 			);
 		}
 
@@ -253,6 +255,7 @@ class WMD_Design {
 				'before'  => self::sanitize_blocks( isset( $stored['before'] ) ? $stored['before'] : array() ),
 				'after'   => self::sanitize_blocks( isset( $stored['after'] ) ? $stored['after'] : array() ),
 				'body'    => self::sanitize_blocks( isset( $stored['body'] ) ? $stored['body'] : array() ),
+				'additional' => empty( $stored['additional'] ) ? 0 : 1,
 			);
 		}
 

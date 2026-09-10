@@ -97,7 +97,7 @@
 	function emailSettings() {
 		var e = state.design.emails[ state.email ];
 		if ( ! e ) {
-			e = { mode: 'wrap', subject: '', heading: '', before: [], after: [], body: [] };
+			e = { mode: 'wrap', subject: '', heading: '', before: [], after: [], body: [], additional: 0 };
 			state.design.emails[ state.email ] = e;
 		}
 		if ( ! e.mode ) {
@@ -813,6 +813,11 @@
 			'<div class="wmd-inline"><input type="text" class="wmd-input" id="wmd-f-email-heading" data-scope="email" data-key="heading" value="' + esc( e.heading ) + '" placeholder="' + esc( wcDefault( state.email, 'heading' ) ) + '" />' +
 			tagPicker( 'wmd-f-email-heading' ) + '</div></div>';
 
+		html += '<div class="wmd-field wmd-field-toggle"><label class="wmd-switch">' +
+			'<input type="checkbox" data-scope="email" data-key="additional"' + ( e.additional ? ' checked' : '' ) + ' />' +
+			'<span></span>WooCommerce\'i lisatekst kirja lõpus</label>' +
+			'<p class="wmd-hint">Selle teksti leiad WooCommerce → Seaded → Meilid alt. Seal ei saa seda tühjendada — tühi väli asendatakse vaiketekstiga („Thanks for shopping with us."). Siit saab selle päriselt välja lülitada.</p></div>';
+
 		html += '<div class="wmd-field"><label class="wmd-label">Kuidas meil kokku pannakse</label>' +
 			'<div class="wmd-segs wmd-modes">' +
 			'<button type="button" class="wmd-seg' + ( full ? '' : ' is-active' ) + '" data-mode="wrap">WooCommerce\'i sisu ümber</button>' +
@@ -820,8 +825,7 @@
 			'</div></div>';
 
 		if ( full ) {
-			html += '<div class="wmd-intro wmd-warn">Selles režiimis ei kasutata WooCommerce\'i sisumalli. Kõik, mis meilis on, tuleb allolevatest plokkidest — ka tellimuse tabel ja aadressid. ' +
-				'Ainus erand: WooCommerce\'i meiliseadetes olev <strong>lisatekst</strong> läheb endiselt kirja lõppu. Kui sa seda ei taha, tühjenda see WooCommerce → Seaded → Meilid all.</div>';
+			html += '<div class="wmd-intro wmd-warn">Selles režiimis ei kasutata WooCommerce\'i sisumalli. Kõik, mis meilis on, tuleb allolevatest plokkidest — ka tellimuse tabel ja aadressid.</div>';
 			html += blockListHtml( 'body', 'Meili sisu', 'terve keha' );
 		} else {
 			html += blockListHtml( 'before', 'Sisu enne tellimuse tabelit', 'tervitus, info' );
@@ -1435,6 +1439,12 @@
 				block.props[ key ] = value;
 			}
 		}
+		// Lisateksti lüliti muudab seda, mida server saadab, seega vahemälu
+		// tuleb ära visata — muidu jääks kanvasele vana vastus.
+		if ( 'email' === scope && 'additional' === key ) {
+			delete wcCache[ wcKey() ];
+		}
+
 		markDirty();
 		schedulePreview();
 	}

@@ -40,7 +40,30 @@ class WMD_Emails {
 
 		foreach ( array_keys( wmd_email_list() ) as $id ) {
 			add_filter( 'woocommerce_email_subject_' . $id, array( __CLASS__, 'subject' ), 20, 3 );
+			add_filter( 'woocommerce_email_additional_content_' . $id, array( __CLASS__, 'additional_content' ), 20, 3 );
 		}
+	}
+
+	/**
+	 * WooCommerce'i „Lisatekst" kirja lõpus.
+	 *
+	 * WooCommerce'i seadetes ei saa seda välja tühjendada: WC_Settings_API
+	 * asendab tühja väärtuse vaikeväärtusega, seega vaiketekst tuleb tagasi.
+	 * Ainus koht, kus selle päriselt välja lülitada saab, on siin.
+	 *
+	 * @param string   $content Lisatekst.
+	 * @param mixed    $object  Tellimus või muu objekt.
+	 * @param WC_Email $email   Meil.
+	 * @return string
+	 */
+	public static function additional_content( $content, $object = null, $email = null ) {
+		if ( ! self::enabled() || ! $email || empty( $email->id ) ) {
+			return $content;
+		}
+
+		$settings = WMD_Design::email( $email->id );
+
+		return empty( $settings['additional'] ) ? '' : $content;
 	}
 
 	/**

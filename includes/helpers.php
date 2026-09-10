@@ -1025,12 +1025,16 @@ function wmd_default_design() {
 	$emails = array();
 	foreach ( array_keys( wmd_email_list() ) as $id ) {
 		$emails[ $id ] = array(
-			'mode'    => 'wrap',
-			'subject' => '',
-			'heading' => '',
-			'before'  => array(),
-			'after'   => array(),
-			'body'    => array(),
+			'mode'       => 'wrap',
+			'subject'    => '',
+			'heading'    => '',
+			'before'     => array(),
+			'after'      => array(),
+			'body'       => array(),
+			// WooCommerce'i „Lisatekst" kirja lõpus. Vaikimisi väljas, sest
+			// WooCommerce'i seadetes ei saa seda välja tühjendada — tühi väärtus
+			// asendatakse seal vaiketekstiga.
+			'additional' => 0,
 		);
 	}
 
