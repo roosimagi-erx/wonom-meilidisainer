@@ -20,10 +20,17 @@ $wmd_order    = isset( $order ) ? $order : null;
 $wmd_heading  = isset( $email_heading ) ? $email_heading : '';
 $wmd_admin    = isset( $sent_to_admin ) ? (bool) $sent_to_admin : false;
 
-$wmd_ctx = WMD_Tags::order_context( $wmd_order );
+// Konteksti ehitab WMD_Emails, et kontomeilidel oleksid olemas ka kasutaja ja
+// parooli lähtestamise märgendid — ilma nendeta läheks kiri ilma lingita.
+$wmd_ctx = WMD_Emails::context_for( $wmd_email );
 
 // WooCommerce'i enda plokid vajavad neid objekte; hoiame need kontekstis.
-$wmd_ctx['__order']         = $wmd_order;
+// Tellimus tuleb mallilt endalt, sest see on siin kindlasti õige.
+if ( $wmd_order ) {
+	$wmd_ctx            = array_merge( $wmd_ctx, WMD_Tags::order_context( $wmd_order ) );
+	$wmd_ctx['__order'] = $wmd_order;
+}
+
 $wmd_ctx['__email']         = $wmd_email;
 $wmd_ctx['__sent_to_admin'] = $wmd_admin;
 

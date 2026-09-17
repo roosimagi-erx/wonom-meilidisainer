@@ -3,7 +3,7 @@
 WooCommerce'i tellimusmeilide visuaalne kujundaja. Bränd seadistatakse üks kord
 ja rakendub kõigile meilidele — plokke lisad ainult sinna, kus neid päriselt vaja on.
 
-**Olek:** testversioon 0.9.0 · **Nõuab:** WordPress 6.0+, PHP 7.4+, WooCommerce 6.0+
+**Olek:** testversioon 0.23.0 · **Nõuab:** WordPress 6.0+, PHP 7.4+, WooCommerce 6.0+
 
 ---
 

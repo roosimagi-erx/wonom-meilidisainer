@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.22.0
+Stable tag: 0.23.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,19 @@ Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi vä
 Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
 
 == Muudatused ==
+
+= 0.23.0 =
+* **Oluline parandus:** „Võta üle" jättis kirja sisse selle tellimuse päris andmed — kliendi nime, tellimuse numbri ja kuupäeva. Nii oleks iga järgmine kiri läinud kõigile klientidele ühe konkreetse tellimuse nimega. Nüüd võetakse need ülevõtmisel tagasi muutujateks ({{customer_name}}, #{{order_number}}, {{order_date}}).
+* Uus muutujarühm „Konto": kasutajanimi, kasutaja e-post, kuvatav nimi, parooli seadmise ja lähtestamise link, sisselogimise link. Ilma nendeta ei saanud „Parooli lähtestamise" kirja täisrežiimis üldse kasutada — lähtestuslinki polnud kuhugi panna.
+* Kontomeilides töötavad nüüd ka {{customer_first_name}} ja {{customer_name}} — varem näitas see e-posti aadressi või jäi tühjaks.
+* Parandus: testmeil ja serveri eelvaade näitasid kontomeilide puhul näidissisu tellimuse tabeliga. Nüüd tuleb sisu WooCommerce'ilt, nagu kanvasel.
+* Parandus: „Võta üle" kaotas pildid. Pilt tekstiplokis ei elanud puhastust üle; nüüd tehakse sellest pildiplokk.
+* Parandus: muutujat sisaldav aadress (nt jälgimislink https://…/{{meta:_kood}}) rikuti salvestamisel ära. Nüüd jääb alles.
+* Parandus: enne mõne välja lisamist salvestatud plokk võis anda PHP hoiatuse, mis jõudis kirja sisse. Plokk saab nüüd puuduvad väljad vaikeväärtustena.
+* Parandus: tellimuste nimekiri kujundaja ülaribal kasutas kõvakodeeritud kuupäevaformaati; nüüd poe enda oma.
+* Parandus: kategooriapilti ei lõigatud serveris, sest pisipildi aadressi järgi ei leitud manust. „Püstine" ja „lamav" kuju töötavad nüüd ka Outlookis.
+* Turvalisus: „Oma HTML" ja lisa-CSS lasevad nüüd poehaldajal läbi ainult tavalise postituse HTML-i; administraatoril nagu enne.
+* Turvalisus: GitHubi juurdepääsuvõti saadetakse ainult sinu enda hoidla päringutega, mitte igale api.github.com aadressile.
 
 = 0.22.0 =
 * Plokil „Pildid kõrvuti" on nüüd seade „Pildi kuju": ruut, püstine, lamav või originaal. Meediateegis on pildid eri kõrgusega ja rida jäi seetõttu ragiseks — nüüd lõigatakse nad keskelt ühesuuruseks.

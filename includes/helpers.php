@@ -207,6 +207,14 @@ function wmd_brand_groups() {
  * @return array<string,array>
  */
 function wmd_block_types() {
+	// Skeem ei muutu päringu jooksul, aga seda küsitakse iga ploki renderdusel.
+	// Ilma vahemäluta ehitaks üks kiri selle kümneid kordi uuesti.
+	static $cached = null;
+
+	if ( null !== $cached ) {
+		return $cached;
+	}
+
 	$align = array(
 		'type'    => 'align',
 		'label'   => __( 'Joondus', 'wonom-meilidisainer' ),
@@ -222,7 +230,7 @@ function wmd_block_types() {
 		'default' => 12,
 	);
 
-	return array(
+	$cached = array(
 		'heading' => array(
 			'label'  => __( 'Pealkiri', 'wonom-meilidisainer' ),
 			'icon'   => 'H',
@@ -794,6 +802,8 @@ function wmd_block_types() {
 			),
 		),
 	);
+
+	return $cached;
 }
 
 /**
@@ -927,7 +937,8 @@ function wmd_recent_orders( $limit = 25 ) {
 				$order->get_order_number(),
 				wp_strip_all_tags( $order->get_formatted_order_total() ),
 				'' !== $payment ? $payment : __( 'makseviis puudub', 'wonom-meilidisainer' ),
-				$date ? ' · ' . $date->date_i18n( 'd.m.Y' ) : ''
+				// Poe enda kuupäevaseade, mitte kõvakodeeritud eesti formaat.
+				$date ? ' · ' . wc_format_datetime( $date ) : ''
 			),
 		);
 	}
@@ -1312,6 +1323,16 @@ function wmd_card_image( $url, $ratio ) {
  */
 function wmd_crop_attachment( $url, $w, $h ) {
 	$id = attachment_url_to_postid( $url );
+
+	// Pisipildi aadressi (…-300x300.jpg) järgi manust ei leia — otsime
+	// originaali. Ilma selleta jääks nt kategooriapilt serveris lõikamata.
+	if ( ! $id ) {
+		$full = preg_replace( '/-\d+x\d+(?=\.[a-zA-Z]{3,4}$)/', '', $url );
+
+		if ( $full !== $url ) {
+			$id = attachment_url_to_postid( $full );
+		}
+	}
 
 	if ( ! $id ) {
 		return $url;

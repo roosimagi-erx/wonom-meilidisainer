@@ -12,6 +12,11 @@
 	// Plugina assets-kausta aadress, et ikoonipildid leiaksid tee eelvaatesse.
 	var assetsUrl = '';
 
+	// Plokkide vaikeväärtused tüübi kaupa. Vanas kujunduses salvestatud plokil
+	// võivad uued väljad puududa; ilma vaikeväärtuseta tuleks kanvasele
+	// „undefined". Kujundaja annab need full() kaudu kaasa.
+	var blockDefaults = {};
+
 	function esc( str ) {
 		return String( str == null ? '' : str )
 			.replace( /&/g, '&amp;' )
@@ -282,7 +287,7 @@
 			return '';
 		}
 
-		var p = b.props || {};
+		var p = Object.assign( {}, blockDefaults[ b.type ] || {}, b.props || {} );
 		var pad = num( p.pad, 12 );
 		var font = brand.font_family;
 		var cell = { padding: pad + 'px 0', 'font-family': font };
@@ -933,6 +938,7 @@
 		opts = opts || {};
 		design_payments = design.payments || {};
 		assetsUrl = opts.assetsUrl || assetsUrl;
+		blockDefaults = opts.blockDefaults || blockDefaults;
 		var brand = design.brand;
 		var settings = ( design.emails && design.emails[ emailId ] ) || { heading: '', before: [], after: [] };
 		var width = num( brand.width, 600 );

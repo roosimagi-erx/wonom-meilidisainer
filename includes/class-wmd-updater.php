@@ -398,6 +398,14 @@ class WMD_Updater {
 			return $args;
 		}
 
+		// Ainult oma hoidla päringutele. Ilma selleta saaks iga teine plugin,
+		// mis GitHubi API-t kasutab, selle saidi isikliku võtme kaasa.
+		$repo = trim( (string) get_option( 'wmd_update_repo', '' ), " \t\n\r/" );
+
+		if ( '' === $repo || false === strpos( $url, '/repos/' . $repo ) ) {
+			return $args;
+		}
+
 		$args['headers'] = isset( $args['headers'] ) && is_array( $args['headers'] ) ? $args['headers'] : array();
 
 		$args['headers']['Authorization'] = 'Bearer ' . $token;

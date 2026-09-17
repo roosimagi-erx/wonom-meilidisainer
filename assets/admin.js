@@ -140,6 +140,36 @@
 		return 'b' + Math.random().toString( 36 ).slice( 2, 10 );
 	}
 
+	/**
+	 * Plokkide vaikeväärtused tüübi kaupa, renderdaja jaoks.
+	 *
+	 * Vanas kujunduses salvestatud plokil võivad uued väljad puududa — ilma
+	 * vaikeväärtuseta jõuaks kanvasele „undefined".
+	 *
+	 * @return {Object} type => props.
+	 */
+	var defaultsCache = null;
+
+	function blockDefaults() {
+		if ( defaultsCache ) {
+			return defaultsCache;
+		}
+
+		defaultsCache = {};
+
+		Object.keys( cfg.blockTypes || {} ).forEach( function ( type ) {
+			var props = {};
+
+			Object.keys( cfg.blockTypes[ type ].fields ).forEach( function ( key ) {
+				props[ key ] = cfg.blockTypes[ type ].fields[ key ].default;
+			} );
+
+			defaultsCache[ type ] = props;
+		} );
+
+		return defaultsCache;
+	}
+
 	function makeBlock( type ) {
 		var def = cfg.blockTypes[ type ];
 		var props = {};
@@ -399,6 +429,7 @@
 				extraCss: wc && wc.css ? wc.css : '',
 				markWc: ! full,
 				assetsUrl: cfg.assetsUrl || '',
+				blockDefaults: blockDefaults(),
 			}
 		);
 
@@ -952,15 +983,76 @@
 	}
 
 	/**
+	 * Märgendid, mille väärtust ei tohi tekstis tagasi asendada.
+	 *
+	 * Kas liiga üldised (aastaarv, kogus) või sellised, mille väärtus on
+	 * tavaline sõna ja satuks jutu sisse (olek „Töötlemisel", riik „Eesti").
+	 */
+	var NO_DETOKEN = {
+		year: 1,
+		item_count: 1,
+		order_currency: 1,
+		order_id: 1,
+		order_status: 1,
+		billing_country: 1,
+		shipping_country: 1,
+		billing_state: 1,
+		shipping_state: 1,
+	};
+
+	/**
+	 * Asendab WooCommerce'i renderdatud tekstis selle tellimuse väärtused tagasi
+	 * märgenditeks.
+	 *
+	 * Ilma selleta läheks „Võta üle" järel iga kliendi kirja ühe konkreetse
+	 * tellimuse nimi, number ja kuupäev — täpselt nii, nagu need ülevõtmise
+	 * hetkel ekraanil olid.
+	 *
+	 * @param {string} html Tekst või HTML.
+	 * @param {Object} ctx  Serverist tulnud märgendite väärtused.
+	 * @return {string} Sama tekst, väärtused märgenditega asendatud.
+	 */
+	function detokenize( html, ctx ) {
+		if ( ! html || ! ctx ) {
+			return html;
+		}
+
+		var keys = Object.keys( ctx ).filter( function ( key ) {
+			var value = ctx[ key ];
+
+			return ! NO_DETOKEN[ key ] &&
+				key.indexOf( '__' ) !== 0 &&
+				typeof value === 'string' &&
+				value.trim().length >= 4;
+		} );
+
+		// Pikemad väärtused enne, muidu sööks „Mari" ära „Mari Tamme" algusest
+		// ja poolik nimi jääks kirja.
+		keys.sort( function ( a, b ) {
+			return ctx[ b ].trim().length - ctx[ a ].trim().length;
+		} );
+
+		keys.forEach( function ( key ) {
+			var value = ctx[ key ].trim();
+			var safe = value.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' );
+
+			html = html.replace( new RegExp( safe, 'g' ), '{{' + key + '}}' );
+		} );
+
+		return html;
+	}
+
+	/**
 	 * Võtab WooCommerce'i renderdatud sisu lahti meie plokkideks.
 	 *
 	 * Nii ei alusta „terve meil ise" tühjalt lehelt, vaid samast kirjast, mille
 	 * WooCommerce praegu saadab — edasi saab seda tavaliste plokkidena muuta.
 	 *
 	 * @param {string} html WooCommerce'i sisuosa.
+	 * @param {Object} ctx  Märgendite väärtused, et need tekstist tagasi võtta.
 	 * @return {Array} Plokid.
 	 */
-	function blocksFromWcHtml( html ) {
+	function blocksFromWcHtml( html, ctx ) {
 		if ( ! html || ! window.DOMParser ) {
 			return [];
 		}
@@ -976,6 +1068,43 @@
 
 		function text( el ) {
 			return ( el.textContent || '' ).replace( /\s+/g, ' ' ).trim();
+		}
+
+		function clean( value ) {
+			return detokenize( String( value == null ? '' : value ), ctx );
+		}
+
+		/**
+		 * Kas selle elemendi ainus sisu on üks pilt.
+		 *
+		 * Pilt tekstiplokis ei jääks ellu: richtext-välja puhastus eemaldab
+		 * <img> märgendi ja pilt kaoks vaikselt. Seepärast teeme pildiploki.
+		 *
+		 * @param {Element} node Element.
+		 * @return {Object|null} Pildi andmed või null.
+		 */
+		function onlyImage( node ) {
+			if ( text( node ) ) {
+				return null;
+			}
+
+			var imgs = node.querySelectorAll( 'img' );
+
+			if ( imgs.length !== 1 ) {
+				return null;
+			}
+
+			var img = imgs[ 0 ];
+			var link = img.closest ? img.closest( 'a' ) : null;
+			var width = parseInt( img.getAttribute( 'width' ), 10 );
+
+			return {
+				url: clean( img.getAttribute( 'src' ) || '' ),
+				alt: img.getAttribute( 'alt' ) || '',
+				link: ( link && node.contains( link ) && link.getAttribute( 'href' ) ) ? clean( link.getAttribute( 'href' ) ) : '',
+				width: width > 0 ? Math.min( 800, Math.max( 40, width ) ) : 240,
+				align: 'center',
+			};
 		}
 
 		function push( type, props ) {
@@ -1000,7 +1129,7 @@
 				if ( child.nodeType === 3 ) {
 					var raw = ( child.textContent || '' ).trim();
 					if ( raw ) {
-						push( 'text', { html: raw } );
+						push( 'text', { html: clean( raw ) } );
 					}
 					return;
 				}
@@ -1014,22 +1143,43 @@
 				if ( tag === 'h1' || tag === 'h2' || tag === 'h3' ) {
 					if ( text( child ) ) {
 						push( 'heading', {
-							text: text( child ),
+							text: clean( text( child ) ),
 							size: tag === 'h1' ? 'lg' : ( tag === 'h2' ? 'md' : 'sm' ),
 						} );
 					}
 					return;
 				}
 
+				// Pilt ilma ümbriseta. Ilma selle haruta kukuks see läbi, sest
+				// pildil ei ole teksti ja viimane haru vaatab just teksti.
+				if ( tag === 'img' ) {
+					var width = parseInt( child.getAttribute( 'width' ), 10 );
+
+					push( 'image', {
+						url: clean( child.getAttribute( 'src' ) || '' ),
+						alt: child.getAttribute( 'alt' ) || '',
+						width: width > 0 ? Math.min( 800, Math.max( 40, width ) ) : 240,
+						align: 'center',
+					} );
+					return;
+				}
+
 				if ( tag === 'p' ) {
+					var lone = onlyImage( child );
+
+					if ( lone ) {
+						push( 'image', lone );
+						return;
+					}
+
 					if ( text( child ) ) {
-						push( 'text', { html: child.innerHTML.trim() } );
+						push( 'text', { html: clean( child.innerHTML.trim() ) } );
 					}
 					return;
 				}
 
 				if ( tag === 'ul' || tag === 'ol' ) {
-					push( 'html', { code: child.outerHTML } );
+					push( 'html', { code: clean( child.outerHTML ) } );
 					return;
 				}
 
@@ -1040,7 +1190,7 @@
 						push( 'order_items', {} );
 						push( 'order_totals', {} );
 					} else if ( text( child ) ) {
-						push( 'html', { code: child.outerHTML } );
+						push( 'html', { code: clean( child.outerHTML ) } );
 					}
 					return;
 				}
@@ -1051,8 +1201,15 @@
 					return;
 				}
 
+				var picture = onlyImage( child );
+
+				if ( picture ) {
+					push( 'image', picture );
+					return;
+				}
+
 				if ( text( child ) ) {
-					push( 'html', { code: child.outerHTML } );
+					push( 'html', { code: clean( child.outerHTML ) } );
 				}
 			} );
 		}
@@ -1083,7 +1240,9 @@
 			order: orderParam(),
 			design: JSON.stringify( probe ),
 		} ).then( function ( res ) {
-			done( blocksFromWcHtml( res.html || '' ) );
+			// Kontekst on kaasas selleks, et tekstis olevad selle tellimuse
+			// väärtused saaks tagasi märgenditeks võtta (vt detokenize).
+			done( blocksFromWcHtml( res.html || '', res.ctx || {} ) );
 		} ).catch( function ( err ) {
 			toast( err || 'WooCommerce\'i sisu ei õnnestunud laadida', 'error' );
 			done( [] );
@@ -1737,10 +1896,9 @@
 			}
 			state.design.payments[ key ] = value;
 		} else if ( scope === 'email' ) {
-			if ( ! state.design.emails[ state.email ] ) {
-				state.design.emails[ state.email ] = { subject: '', heading: '', before: [], after: [] };
-			}
-			state.design.emails[ state.email ][ key ] = value;
+			// emailSettings() teeb puuduva kirje täiskujul — nii ei sõltu
+			// tulemus sellest, millist välja juhtuti esimesena muutma.
+			emailSettings()[ key ] = value;
 		} else {
 			var block = findBlock( state.selected );
 			if ( block ) {
@@ -2551,8 +2709,11 @@
 					order: orderParam(),
 					design: JSON.stringify( state.design ),
 				} ).then( function ( res ) {
+					// Server salvestab kujunduse enne saatmist, et postkasti
+					// jõuaks täpselt see, mida ekraanil näed. Ütleme seda ka.
 					state.dirty = false;
-					toast( i18n.sent + ' → ' + res.to, 'ok' );
+					render();
+					toast( 'Kujundus salvestati ja testmeil läks aadressile ' + res.to, 'ok' );
 				} ).catch( function ( err ) {
 					toast( err, 'error' );
 				} ).then( function () {

@@ -26,6 +26,7 @@ class WMD_Tags {
 			'billing'  => __( 'Arveaadress', 'wonom-meilidisainer' ),
 			'shipping' => __( 'Tarneaadress', 'wonom-meilidisainer' ),
 			'payment'  => __( 'Makse ja tarne', 'wonom-meilidisainer' ),
+			'account'  => __( 'Konto', 'wonom-meilidisainer' ),
 			'shop'     => __( 'Pood', 'wonom-meilidisainer' ),
 		);
 	}
@@ -36,12 +37,16 @@ class WMD_Tags {
 	 * @return array<string,array>
 	 */
 	public static function all() {
+		// Näidiskuupäev poe enda formaadis, et muutujate nimekiri näitaks sama
+		// kuju, mis kirja päriselt läheb.
+		$sample_date = date_i18n( get_option( 'date_format' ) );
+
 		$tags = array(
 			// Tellimus.
 			'order_number'         => array( 'order', __( 'Tellimuse number', 'wonom-meilidisainer' ), '1042' ),
 			'order_id'             => array( 'order', __( 'Tellimuse ID andmebaasis', 'wonom-meilidisainer' ), '1042' ),
-			'order_date'           => array( 'order', __( 'Tellimuse kuupäev', 'wonom-meilidisainer' ), '09.09.2026' ),
-			'order_paid_date'      => array( 'order', __( 'Maksmise kuupäev', 'wonom-meilidisainer' ), '09.09.2026' ),
+			'order_date'           => array( 'order', __( 'Tellimuse kuupäev', 'wonom-meilidisainer' ), $sample_date ),
+			'order_paid_date'      => array( 'order', __( 'Maksmise kuupäev', 'wonom-meilidisainer' ), $sample_date ),
 			'order_status'         => array( 'order', __( 'Tellimuse olek', 'wonom-meilidisainer' ), __( 'Töötlemisel', 'wonom-meilidisainer' ) ),
 			'order_total'          => array( 'order', __( 'Tellimuse summa', 'wonom-meilidisainer' ), '87,40 €' ),
 			'order_subtotal'       => array( 'order', __( 'Vahesumma', 'wonom-meilidisainer' ), '82,40 €' ),
@@ -91,6 +96,15 @@ class WMD_Tags {
 			'payment_method'       => array( 'payment', __( 'Makseviisi nimi', 'wonom-meilidisainer' ), __( 'Panga ülekanne', 'wonom-meilidisainer' ) ),
 			'payment_method_id'    => array( 'payment', __( 'Makseviisi tunnus', 'wonom-meilidisainer' ), 'bacs' ),
 			'shipping_method'      => array( 'payment', __( 'Tarneviis', 'wonom-meilidisainer' ), __( 'Pakiautomaat', 'wonom-meilidisainer' ) ),
+
+			// Konto. Need on olemas ainult kontomeilides (uus konto, parooli
+			// lähtestamine) — tellimusmeilides jäävad tühjaks.
+			'user_login'           => array( 'account', __( 'Kasutajanimi', 'wonom-meilidisainer' ), 'mari.tamm' ),
+			'user_email'           => array( 'account', __( 'Kasutaja e-post', 'wonom-meilidisainer' ), 'mari.tamm@naide.ee' ),
+			'user_display_name'    => array( 'account', __( 'Kuvatav nimi', 'wonom-meilidisainer' ), 'Mari Tamm' ),
+			'set_password_url'     => array( 'account', __( 'Parooli seadmise link (uus konto)', 'wonom-meilidisainer' ), 'https://naidispood.ee/minu-konto/lost-password/?key=naidis' ),
+			'reset_password_url'   => array( 'account', __( 'Parooli lähtestamise link', 'wonom-meilidisainer' ), 'https://naidispood.ee/minu-konto/lost-password/?key=naidis' ),
+			'login_url'            => array( 'account', __( 'Sisselogimise link', 'wonom-meilidisainer' ), 'https://naidispood.ee/minu-konto' ),
 
 			// Pood.
 			'site_title'           => array( 'shop', __( 'Poe nimi', 'wonom-meilidisainer' ), __( 'Näidispood', 'wonom-meilidisainer' ) ),
@@ -168,6 +182,101 @@ class WMD_Tags {
 		}
 
 		return $ctx;
+	}
+
+	/**
+	 * Konto märgendid meiliobjekti pealt.
+	 *
+	 * Kontomeilidel (uus konto, parooli lähtestamine) ei ole tellimust, vaid
+	 * kasutaja ja lähtestusvõti. Ilma nende märgenditeta ei saa täisrežiimis
+	 * kirja panna parooli seadmise linki ja kiri läheks kliendile kasutuna.
+	 *
+	 * Aadressid ehitame samamoodi nagu WooCommerce'i enda mallid, et link viiks
+	 * täpselt sinna, kuhu WooCommerce ise viiks.
+	 *
+	 * @param WC_Email|null $email Meil.
+	 * @param array         $ctx   Senine kontekst.
+	 * @return array<string,string>
+	 */
+	public static function account_context( $email, $ctx = array() ) {
+		if ( function_exists( 'wc_get_page_permalink' ) ) {
+			$ctx['login_url'] = wc_get_page_permalink( 'myaccount' );
+		}
+
+		if ( ! $email || ! is_object( $email ) ) {
+			return $ctx;
+		}
+
+		$login = isset( $email->user_login ) ? (string) $email->user_login : '';
+
+		if ( '' === $login ) {
+			return $ctx;
+		}
+
+		$user = get_user_by( 'login', $login );
+
+		$ctx['user_login']        = $login;
+		$ctx['user_email']        = ! empty( $email->user_email ) ? (string) $email->user_email : ( $user ? $user->user_email : '' );
+		$ctx['user_display_name'] = $user ? $user->display_name : $login;
+
+		// Kliendi nime märgendid on kirjades samad, olgu allikaks tellimus või
+		// konto — nii töötab {{customer_first_name}} igal pool ühtemoodi.
+		if ( $user ) {
+			$first = trim( (string) $user->first_name );
+			$last  = trim( (string) $user->last_name );
+
+			$ctx['customer_first_name'] = '' !== $first ? $first : $user->display_name;
+			$ctx['customer_last_name']  = $last;
+			$ctx['customer_name']       = '' !== trim( $first . $last ) ? trim( $first . ' ' . $last ) : $user->display_name;
+		} else {
+			$ctx['customer_first_name'] = $ctx['user_display_name'];
+			$ctx['customer_name']       = $ctx['user_display_name'];
+		}
+
+		if ( '' !== $ctx['user_email'] ) {
+			$ctx['customer_email'] = $ctx['user_email'];
+		}
+
+		$user_id = ! empty( $email->user_id ) ? (int) $email->user_id : ( $user ? (int) $user->ID : 0 );
+
+		// Uue konto meilil on link juba objektil olemas; vanematel WooCommerce'i
+		// versioonidel ehitab selle mall ise, seega teeme sama.
+		if ( ! empty( $email->set_password_url ) ) {
+			$ctx['set_password_url'] = (string) $email->set_password_url;
+		} elseif ( $user_id && ! empty( $email->reset_key ) ) {
+			$ctx['set_password_url'] = self::lost_password_url(
+				array(
+					'key'    => $email->reset_key,
+					'id'     => $user_id,
+					'action' => 'newaccount',
+				)
+			);
+		}
+
+		if ( $user_id && ! empty( $email->reset_key ) ) {
+			$ctx['reset_password_url'] = self::lost_password_url(
+				array(
+					'key' => $email->reset_key,
+					'id'  => $user_id,
+				)
+			);
+		}
+
+		return $ctx;
+	}
+
+	/**
+	 * Parooli lähtestamise aadress — sama ehitus, mida WooCommerce'i mallid.
+	 *
+	 * @param array $args Päringu parameetrid.
+	 * @return string
+	 */
+	protected static function lost_password_url( $args ) {
+		if ( ! function_exists( 'wc_get_endpoint_url' ) || ! function_exists( 'wc_get_page_permalink' ) ) {
+			return '';
+		}
+
+		return add_query_arg( $args, wc_get_endpoint_url( 'lost-password', '', wc_get_page_permalink( 'myaccount' ) ) );
 	}
 
 	/**

@@ -224,7 +224,11 @@ class WMD_Emails {
 		}
 
 		$order = is_a( $object, 'WC_Order' ) ? $object : null;
-		$ctx   = WMD_Tags::order_context( $order );
+		$ctx   = $order ? WMD_Tags::order_context( $order ) : WMD_Tags::orderless_context();
+
+		// Kontomeili teemas peab {{user_login}} ja {{customer_first_name}} samuti
+		// töötama — seal ei ole tellimust, vaid kasutaja.
+		$ctx = WMD_Tags::account_context( $email, $ctx );
 
 		return wp_strip_all_tags( WMD_Tags::replace( $custom, $ctx ) );
 	}
@@ -242,12 +246,13 @@ class WMD_Emails {
 			$order = $email->object;
 		}
 
-		$ctx = WMD_Tags::order_context( $order );
+		// Ilma tellimuseta jätame tellimuse märgendid tühjaks, mitte puudu —
+		// nii ei jää kuhugi asendamata {{order_number}} rippuma.
+		$ctx = $order ? WMD_Tags::order_context( $order ) : WMD_Tags::orderless_context();
 
-		// Kontomeilidel pole tellimust, aga kliendi nimi võib objektil olla.
-		if ( ! $order && $email && isset( $email->user_login ) ) {
-			$ctx['customer_first_name'] = isset( $email->user_login ) ? (string) $email->user_login : '';
-		}
+		// Kontomeilidel (uus konto, parooli lähtestamine) on tellimuse asemel
+		// kasutaja ja lähtestusvõti.
+		$ctx = WMD_Tags::account_context( $email, $ctx );
 
 		// WooCommerce'i plokid ja {{meta:...}} vajavad objekte endid.
 		$ctx['__order'] = $order;

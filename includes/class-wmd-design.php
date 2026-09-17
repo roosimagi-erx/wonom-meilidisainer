@@ -499,14 +499,19 @@ class WMD_Design {
 
 			case 'url':
 			case 'image':
-				// Lubame ka liitmismärgendid ({{order_url}}), mis pole veel URL.
 				$raw = trim( (string) $value );
+
 				if ( '' === $raw ) {
 					return '';
 				}
-				if ( preg_match( '/^\{\{[a-z0-9_]+\}\}$/i', $raw ) ) {
-					return $raw;
+
+				// Märgendeid sisaldav aadress ei ole veel URL: esc_url_raw
+				// sööks looksulud ära ja jälgimislingist jääks järele prügi.
+				// Aadressiks tehakse see renderdamisel, kus on esc_url().
+				if ( false !== strpos( $raw, '{{' ) ) {
+					return sanitize_text_field( $raw );
 				}
+
 				return esc_url_raw( $raw );
 
 			case 'richtext':
@@ -514,7 +519,16 @@ class WMD_Design {
 
 			case 'textarea':
 				// Lisa-CSS ja oma HTML: lubame rohkem, aga skriptid mitte.
-				return self::strip_scripts( (string) $value );
+				$html = self::strip_scripts( (string) $value );
+
+				// Poehaldajal ei ole unfiltered_html õigust, seega piirame teda
+				// samamoodi nagu postituse sisu — <iframe>, <form> ja <object>
+				// meilis ei ole kellelegi vaja.
+				if ( ! current_user_can( 'unfiltered_html' ) ) {
+					$html = wp_kses_post( $html );
+				}
+
+				return $html;
 
 			case 'text':
 			default:

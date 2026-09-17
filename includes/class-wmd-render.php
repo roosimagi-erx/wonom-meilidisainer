@@ -299,9 +299,16 @@ class WMD_Render {
 			return '';
 		}
 
-		$p    = isset( $block['props'] ) ? $block['props'] : array();
 		$type = $block['type'];
-		$pad  = isset( $p['pad'] ) ? (int) $p['pad'] : 12;
+
+		// Vaikeväärtused alla: plokk, mis salvestati enne mõne välja lisamist,
+		// annaks muidu „Undefined array key" hoiatuse ja see jõuaks kirja sisse.
+		$p = array_merge(
+			wmd_block_defaults( $type ),
+			( isset( $block['props'] ) && is_array( $block['props'] ) ) ? $block['props'] : array()
+		);
+
+		$pad = isset( $p['pad'] ) ? (int) $p['pad'] : 12;
 		$font = $brand['font_family'];
 		$body = '';
 		$cell = array(

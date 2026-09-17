@@ -252,8 +252,16 @@ class WMD_Ajax {
 		$order = self::preview_order( $order_id, $email_id );
 
 		if ( ! $html ) {
-			$ctx  = $order ? WMD_Tags::order_context( $order ) : ( wmd_email_uses_order( $email_id ) ? WMD_Tags::sample_context() : WMD_Tags::orderless_context() );
-			$html = WMD_Render::full( $email_id, $ctx );
+			// Sama loogika mis testmeilil: WooCommerce'i sisuosa päriselt, mitte
+			// näidisena, kui meil ei ole täisrežiimis.
+			$body = null;
+
+			if ( wmd_woo_active() && ! WMD_Design::is_full( $email_id ) ) {
+				$part = self::wc_content( $email_id, $order, true );
+				$body = '' !== $part['html'] ? $part['html'] : null;
+			}
+
+			$html = WMD_Render::full( $email_id, self::design_context( $email_id, $order ), $body );
 		}
 
 		wp_send_json_success(
@@ -303,53 +311,14 @@ class WMD_Ajax {
 			);
 		}
 
-		$html = '';
-		$css  = '';
-
 		// Täisrežiimis ei kasutata WooCommerce'i sisuosa üldse, seega ei ole
 		// mõtet meili renderdada. Tellimuse read ja väljad on ikka vaja.
 		$needs_html = ! WMD_Design::is_full( $email_id );
 
-		WMD_Render::$mark_wc = true;
-
-		try {
-			$found = self::find_email( $email_id );
-
-			if ( $found ) {
-				if ( $order ) {
-					$found->object    = $order;
-					$found->recipient = $order->get_billing_email();
-
-					if ( property_exists( $found, 'placeholders' ) && is_array( $found->placeholders ) ) {
-						$date                                  = $order->get_date_created();
-						$found->placeholders['{order_date}']   = $date ? wc_format_datetime( $date ) : '';
-						$found->placeholders['{order_number}'] = $order->get_order_number();
-					}
-				}
-
-				self::prepare_account_email( $found, $order );
-
-				// Stiile ei reastata sisse — eelvaade on brauser, mitte postkast,
-				// ja reastaja võiks markerid ära süüa.
-				if ( $needs_html ) {
-					$full  = $found->get_content_html();
-					$start = strpos( $full, WMD_Render::WC_START );
-					$end   = strpos( $full, WMD_Render::WC_END );
-
-					if ( false !== $start && false !== $end && $end > $start ) {
-						$html = substr( $full, $start + strlen( WMD_Render::WC_START ), $end - $start - strlen( WMD_Render::WC_START ) );
-					}
-				}
-
-				ob_start();
-				wc_get_template( 'emails/email-styles.php' );
-				$css = apply_filters( 'woocommerce_email_styles', (string) ob_get_clean(), $found );
-			}
-		} catch ( Throwable $e ) {
-			$html = '';
-		}
-
-		WMD_Render::$mark_wc = false;
+		$part  = self::wc_content( $email_id, $order, $needs_html );
+		$html  = $part['html'];
+		$css   = $part['css'];
+		$found = $part['email'];
 
 		// Kogu ülejäänu, mida kujundaja vajab, et mitte näidata näidisandmeid:
 		// märgendite väärtused ja WooCommerce'i osad päris tellimuse pealt.
@@ -357,7 +326,11 @@ class WMD_Ajax {
 		// märgendid tühjana — muidu jääks kanvasele näidistellimus.
 		$ctx = $order ? WMD_Tags::order_context( $order ) : WMD_Tags::orderless_context();
 
-		$ctx['__email']         = self::find_email( $email_id );
+		// Kontomeilidel tulevad väärtused kasutaja ja lähtestusvõtme pealt.
+		// prepare_account_email() on need meiliobjektile juba täitnud.
+		$ctx = WMD_Tags::account_context( $found, $ctx );
+
+		$ctx['__email']         = $found;
 		$ctx['__sent_to_admin'] = false;
 
 		$parts = array();
@@ -455,11 +428,13 @@ class WMD_Ajax {
 			return;
 		}
 
-		$login = '';
+		$login   = '';
+		$user_id = 0;
 
 		if ( $order && $order->get_customer_id() ) {
-			$user  = get_userdata( $order->get_customer_id() );
-			$login = $user ? $user->user_login : '';
+			$user    = get_userdata( $order->get_customer_id() );
+			$login   = $user ? $user->user_login : '';
+			$user_id = $user ? (int) $user->ID : 0;
 		}
 
 		if ( '' === $login && $order ) {
@@ -467,10 +442,18 @@ class WMD_Ajax {
 		}
 
 		if ( '' === $login ) {
-			$login = wp_get_current_user()->user_login;
+			$current = wp_get_current_user();
+			$login   = $current->user_login;
+			$user_id = (int) $current->ID;
 		}
 
 		$email->user_login = $login;
+
+		// Ilma kasutaja id-ta ei saa parooli lähtestamise linki kokku panna ja
+		// eelvaates jääks {{reset_password_url}} tühjaks.
+		if ( property_exists( $email, 'user_id' ) && ! $email->user_id ) {
+			$email->user_id = $user_id;
+		}
 
 		if ( property_exists( $email, 'user_email' ) ) {
 			$email->user_email = $order ? $order->get_billing_email() : wp_get_current_user()->user_email;
@@ -518,6 +501,101 @@ class WMD_Ajax {
 		}
 
 		return wp_kses_post( wpautop( wptexturize( $text ) ) );
+	}
+
+	/**
+	 * WooCommerce'i enda sisuosa ja stiilid.
+	 *
+	 * Sama tükk, mille kujundaja kanvasele paneb ja mille testmeil kirja sisse
+	 * paneb — nii ei saa need kaks teineteisest lahku minna. Sisu lõigatakse
+	 * markerite vahelt, mille WMD_Render päisesse ja jalusesse paneb.
+	 *
+	 * @param string        $email_id   WC_Email id.
+	 * @param WC_Order|null $order      Tellimus või null.
+	 * @param bool          $needs_html Kas sisuosa on üldse vaja.
+	 * @return array{html:string,css:string,email:WC_Email|null}
+	 */
+	protected static function wc_content( $email_id, $order, $needs_html = true ) {
+		$html  = '';
+		$css   = '';
+		$found = self::find_email( $email_id );
+
+		WMD_Render::$mark_wc = true;
+
+		try {
+			if ( $found ) {
+				if ( $order ) {
+					$found->object    = $order;
+					$found->recipient = $order->get_billing_email();
+
+					if ( property_exists( $found, 'placeholders' ) && is_array( $found->placeholders ) ) {
+						$date                                  = $order->get_date_created();
+						$found->placeholders['{order_date}']   = $date ? wc_format_datetime( $date ) : '';
+						$found->placeholders['{order_number}'] = $order->get_order_number();
+					}
+				}
+
+				self::prepare_account_email( $found, $order );
+
+				// Stiile ei reastata sisse — eelvaade on brauser, mitte postkast,
+				// ja reastaja võiks markerid ära süüa.
+				if ( $needs_html ) {
+					$full  = $found->get_content_html();
+					$start = strpos( $full, WMD_Render::WC_START );
+					$end   = strpos( $full, WMD_Render::WC_END );
+
+					if ( false !== $start && false !== $end && $end > $start ) {
+						$html = substr( $full, $start + strlen( WMD_Render::WC_START ), $end - $start - strlen( WMD_Render::WC_START ) );
+					}
+				}
+
+				ob_start();
+				wc_get_template( 'emails/email-styles.php' );
+				$css = apply_filters( 'woocommerce_email_styles', (string) ob_get_clean(), $found );
+			}
+		} catch ( Throwable $e ) {
+			$html = '';
+		}
+
+		WMD_Render::$mark_wc = false;
+
+		return array(
+			'html'  => $html,
+			'css'   => $css,
+			'email' => $found,
+		);
+	}
+
+	/**
+	 * Kontekst, kui kirja renderdab kujundus (eelvaade või testmeil ilma
+	 * WooCommerce'i enda meilita).
+	 *
+	 * Kontomeilidel täidame ka kasutaja ja parooli lähtestamise märgendid —
+	 * muidu jääks eelvaates ja testmeilis link tühjaks.
+	 *
+	 * @param string        $email_id WC_Email id.
+	 * @param WC_Order|null $order    Tellimus või null.
+	 * @return array
+	 */
+	protected static function design_context( $email_id, $order ) {
+		if ( $order ) {
+			$ctx = WMD_Tags::order_context( $order );
+		} elseif ( wmd_email_uses_order( $email_id ) ) {
+			$ctx = WMD_Tags::sample_context();
+		} else {
+			$ctx = WMD_Tags::orderless_context();
+		}
+
+		$found = self::find_email( $email_id );
+
+		if ( $found ) {
+			self::prepare_account_email( $found, $order );
+
+			$ctx            = WMD_Tags::account_context( $found, $ctx );
+			$ctx['__email'] = $found;
+		}
+
+		return $ctx;
 	}
 
 	/**
@@ -677,8 +755,17 @@ class WMD_Ajax {
 		}
 
 		if ( ! $sent ) {
-			$ctx     = $order ? WMD_Tags::order_context( $order ) : ( wmd_email_uses_order( $email_id ) ? WMD_Tags::sample_context() : WMD_Tags::orderless_context() );
-			$html    = WMD_Render::full( $email_id, $ctx );
+			// Kontomeilid ja tellimuseta pood käivad siit läbi. Sisuosa toome
+			// WooCommerce'ilt, mitte näidisena — muidu tuleks postkasti tellimuse
+			// tabel kirja, kus tellimust ei olegi.
+			$body = null;
+
+			if ( wmd_woo_active() && ! WMD_Design::is_full( $email_id ) ) {
+				$part = self::wc_content( $email_id, $order, true );
+				$body = '' !== $part['html'] ? $part['html'] : null;
+			}
+
+			$html    = WMD_Render::full( $email_id, self::design_context( $email_id, $order ), $body );
 			$subject = sprintf(
 				/* translators: %s: meili nimi. */
 				__( '[TEST] %s', 'wonom-meilidisainer' ),
