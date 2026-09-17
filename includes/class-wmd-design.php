@@ -210,6 +210,7 @@ class WMD_Design {
 		}
 
 		return array(
+			'enabled'    => 1,
 			'mode'       => 'wrap',
 			'subject'    => '',
 			'heading'    => '',
@@ -218,6 +219,21 @@ class WMD_Design {
 			'body'       => array(),
 			'additional' => 0,
 		);
+	}
+
+	/**
+	 * Kas kujundus rakendub sellele kirjale.
+	 *
+	 * Kaks lülitit: ülemine „Kujundus sees" on peakraan kõigile, kirja oma
+	 * lubab üksikud kirjad WooCommerce'i enda kujundusse jätta.
+	 *
+	 * @param string $email_id WC_Email id.
+	 * @return bool
+	 */
+	public static function email_enabled( $email_id ) {
+		$settings = self::email( $email_id );
+
+		return ! empty( $settings['enabled'] );
 	}
 
 	/**
@@ -326,6 +342,8 @@ class WMD_Design {
 				: $default['emails'][ $id ];
 
 			$out['emails'][ $id ] = array(
+				// Puuduv lipp tähendab „sees": vanas kujunduses seda välja ei olnud.
+				'enabled' => ( isset( $stored['enabled'] ) && empty( $stored['enabled'] ) ) ? 0 : 1,
 				'mode'    => ( isset( $stored['mode'] ) && 'full' === $stored['mode'] ) ? 'full' : 'wrap',
 				'subject' => isset( $stored['subject'] ) ? (string) $stored['subject'] : '',
 				'heading' => isset( $stored['heading'] ) ? (string) $stored['heading'] : '',
@@ -442,6 +460,8 @@ class WMD_Design {
 			$stored = isset( $design['emails'][ $id ] ) ? $design['emails'][ $id ] : array();
 
 			$out['emails'][ $id ] = array(
+				// Puuduv lipp tähendab „sees": vanas kujunduses seda välja ei olnud.
+				'enabled' => ( isset( $stored['enabled'] ) && empty( $stored['enabled'] ) ) ? 0 : 1,
 				'mode'    => ( isset( $stored['mode'] ) && 'full' === $stored['mode'] ) ? 'full' : 'wrap',
 				'subject' => isset( $stored['subject'] ) ? sanitize_text_field( $stored['subject'] ) : '',
 				'heading' => isset( $stored['heading'] ) ? sanitize_text_field( $stored['heading'] ) : '',

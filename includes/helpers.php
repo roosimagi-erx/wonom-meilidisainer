@@ -1305,6 +1305,9 @@ function wmd_default_design() {
 	$emails = array();
 	foreach ( array_keys( wmd_email_list() ) as $id ) {
 		$emails[ $id ] = array(
+			// Kas kujundus rakendub sellele kirjale. Ülemine „Kujundus sees"
+			// on peakraan, see siin on kirja kaupa.
+			'enabled'    => 1,
 			'mode'       => 'wrap',
 			'subject'    => '',
 			'heading'    => '',

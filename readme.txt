@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.27.0
+Stable tag: 0.28.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,11 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 0.28.0 =
+* **The design can now be switched on and off one email at a time.** Until now it was all emails or none. Each email has its own switch in the designer; switching it off sends that email exactly as WooCommerce sends it, and everything you built stays saved and comes back when you switch it on again. The main switch under Settings still governs the lot.
+* **The designer now has a column on the WooCommerce email settings page.** WooCommerce → Settings → Emails shows for each email whether the design is on and gives you a button straight into the designer, on that email. That is where a shop is managed from, so that is where the way in belongs.
+* The "Emails" tab is now called "Email content" — the tab is about what goes inside the email, and the old name suggested it was a list of emails.
 
 = 0.27.0 =
 * **Fix: the test email always went out in the order's language.** If you were looking at English and pressed "Send test email", you got the Estonian email, because the real WooCommerce email always follows the order. Now the language you have picked in the designer wins, and when it differs from the order's the email is put together by the designer instead.

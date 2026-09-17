@@ -55,7 +55,7 @@
 	var state = {
 		design: normalise( cfg.design ),
 		tab: 'brand',
-		email: emailIds[ 0 ] || '',
+		email: ( cfg.openEmail && cfg.emails[ cfg.openEmail ] ) ? cfg.openEmail : ( emailIds[ 0 ] || '' ),
 		selected: null, // { zone: 'header'|'footer'|'before'|'after', id: 'b123' }
 		device: 'desktop',
 		enabled: !! cfg.enabled,
@@ -282,7 +282,7 @@
 	function emailSettings() {
 		var e = state.design.emails[ state.email ];
 		if ( ! e ) {
-			e = { mode: 'wrap', subject: '', heading: '', before: [], after: [], body: [], additional: 0 };
+			e = { enabled: 1, mode: 'wrap', subject: '', heading: '', before: [], after: [], body: [], additional: 0 };
 			state.design.emails[ state.email ] = e;
 		}
 		if ( ! e.mode ) {
@@ -1283,6 +1283,9 @@
 			} ).map( function ( id ) {
 				var sel = id === state.email ? ' selected' : '';
 				var mark = hasCustom( id ) ? ' •' : '';
+				if ( ! emailOn( id ) ) {
+					mark += ' (' + __( 'design off', 'wonom-meilidisainer' ) + ')';
+				}
 				return '<option value="' + esc( id ) + '"' + sel + '>' + esc( cfg.emails[ id ].label ) + mark + '</option>';
 			} ).join( '' );
 			if ( inner ) {
@@ -1300,6 +1303,15 @@
 		html += machineButtonHtml();
 		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-email-pick">' + __( 'Email', 'wonom-meilidisainer' ) + '</label>' +
 			'<select class="wmd-input" id="wmd-email-pick">' + opts + '</select></div>';
+
+		html += '<div class="wmd-field wmd-field-toggle"><label class="wmd-switch">' +
+			'<input type="checkbox" class="wmd-email-enabled" data-scope="email" data-key="enabled"' + ( e.enabled ? ' checked' : '' ) + ' />' +
+			'<span></span>' + __( 'Use this design on this email', 'wonom-meilidisainer' ) + '</label>' +
+			'<p class="wmd-hint">' + __( 'Switched off, this email goes out exactly as WooCommerce sends it. Everything set here stays saved and comes back when you switch it on again.', 'wonom-meilidisainer' ) + '</p></div>';
+
+		if ( ! e.enabled ) {
+			html += '<div class="wmd-intro wmd-warn">' + __( 'The design is off on this email, so nothing below reaches the customer.', 'wonom-meilidisainer' ) + '</div>';
+		}
 
 		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-f-email-subject">' + __( 'Subject line', 'wonom-meilidisainer' ) + '</label>' +
 			'<div class="wmd-inline"><input type="text" class="wmd-input" id="wmd-f-email-subject" data-scope="email" data-key="subject" value="' + esc( emailText( 'subject' ) ) + '" placeholder="' + esc( textPlaceholder( 'subject' ) ) + '" />' +
@@ -1339,6 +1351,20 @@
 		}
 
 		return html;
+	}
+
+	/**
+	 * Kas kujundus rakendub sellele kirjale.
+	 *
+	 * Puuduv lipp tähendab „sees" — vanad kujundused ei tohi vaikselt ära kaduda.
+	 *
+	 * @param {string} id Meili id.
+	 * @return {boolean}
+	 */
+	function emailOn( id ) {
+		var e = state.design.emails[ id ];
+
+		return ! e || undefined === e.enabled || !! e.enabled;
 	}
 
 	function hasCustom( id ) {
@@ -2454,7 +2480,7 @@
 			[ 'brand', __( 'Brand', 'wonom-meilidisainer' ) ],
 			[ 'header', __( 'Header', 'wonom-meilidisainer' ) ],
 			[ 'footer', __( 'Footer', 'wonom-meilidisainer' ) ],
-			[ 'emails', __( 'Emails', 'wonom-meilidisainer' ) ],
+			[ 'emails', __( 'Email content', 'wonom-meilidisainer' ) ],
 			[ 'payments', __( 'Payment methods', 'wonom-meilidisainer' ) ],
 			[ 'vars', __( 'Variables', 'wonom-meilidisainer' ) ],
 			[ 'updates', __( 'Settings', 'wonom-meilidisainer' ) ],
@@ -2566,7 +2592,7 @@
 			}
 		} else if ( scope === 'email' ) {
 			// Režiim ja lisateksti lüliti on jagatud, teema ja pealkiri mitte.
-			var shared = 'mode' === key || 'additional' === key;
+			var shared = 'mode' === key || 'additional' === key || 'enabled' === key;
 			var own    = shared ? null : langEmail( true );
 
 			if ( own ) {
@@ -3043,6 +3069,15 @@
 		}
 
 		// Meili kokkupaneku režiim.
+		// Lipu muutmisel joonistame paneeli uuesti: hoiatus ja valikurea märge
+		// peavad kohe järele tulema. Väärtuse enda salvestab üldine sidumine.
+		var onoff = root.querySelector( '.wmd-email-enabled' );
+		if ( onoff ) {
+			onoff.addEventListener( 'change', function () {
+				render();
+			} );
+		}
+
 		root.querySelectorAll( '.wmd-modes [data-mode]' ).forEach( function ( btn ) {
 			btn.addEventListener( 'click', function () {
 				var mode = btn.getAttribute( 'data-mode' );

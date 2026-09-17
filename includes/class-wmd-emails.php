@@ -57,7 +57,7 @@ class WMD_Emails {
 	 * @return string
 	 */
 	public static function additional_content( $content, $object = null, $email = null ) {
-		if ( ! self::enabled() || ! $email || empty( $email->id ) ) {
+		if ( ! $email || empty( $email->id ) || ! self::enabled_for( $email->id ) ) {
 			return $content;
 		}
 
@@ -152,6 +152,23 @@ class WMD_Emails {
 	}
 
 	/**
+	 * Kas kujundus rakendub just sellele kirjale.
+	 *
+	 * Tühi id tähendab, et me ei tea, mis kirja renderdatakse — siis otsustab
+	 * ainult peakraan. Nii ei jää miski juhuslikult kujunduseta.
+	 *
+	 * @param string $email_id WC_Email id.
+	 * @return bool
+	 */
+	public static function enabled_for( $email_id ) {
+		if ( ! self::enabled() ) {
+			return false;
+		}
+
+		return '' === $email_id || WMD_Design::email_enabled( $email_id );
+	}
+
+	/**
 	 * Suuname päise ja jaluse malli enda omale.
 	 *
 	 * @param string $template      Leitud tee.
@@ -160,7 +177,15 @@ class WMD_Emails {
 	 * @return string
 	 */
 	public static function locate_template( $template, $template_name, $template_path ) {
-		if ( ! self::enabled() ) {
+		// Päise ja jaluse puhul teame kirja capture() kaudu; sisumalli puhul
+		// ütleb malli nimi ise, mis kirjaga on tegu.
+		$for_email = self::email_by_template( $template_name );
+
+		if ( '' === $for_email ) {
+			$for_email = self::current_id();
+		}
+
+		if ( ! self::enabled_for( $for_email ) ) {
 			return $template;
 		}
 
@@ -225,7 +250,9 @@ class WMD_Emails {
 	 * @return string
 	 */
 	public static function styles( $css, $email = null ) {
-		if ( ! self::enabled() ) {
+		$for_email = ( $email && ! empty( $email->id ) ) ? $email->id : self::current_id();
+
+		if ( ! self::enabled_for( $for_email ) ) {
 			return $css;
 		}
 
@@ -241,7 +268,7 @@ class WMD_Emails {
 	 * @return string
 	 */
 	public static function subject( $subject, $object = null, $email = null ) {
-		if ( ! self::enabled() || ! $email || empty( $email->id ) ) {
+		if ( ! $email || empty( $email->id ) || ! self::enabled_for( $email->id ) ) {
 			return $subject;
 		}
 

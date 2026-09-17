@@ -28,6 +28,68 @@ class WMD_Admin {
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'assets' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( WMD_FILE ), array( __CLASS__, 'action_links' ) );
+
+		// Oma tulp WooCommerce'i meiliseadete tabelis. Poepidaja käib meile
+		// haldamas seal, seega peab tee kujundajasse käima ka sealt.
+		add_filter( 'woocommerce_email_setting_columns', array( __CLASS__, 'email_column' ) );
+		add_action( 'woocommerce_email_setting_column_wmd', array( __CLASS__, 'email_column_cell' ) );
+	}
+
+	/**
+	 * Lisab meiliseadete tabelisse tulba.
+	 *
+	 * @param array $columns Tulbad.
+	 * @return array
+	 */
+	public static function email_column( $columns ) {
+		// „actions" on viimane; paneme enda selle ette.
+		$out = array();
+
+		foreach ( $columns as $key => $label ) {
+			if ( 'actions' === $key ) {
+				$out['wmd'] = __( 'Email Designer', 'wonom-meilidisainer' );
+			}
+
+			$out[ $key ] = $label;
+		}
+
+		if ( ! isset( $out['wmd'] ) ) {
+			$out['wmd'] = __( 'Email Designer', 'wonom-meilidisainer' );
+		}
+
+		return $out;
+	}
+
+	/**
+	 * Ühe rea lahter: kas kujundus on sellel kirjal sees ja link kujundajasse.
+	 *
+	 * @param WC_Email $email Meil.
+	 */
+	public static function email_column_cell( $email ) {
+		$id   = ( $email && ! empty( $email->id ) ) ? $email->id : '';
+		$list = wmd_email_list();
+
+		if ( '' === $id || ! isset( $list[ $id ] ) ) {
+			echo '<td class="wmd-col">&mdash;</td>';
+			return;
+		}
+
+		$url = add_query_arg(
+			array(
+				'page'  => 'wonom-meilidisainer',
+				'email' => $id,
+			),
+			admin_url( 'admin.php' )
+		);
+
+		$on = WMD_Emails::enabled_for( $id );
+
+		echo '<td class="wmd-col">';
+		echo '<a class="button" href="' . esc_url( $url ) . '">' . esc_html__( 'Design', 'wonom-meilidisainer' ) . '</a> ';
+		echo '<span style="color:' . ( $on ? '#1f7a5a' : '#8c8f94' ) . ';">'
+			. esc_html( $on ? __( 'on', 'wonom-meilidisainer' ) : __( 'off', 'wonom-meilidisainer' ) )
+			. '</span>';
+		echo '</td>';
 	}
 
 	/**
@@ -119,6 +181,8 @@ class WMD_Admin {
 				'wcDefaults'  => self::wc_defaults(),
 				'orders'      => wmd_recent_orders(),
 				'gateways'    => wmd_payment_gateways(),
+				// Meiliseadete lehelt tuldud link ütleb, mis kiri kohe avada.
+				'openEmail'   => isset( $_GET['email'] ) ? sanitize_key( wp_unslash( $_GET['email'] ) ) : '', // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- ainult see, mis kiri lahti teha.
 				// Keelte valik ilmub ainult siis, kui poes on üle ühe keele.
 				'languages'   => wmd_languages(),
 				'defaultLang' => wmd_default_language(),
