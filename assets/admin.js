@@ -1783,7 +1783,12 @@
 		var base = emailSettings();
 
 		[ 'subject', 'heading' ].forEach( function ( key ) {
-			var source = base[ key ];
+			// Kui väli on ka vaikekeeles tühi, tuleb tekst WooCommerce'i
+			// seadetest. Tõlgime siis selle — muidu jääks suur pealkiri teises
+			// keeles vaikekeelsena ja kasutaja peaks selle ise üles otsima.
+			var source = ( base[ key ] && String( base[ key ] ).trim() )
+				? base[ key ]
+				: wcDefault( state.email, key );
 
 			if ( typeof source === 'string' && source.trim() ) {
 				out.push( {

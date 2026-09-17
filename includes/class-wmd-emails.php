@@ -99,6 +99,12 @@ class WMD_Emails {
 	 * @param WC_Email $email Meil.
 	 */
 	protected static function use_email_language( $email ) {
+		// Kujundajast valitud keel võidab: seal tahetakse näha just seda keelt,
+		// mitte seda, mis keeles eelvaate tellimus juhtus tehtud olema.
+		if ( WMD_Design::lang_locked() ) {
+			return;
+		}
+
 		$order = ( isset( $email->object ) && is_a( $email->object, 'WC_Order' ) ) ? $email->object : null;
 
 		WMD_Design::set_lang( wmd_email_language( $order ) );
@@ -110,7 +116,10 @@ class WMD_Emails {
 	public static function release() {
 		self::$current = null;
 
-		WMD_Design::set_lang( '' );
+		// Lukustatud keel jääb alles — selle paneb tagasi see, kes lukustas.
+		if ( ! WMD_Design::lang_locked() ) {
+			WMD_Design::set_lang( '' );
+		}
 	}
 
 	/**

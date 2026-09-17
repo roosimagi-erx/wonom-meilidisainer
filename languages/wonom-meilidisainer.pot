@@ -5,15 +5,15 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-17 12:01+0000\n"
+"POT-Creation-Date: 2026-09-17 12:28+0000\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: wonom-meilidisainer\n"
 
-#: assets/admin.js:2126
+#: assets/admin.js:2131
 msgid " (installed "
 msgstr ""
 
-#: assets/admin.js:2061
+#: assets/admin.js:2066
 msgid " Pick a file or paste JSON."
 msgstr ""
 
@@ -21,15 +21,15 @@ msgstr ""
 msgid " WooCommerce email. Set them once and you are done."
 msgstr ""
 
-#: assets/admin.js:1995
+#: assets/admin.js:2000
 msgid " brings them into the email — it always shows the text for that order's payment method. For a payment method left empty the block simply does not appear."
 msgstr ""
 
-#: assets/admin.js:1995
+#: assets/admin.js:2000
 msgid "\"Payment instructions (own text)\""
 msgstr ""
 
-#: assets/admin.js:1854
+#: assets/admin.js:1859
 msgid "%d texts translated — read them over and fix what needs fixing."
 msgstr ""
 
@@ -37,7 +37,7 @@ msgstr ""
 msgid "(no note)"
 msgstr ""
 
-#: assets/admin.js:3550
+#: assets/admin.js:3555
 msgid "). Check the server error log."
 msgstr ""
 
@@ -53,27 +53,27 @@ msgstr ""
 msgid ", not the real text"
 msgstr ""
 
-#: assets/admin.js:2124
+#: assets/admin.js:2129
 msgid ", source "
 msgstr ""
 
-#: includes/helpers.php:552
+#: includes/helpers.php:588
 msgid "2 across"
 msgstr ""
 
-#: includes/helpers.php:553
+#: includes/helpers.php:589
 msgid "3 across"
 msgstr ""
 
-#: includes/helpers.php:554
+#: includes/helpers.php:590
 msgid "4 across"
 msgstr ""
 
-#: includes/helpers.php:504
+#: includes/helpers.php:540
 msgid "<strong>Delivery time</strong><br>1–3 business days"
 msgstr ""
 
-#: includes/helpers.php:511
+#: includes/helpers.php:547
 msgid "<strong>Questions?</strong><br>Just write to us."
 msgstr ""
 
@@ -81,15 +81,15 @@ msgstr ""
 msgid "A click adds the category to the next empty slot."
 msgstr ""
 
-#: assets/admin.js:1905
+#: assets/admin.js:1910
 msgid "A click copies the variable — you can paste it into any field, including the \"Custom HTML\" block or the extra CSS."
 msgstr ""
 
-#: includes/helpers.php:223
+#: includes/helpers.php:259
 msgid "Accent colour (links)"
 msgstr ""
 
-#: assets/admin.js:2148
+#: assets/admin.js:2153
 msgid "Access token"
 msgstr ""
 
@@ -97,7 +97,7 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-#: includes/helpers.php:1218
+#: includes/helpers.php:1254
 msgid "Account emails"
 msgstr ""
 
@@ -109,15 +109,15 @@ msgstr ""
 msgid "Address line 2"
 msgstr ""
 
-#: includes/helpers.php:677
+#: includes/helpers.php:713
 msgid "Addresses"
 msgstr ""
 
-#: includes/helpers.php:328
+#: includes/helpers.php:364
 msgid "Alignment"
 msgstr ""
 
-#: includes/helpers.php:449
+#: includes/helpers.php:485
 msgid "Alt text"
 msgstr ""
 
@@ -125,11 +125,11 @@ msgstr ""
 msgid "Anything you have not translated still comes from %s."
 msgstr ""
 
-#: includes/helpers.php:1075 assets/admin.js:1319
+#: includes/helpers.php:1111 assets/admin.js:1319
 msgid "Around WooCommerce content"
 msgstr ""
 
-#: assets/admin.js:2088
+#: assets/admin.js:2093
 msgid "Automatic translation"
 msgstr ""
 
@@ -137,19 +137,19 @@ msgstr ""
 msgid "Automatic translation is not set up. Add a DeepL key under Settings."
 msgstr ""
 
-#: assets/admin.js:1883
+#: assets/admin.js:1888
 msgid "Automatic translation is not set up. You can add a DeepL key under Settings — the free tier is plenty for email templates."
 msgstr ""
 
-#: assets/admin.js:2133
+#: assets/admin.js:2138
 msgid "Automatic updates"
 msgstr ""
 
-#: assets/admin.js:2120
+#: assets/admin.js:2125
 msgid "Automatic updates are switched off."
 msgstr ""
 
-#: assets/admin.js:2126
+#: assets/admin.js:2131
 msgid "Available: "
 msgstr ""
 
@@ -157,59 +157,59 @@ msgstr ""
 msgid "Bank transfer"
 msgstr ""
 
-#: includes/helpers.php:770 includes/helpers.php:808
+#: includes/helpers.php:806 includes/helpers.php:844
 msgid "Between rows"
 msgstr ""
 
-#: includes/class-wmd-render.php:1448 includes/class-wmd-tags.php:26 includes/helpers.php:695 assets/renderer.js:878
+#: includes/class-wmd-render.php:1448 includes/class-wmd-tags.php:26 includes/helpers.php:731 assets/renderer.js:878
 msgid "Billing address"
 msgstr ""
 
-#: includes/helpers.php:693
+#: includes/helpers.php:729
 msgid "Billing address heading"
 msgstr ""
 
-#: includes/helpers.php:686
+#: includes/helpers.php:722
 msgid "Billing address only"
 msgstr ""
 
-#: includes/helpers.php:685
+#: includes/helpers.php:721
 msgid "Billing and shipping address"
 msgstr ""
 
-#: assets/admin.js:1100 assets/admin.js:2005
+#: assets/admin.js:1100 assets/admin.js:2010
 msgid "Bold"
 msgstr ""
 
-#: assets/admin.js:2449
+#: assets/admin.js:2454
 msgid "Brand"
 msgstr ""
 
-#: includes/helpers.php:1076 assets/admin.js:1320
+#: includes/helpers.php:1112 assets/admin.js:1320
 msgid "Build the whole email"
 msgstr ""
 
-#: includes/helpers.php:404
+#: includes/helpers.php:440
 msgid "Button"
 msgstr ""
 
-#: includes/helpers.php:235
+#: includes/helpers.php:271
 msgid "Button background"
 msgstr ""
 
-#: includes/helpers.php:247
+#: includes/helpers.php:283
 msgid "Button radius (px)"
 msgstr ""
 
-#: includes/helpers.php:241 includes/helpers.php:409
+#: includes/helpers.php:277 includes/helpers.php:445
 msgid "Button text"
 msgstr ""
 
-#: includes/helpers.php:306
+#: includes/helpers.php:342
 msgid "Buttons"
 msgstr ""
 
-#: includes/helpers.php:1178
+#: includes/helpers.php:1214
 msgid "Cancelled order (to shop)"
 msgstr ""
 
@@ -217,19 +217,19 @@ msgstr ""
 msgid "Change"
 msgstr ""
 
-#: assets/admin.js:2157 assets/admin.js:2395
+#: assets/admin.js:2162 assets/admin.js:2400
 msgid "Check now"
 msgstr ""
 
-#: assets/admin.js:2382
+#: assets/admin.js:2387
 msgid "Checking…"
 msgstr ""
 
-#: assets/admin.js:2063
+#: assets/admin.js:2068
 msgid "Choose a file…"
 msgstr ""
 
-#: assets/admin.js:1015 assets/admin.js:1160 assets/admin.js:3468
+#: assets/admin.js:1015 assets/admin.js:1160 assets/admin.js:3473
 msgid "Choose image"
 msgstr ""
 
@@ -237,11 +237,11 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: assets/admin.js:2408
+#: assets/admin.js:2413
 msgid "Click a block in the preview, or pick one from the list on the left, to make its settings appear here."
 msgstr ""
 
-#: includes/helpers.php:365 includes/helpers.php:386 includes/helpers.php:476
+#: includes/helpers.php:401 includes/helpers.php:422 includes/helpers.php:512
 msgid "Colour"
 msgstr ""
 
@@ -249,11 +249,11 @@ msgstr ""
 msgid "Colour: grey"
 msgstr ""
 
-#: includes/helpers.php:304
+#: includes/helpers.php:340
 msgid "Colours"
 msgstr ""
 
-#: includes/helpers.php:744
+#: includes/helpers.php:780
 msgid "Columns"
 msgstr ""
 
@@ -269,15 +269,15 @@ msgstr ""
 msgid "Content before the order table"
 msgstr ""
 
-#: assets/admin.js:1954
+#: assets/admin.js:1959
 msgid "Copied: "
 msgstr ""
 
-#: assets/admin.js:1973
+#: assets/admin.js:1978
 msgid "Copying failed"
 msgstr ""
 
-#: includes/helpers.php:175
+#: includes/helpers.php:211
 msgid "Corner radius (px)"
 msgstr ""
 
@@ -293,7 +293,7 @@ msgstr ""
 msgid "Could not fetch the WooCommerce content."
 msgstr ""
 
-#: assets/admin.js:2122
+#: assets/admin.js:2127
 msgid "Could not get a version from the source. Check the repository name, the release and the token."
 msgstr ""
 
@@ -317,7 +317,7 @@ msgstr ""
 msgid "Current year"
 msgstr ""
 
-#: includes/helpers.php:653
+#: includes/helpers.php:689
 msgid "Custom HTML"
 msgstr ""
 
@@ -325,11 +325,11 @@ msgstr ""
 msgid "Customer"
 msgstr ""
 
-#: includes/class-wmd-tags.php:58 includes/helpers.php:717
+#: includes/class-wmd-tags.php:58 includes/helpers.php:753
 msgid "Customer note"
 msgstr ""
 
-#: includes/helpers.php:1217
+#: includes/helpers.php:1253
 msgid "Customer order emails"
 msgstr ""
 
@@ -341,7 +341,7 @@ msgstr ""
 msgid "DeepL asked us to slow down. Try again in a moment."
 msgstr ""
 
-#: assets/admin.js:2098
+#: assets/admin.js:2103
 msgid "DeepL key"
 msgstr ""
 
@@ -349,7 +349,7 @@ msgstr ""
 msgid "DeepL refused the key. Check that you copied it whole."
 msgstr ""
 
-#: assets/admin.js:1023 assets/admin.js:1212 assets/admin.js:2439
+#: assets/admin.js:1023 assets/admin.js:1212 assets/admin.js:2444
 msgid "Delete"
 msgstr ""
 
@@ -357,7 +357,7 @@ msgstr ""
 msgid "Delete row"
 msgstr ""
 
-#: assets/admin.js:3154
+#: assets/admin.js:3159
 msgid "Delete this block?"
 msgstr ""
 
@@ -365,7 +365,7 @@ msgstr ""
 msgid "Demo Shop"
 msgstr ""
 
-#: assets/admin.js:2236
+#: assets/admin.js:2241
 msgid "Design downloaded"
 msgstr ""
 
@@ -373,19 +373,19 @@ msgstr ""
 msgid "Design emails"
 msgstr ""
 
-#: assets/admin.js:2212
+#: assets/admin.js:2217
 msgid "Design imported"
 msgstr ""
 
-#: assets/admin.js:2522
+#: assets/admin.js:2527
 msgid "Design on"
 msgstr ""
 
-#: assets/admin.js:2518
+#: assets/admin.js:2523
 msgid "Desktop"
 msgstr ""
 
-#: includes/class-wmd-tags.php:53 includes/helpers.php:958
+#: includes/class-wmd-tags.php:53 includes/helpers.php:994
 msgid "Discount"
 msgstr ""
 
@@ -397,7 +397,7 @@ msgstr ""
 msgid "Display name"
 msgstr ""
 
-#: includes/helpers.php:471
+#: includes/helpers.php:507
 msgid "Divider"
 msgstr ""
 
@@ -405,7 +405,7 @@ msgstr ""
 msgid "Down"
 msgstr ""
 
-#: assets/admin.js:2052
+#: assets/admin.js:2057
 msgid "Download the design"
 msgstr ""
 
@@ -413,7 +413,7 @@ msgstr ""
 msgid "Duplicate"
 msgstr ""
 
-#: assets/admin.js:2438
+#: assets/admin.js:2443
 msgid "Duplicate block"
 msgstr ""
 
@@ -425,7 +425,7 @@ msgstr ""
 msgid "Email Designer"
 msgstr ""
 
-#: includes/helpers.php:199
+#: includes/helpers.php:235
 msgid "Email background"
 msgstr ""
 
@@ -433,43 +433,43 @@ msgstr ""
 msgid "Email content"
 msgstr ""
 
-#: assets/admin.js:2531
+#: assets/admin.js:2536
 msgid "Email preview"
 msgstr ""
 
-#: includes/helpers.php:166
+#: includes/helpers.php:202
 msgid "Email width (px)"
 msgstr ""
 
-#: assets/admin.js:2452
+#: assets/admin.js:2457
 msgid "Emails"
 msgstr ""
 
-#: assets/admin.js:1904
+#: assets/admin.js:1909
 msgid "Every variable you can use in the email."
 msgstr ""
 
-#: assets/admin.js:2390
+#: assets/admin.js:2395
 msgid "Everything is up to date"
 msgstr ""
 
-#: assets/admin.js:2124
+#: assets/admin.js:2129
 msgid "Everything is up to date — installed "
 msgstr ""
 
-#: assets/admin.js:2048
+#: assets/admin.js:2053
 msgid "Export and import the design"
 msgstr ""
 
-#: includes/helpers.php:289
+#: includes/helpers.php:325
 msgid "Extra CSS (advanced)"
 msgstr ""
 
-#: includes/helpers.php:1183
+#: includes/helpers.php:1219
 msgid "Failed order (to shop)"
 msgstr ""
 
-#: includes/helpers.php:898
+#: includes/helpers.php:934
 msgid "Field key on the order"
 msgstr ""
 
@@ -477,11 +477,11 @@ msgstr ""
 msgid "Fields on this order"
 msgstr ""
 
-#: assets/admin.js:2090
+#: assets/admin.js:2095
 msgid "Fills another language from the default one, so you only have to correct it instead of writing everything twice. DeepL is used because it is the only service that leaves {{variables}} untouched — without that the emails would break. The free tier gives 500,000 characters a month, which is far more than email templates need."
 msgstr ""
 
-#: assets/admin.js:1890
+#: assets/admin.js:1895
 msgid "Fills this language from the default one with a machine translation, which you then correct. Variables and links are left alone."
 msgstr ""
 
@@ -493,15 +493,15 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
-#: includes/helpers.php:256
+#: includes/helpers.php:292
 msgid "Font"
 msgstr ""
 
-#: assets/admin.js:2451
+#: assets/admin.js:2456
 msgid "Footer"
 msgstr ""
 
-#: assets/admin.js:2012
+#: assets/admin.js:2017
 msgid "For example: please transfer the amount from your bank straight to our account…"
 msgstr ""
 
@@ -513,67 +513,67 @@ msgstr ""
 msgid "Full address on one line"
 msgstr ""
 
-#: includes/helpers.php:771
+#: includes/helpers.php:807
 msgid "Full grid"
 msgstr ""
 
-#: includes/helpers.php:431 includes/helpers.php:795
+#: includes/helpers.php:467 includes/helpers.php:831
 msgid "Full width"
 msgstr ""
 
-#: includes/helpers.php:623
+#: includes/helpers.php:659
 msgid "Gap between icons (px)"
 msgstr ""
 
-#: includes/helpers.php:572
+#: includes/helpers.php:608
 msgid "Gap between images (px)"
 msgstr ""
 
-#: assets/admin.js:2100
+#: assets/admin.js:2105
 msgid "Get one free at deepl.com/pro-api — choose the free plan. A free key ends with :fx."
 msgstr ""
 
-#: assets/admin.js:2139
+#: assets/admin.js:2144
 msgid "GitHub release"
 msgstr ""
 
-#: assets/admin.js:2144
+#: assets/admin.js:2149
 msgid "GitHub repository"
 msgstr ""
 
-#: includes/helpers.php:801
+#: includes/helpers.php:837
 msgid "Grand total in bold"
 msgstr ""
 
-#: includes/helpers.php:658
+#: includes/helpers.php:694
 msgid "HTML"
 msgstr ""
 
-#: assets/admin.js:2450
+#: assets/admin.js:2455
 msgid "Header"
 msgstr ""
 
-#: includes/helpers.php:159
+#: includes/helpers.php:195
 msgid "Header background"
 msgstr ""
 
-#: includes/helpers.php:343 includes/helpers.php:723 includes/helpers.php:825
+#: includes/helpers.php:379 includes/helpers.php:759 includes/helpers.php:861
 msgid "Heading"
 msgstr ""
 
-#: includes/helpers.php:211
+#: includes/helpers.php:247
 msgid "Headings"
 msgstr ""
 
-#: includes/helpers.php:489
+#: includes/helpers.php:525
 msgid "Height (px)"
 msgstr ""
 
-#: includes/helpers.php:1090
+#: includes/helpers.php:1126
 msgid "Hi {{customer_first_name}}! We have received your order <strong>#{{order_number}}</strong> and are getting it ready."
 msgstr ""
 
-#: includes/helpers.php:1290
+#: includes/helpers.php:1326
 msgid "Hi {{customer_first_name}}! We have received your order <strong>#{{order_number}}</strong> and are getting it ready. We will let you know when it ships."
 msgstr ""
 
@@ -581,19 +581,19 @@ msgstr ""
 msgid "Hide categories"
 msgstr ""
 
-#: includes/helpers.php:880
+#: includes/helpers.php:916
 msgid "Hide rows left empty"
 msgstr ""
 
-#: includes/helpers.php:916
+#: includes/helpers.php:952
 msgid "Hide when the field is empty"
 msgstr ""
 
-#: includes/helpers.php:729
+#: includes/helpers.php:765
 msgid "Hide when there is no note"
 msgstr ""
 
-#: includes/helpers.php:550
+#: includes/helpers.php:586
 msgid "How many per row"
 msgstr ""
 
@@ -601,15 +601,15 @@ msgstr ""
 msgid "How the email is put together"
 msgstr ""
 
-#: includes/helpers.php:615
+#: includes/helpers.php:651
 msgid "Icon size (px)"
 msgstr ""
 
-#: includes/helpers.php:439 includes/helpers.php:444 includes/helpers.php:937
+#: includes/helpers.php:475 includes/helpers.php:480 includes/helpers.php:973
 msgid "Image"
 msgstr ""
 
-#: assets/admin.js:3458
+#: assets/admin.js:3463
 msgid "Image address"
 msgstr ""
 
@@ -617,51 +617,51 @@ msgstr ""
 msgid "Image address https://…"
 msgstr ""
 
-#: includes/helpers.php:580
+#: includes/helpers.php:616
 msgid "Image corner radius (px)"
 msgstr ""
 
-#: includes/helpers.php:560
+#: includes/helpers.php:596
 msgid "Image shape"
 msgstr ""
 
-#: includes/helpers.php:755
+#: includes/helpers.php:791
 msgid "Image width (px)"
 msgstr ""
 
-#: includes/helpers.php:524
+#: includes/helpers.php:560
 msgid "Images"
 msgstr ""
 
-#: includes/helpers.php:568
+#: includes/helpers.php:604
 msgid "Images are cropped from the centre to the same size, so the row stays even. \"Original\" leaves each image its own shape."
 msgstr ""
 
-#: includes/helpers.php:519
+#: includes/helpers.php:555
 msgid "Images side by side"
 msgstr ""
 
-#: assets/admin.js:2214
+#: assets/admin.js:2219
 msgid "Import failed"
 msgstr ""
 
-#: assets/admin.js:2068
+#: assets/admin.js:2073
 msgid "Import the pasted JSON"
 msgstr ""
 
-#: assets/admin.js:2201
+#: assets/admin.js:2206
 msgid "Importing overwrites the whole current design — brand, header, footer, every email and the payment instructions. Continue?"
 msgstr ""
 
-#: assets/admin.js:2061
+#: assets/admin.js:2066
 msgid "Importing overwrites the whole current design."
 msgstr ""
 
-#: includes/helpers.php:710 includes/helpers.php:832 includes/helpers.php:885
+#: includes/helpers.php:746 includes/helpers.php:868 includes/helpers.php:921
 msgid "In a bordered box"
 msgstr ""
 
-#: includes/helpers.php:184
+#: includes/helpers.php:220
 msgid "Inner padding (px)"
 msgstr ""
 
@@ -673,39 +673,39 @@ msgstr ""
 msgid "Installed version %s."
 msgstr ""
 
-#: assets/admin.js:2354
+#: assets/admin.js:2359
 msgid "Installing…"
 msgstr ""
 
-#: assets/admin.js:2166
+#: assets/admin.js:2171
 msgid "Installs the new version right here. The page reloads afterwards; save any unsaved changes first."
 msgstr ""
 
-#: includes/helpers.php:1219
+#: includes/helpers.php:1255
 msgid "Internal shop emails"
 msgstr ""
 
-#: includes/class-wmd-ajax.php:845
+#: includes/class-wmd-ajax.php:861
 msgid "Invalid email address."
 msgstr ""
 
-#: includes/helpers.php:1149
+#: includes/helpers.php:1185
 msgid "Invoice / pending payment"
 msgstr ""
 
-#: assets/admin.js:1101 assets/admin.js:2006
+#: assets/admin.js:1101 assets/admin.js:2011
 msgid "Italic"
 msgstr ""
 
-#: includes/helpers.php:904 assets/admin.js:973
+#: includes/helpers.php:940 assets/admin.js:973
 msgid "Label"
 msgstr ""
 
-#: includes/helpers.php:564
+#: includes/helpers.php:600
 msgid "Landscape (4:3)"
 msgstr ""
 
-#: includes/helpers.php:357
+#: includes/helpers.php:393
 msgid "Large"
 msgstr ""
 
@@ -717,11 +717,11 @@ msgstr ""
 msgid "Last name"
 msgstr ""
 
-#: assets/admin.js:2502
+#: assets/admin.js:2507
 msgid "Latest order in the shop"
 msgstr ""
 
-#: includes/helpers.php:307 includes/helpers.php:792
+#: includes/helpers.php:343 includes/helpers.php:828
 msgid "Layout"
 msgstr ""
 
@@ -729,31 +729,31 @@ msgstr ""
 msgid "Left"
 msgstr ""
 
-#: includes/helpers.php:503
+#: includes/helpers.php:539
 msgid "Left column"
 msgstr ""
 
-#: assets/admin.js:1102 assets/admin.js:2007
+#: assets/admin.js:1102 assets/admin.js:2012
 msgid "Line break"
 msgstr ""
 
-#: includes/helpers.php:943
+#: includes/helpers.php:979
 msgid "Line total"
 msgstr ""
 
-#: includes/helpers.php:768 includes/helpers.php:806
+#: includes/helpers.php:804 includes/helpers.php:842
 msgid "Lines"
 msgstr ""
 
-#: includes/helpers.php:229
+#: includes/helpers.php:265
 msgid "Lines and borders"
 msgstr ""
 
-#: includes/helpers.php:416 assets/admin.js:1103 assets/admin.js:2008
+#: includes/helpers.php:452 assets/admin.js:1103 assets/admin.js:2013
 msgid "Link"
 msgstr ""
 
-#: includes/helpers.php:910
+#: includes/helpers.php:946
 msgid "Link (optional)"
 msgstr ""
 
@@ -761,11 +761,11 @@ msgstr ""
 msgid "Link (optional), {{value}} = the value"
 msgstr ""
 
-#: assets/admin.js:3304
+#: assets/admin.js:3309
 msgid "Link address"
 msgstr ""
 
-#: includes/helpers.php:455
+#: includes/helpers.php:491
 msgid "Link on click"
 msgstr ""
 
@@ -773,7 +773,7 @@ msgstr ""
 msgid "Link, for example the category address"
 msgstr ""
 
-#: assets/admin.js:1049 assets/admin.js:2969
+#: assets/admin.js:1049 assets/admin.js:2974
 msgid "Load product categories"
 msgstr ""
 
@@ -785,7 +785,7 @@ msgstr ""
 msgid "Loading the designer…"
 msgstr ""
 
-#: assets/admin.js:1667 assets/admin.js:2961
+#: assets/admin.js:1667 assets/admin.js:2966
 msgid "Loading…"
 msgstr ""
 
@@ -793,27 +793,27 @@ msgstr ""
 msgid "Log in link"
 msgstr ""
 
-#: includes/helpers.php:138
+#: includes/helpers.php:174
 msgid "Logo"
 msgstr ""
 
-#: includes/helpers.php:153
+#: includes/helpers.php:189
 msgid "Logo alignment"
 msgstr ""
 
-#: includes/helpers.php:303
+#: includes/helpers.php:339
 msgid "Logo and header"
 msgstr ""
 
-#: includes/helpers.php:144
+#: includes/helpers.php:180
 msgid "Logo width (px)"
 msgstr ""
 
-#: includes/helpers.php:280
+#: includes/helpers.php:316
 msgid "Main heading size (px)"
 msgstr ""
 
-#: assets/admin.js:2152
+#: assets/admin.js:2157
 msgid "Manifest address"
 msgstr ""
 
@@ -829,15 +829,15 @@ msgstr ""
 msgid "Mary Smith<br>12 High Street<br>10123 London<br>United Kingdom"
 msgstr ""
 
-#: includes/helpers.php:358
+#: includes/helpers.php:394
 msgid "Medium"
 msgstr ""
 
-#: assets/admin.js:2519
+#: assets/admin.js:2524
 msgid "Mobile"
 msgstr ""
 
-#: includes/helpers.php:217
+#: includes/helpers.php:253
 msgid "Muted text"
 msgstr ""
 
@@ -849,11 +849,11 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: includes/helpers.php:597
+#: includes/helpers.php:633
 msgid "Name colour"
 msgstr ""
 
-#: includes/helpers.php:588
+#: includes/helpers.php:624
 msgid "Name size (px)"
 msgstr ""
 
@@ -861,11 +861,11 @@ msgstr ""
 msgid "Name under the image"
 msgstr ""
 
-#: includes/helpers.php:1167
+#: includes/helpers.php:1203
 msgid "New account"
 msgstr ""
 
-#: includes/helpers.php:1173
+#: includes/helpers.php:1209
 msgid "New order (to shop)"
 msgstr ""
 
@@ -877,11 +877,11 @@ msgstr ""
 msgid "No changelog was provided."
 msgstr ""
 
-#: includes/helpers.php:772 includes/helpers.php:809
+#: includes/helpers.php:808 includes/helpers.php:845
 msgid "No lines"
 msgstr ""
 
-#: assets/admin.js:1988
+#: assets/admin.js:1993
 msgid "No payment methods were found in the shop."
 msgstr ""
 
@@ -889,11 +889,11 @@ msgstr ""
 msgid "No product categories were found."
 msgstr ""
 
-#: includes/helpers.php:1154
+#: includes/helpers.php:1190
 msgid "Note to customer"
 msgstr ""
 
-#: assets/admin.js:1916 assets/admin.js:1935
+#: assets/admin.js:1921 assets/admin.js:1940
 msgid "Nothing found."
 msgstr ""
 
@@ -901,11 +901,11 @@ msgstr ""
 msgid "Nothing is translated here yet — everything comes from %s."
 msgstr ""
 
-#: assets/admin.js:2407
+#: assets/admin.js:2412
 msgid "Nothing selected"
 msgstr ""
 
-#: includes/helpers.php:871
+#: includes/helpers.php:907
 msgid "Number of columns"
 msgstr ""
 
@@ -913,11 +913,11 @@ msgstr ""
 msgid "Number of items"
 msgstr ""
 
-#: assets/admin.js:2094 assets/admin.js:2138
+#: assets/admin.js:2099 assets/admin.js:2143
 msgid "Off"
 msgstr ""
 
-#: includes/helpers.php:873
+#: includes/helpers.php:909
 msgid "One column"
 msgstr ""
 
@@ -933,7 +933,7 @@ msgstr ""
 msgid "Order ID in the database"
 msgstr ""
 
-#: includes/helpers.php:1134
+#: includes/helpers.php:1170
 msgid "Order completed"
 msgstr ""
 
@@ -941,7 +941,7 @@ msgstr ""
 msgid "Order date"
 msgstr ""
 
-#: includes/helpers.php:849
+#: includes/helpers.php:885
 msgid "Order details (table)"
 msgstr ""
 
@@ -949,23 +949,23 @@ msgstr ""
 msgid "Order field"
 msgstr ""
 
-#: includes/helpers.php:892
+#: includes/helpers.php:928
 msgid "Order field (one line)"
 msgstr ""
 
-#: includes/class-wmd-tags.php:46 includes/helpers.php:858
+#: includes/class-wmd-tags.php:46 includes/helpers.php:894
 msgid "Order number"
 msgstr ""
 
-#: includes/helpers.php:1139
+#: includes/helpers.php:1175
 msgid "Order on hold"
 msgstr ""
 
-#: includes/helpers.php:1129
+#: includes/helpers.php:1165
 msgid "Order processing"
 msgstr ""
 
-#: includes/helpers.php:1144
+#: includes/helpers.php:1180
 msgid "Order refunded"
 msgstr ""
 
@@ -973,7 +973,7 @@ msgstr ""
 msgid "Order status"
 msgstr ""
 
-#: includes/helpers.php:669
+#: includes/helpers.php:705
 msgid "Order table (WooCommerce)"
 msgstr ""
 
@@ -985,27 +985,27 @@ msgstr ""
 msgid "Order view link"
 msgstr ""
 
-#: includes/helpers.php:565
+#: includes/helpers.php:601
 msgid "Original (each keeps its shape)"
 msgstr ""
 
-#: includes/helpers.php:308
+#: includes/helpers.php:344
 msgid "Other"
 msgstr ""
 
-#: includes/helpers.php:425
+#: includes/helpers.php:461
 msgid "Outlined"
 msgstr ""
 
-#: assets/admin.js:2140
+#: assets/admin.js:2145
 msgid "Own JSON manifest"
 msgstr ""
 
-#: includes/helpers.php:193
+#: includes/helpers.php:229
 msgid "Page background"
 msgstr ""
 
-#: includes/helpers.php:374
+#: includes/helpers.php:410
 msgid "Paragraph"
 msgstr ""
 
@@ -1013,7 +1013,7 @@ msgstr ""
 msgid "Parcel locker"
 msgstr ""
 
-#: includes/helpers.php:1161
+#: includes/helpers.php:1197
 msgid "Password reset"
 msgstr ""
 
@@ -1021,7 +1021,7 @@ msgstr ""
 msgid "Password reset link"
 msgstr ""
 
-#: assets/admin.js:2271
+#: assets/admin.js:2276
 msgid "Paste the JSON first"
 msgstr ""
 
@@ -1029,11 +1029,11 @@ msgstr ""
 msgid "Payment and delivery"
 msgstr ""
 
-#: includes/helpers.php:826
+#: includes/helpers.php:862
 msgid "Payment instructions"
 msgstr ""
 
-#: includes/helpers.php:839
+#: includes/helpers.php:875
 msgid "Payment instructions (WooCommerce)"
 msgstr ""
 
@@ -1041,7 +1041,7 @@ msgstr ""
 msgid "Payment instructions (for example bank transfer details) appear here in the real email, if the payment method sends them."
 msgstr ""
 
-#: includes/helpers.php:819
+#: includes/helpers.php:855
 msgid "Payment instructions (own text)"
 msgstr ""
 
@@ -1049,7 +1049,7 @@ msgstr ""
 msgid "Payment link"
 msgstr ""
 
-#: includes/helpers.php:863 includes/helpers.php:960
+#: includes/helpers.php:899 includes/helpers.php:996
 msgid "Payment method"
 msgstr ""
 
@@ -1065,7 +1065,7 @@ msgstr ""
 msgid "Payment method:"
 msgstr ""
 
-#: assets/admin.js:2453
+#: assets/admin.js:2458
 msgid "Payment methods"
 msgstr ""
 
@@ -1077,7 +1077,7 @@ msgstr ""
 msgid "Pick an email and add to it. A field left empty means the WooCommerce default is used."
 msgstr ""
 
-#: includes/helpers.php:899
+#: includes/helpers.php:935
 msgid "Pick from the list or type your own. The form {{meta:key}} works too."
 msgstr ""
 
@@ -1085,7 +1085,7 @@ msgstr ""
 msgid "Please leave it in the parcel locker."
 msgstr ""
 
-#: includes/helpers.php:563
+#: includes/helpers.php:599
 msgid "Portrait (3:4)"
 msgstr ""
 
@@ -1101,27 +1101,27 @@ msgstr ""
 msgid "Processing"
 msgstr ""
 
-#: includes/class-wmd-render.php:1374 includes/helpers.php:938
+#: includes/class-wmd-render.php:1374 includes/helpers.php:974
 msgid "Product"
 msgstr ""
 
-#: includes/helpers.php:763
+#: includes/helpers.php:799
 msgid "Product name as a link"
 msgstr ""
 
-#: includes/helpers.php:738
+#: includes/helpers.php:774
 msgid "Products (own table)"
 msgstr ""
 
-#: includes/class-wmd-render.php:1375 includes/helpers.php:941
+#: includes/class-wmd-render.php:1375 includes/helpers.php:977
 msgid "Quantity"
 msgstr ""
 
-#: assets/admin.js:2259
+#: assets/admin.js:2264
 msgid "Reading the file failed"
 msgstr ""
 
-#: assets/admin.js:2361
+#: assets/admin.js:2366
 msgid "Reloading the page…"
 msgstr ""
 
@@ -1133,67 +1133,67 @@ msgstr ""
 msgid "Renaming the update folder failed."
 msgstr ""
 
-#: assets/admin.js:2525
+#: assets/admin.js:2530
 msgid "Reset"
 msgstr ""
 
-#: assets/admin.js:2525
+#: assets/admin.js:2530
 msgid "Reset the design"
 msgstr ""
 
-#: assets/admin.js:3374
+#: assets/admin.js:3379
 msgid "Reset the whole design to its defaults? This cannot be undone."
 msgstr ""
 
-#: includes/helpers.php:794 assets/admin.js:1022
+#: includes/helpers.php:830 assets/admin.js:1022
 msgid "Right"
 msgstr ""
 
-#: includes/helpers.php:510
+#: includes/helpers.php:546
 msgid "Right column"
 msgstr ""
 
-#: includes/helpers.php:786 includes/helpers.php:855
+#: includes/helpers.php:822 includes/helpers.php:891
 msgid "Rows"
 msgstr ""
 
-#: includes/helpers.php:939
+#: includes/helpers.php:975
 msgid "SKU"
 msgstr ""
 
-#: assets/admin.js:2524
+#: assets/admin.js:2529
 msgid "Save"
 msgstr ""
 
-#: assets/admin.js:2103
+#: assets/admin.js:2108
 msgid "Save the key"
 msgstr ""
 
-#: assets/admin.js:2156
+#: assets/admin.js:2161
 msgid "Save the source"
 msgstr ""
 
-#: assets/admin.js:2299 assets/admin.js:2338 assets/admin.js:3383 assets/admin.js:3441
+#: assets/admin.js:2304 assets/admin.js:2343 assets/admin.js:3388 assets/admin.js:3446
 msgid "Saved"
 msgstr ""
 
-#: assets/admin.js:3443 assets/admin.js:3554
+#: assets/admin.js:3448 assets/admin.js:3559
 msgid "Saving failed"
 msgstr ""
 
-#: assets/admin.js:1907
+#: assets/admin.js:1912
 msgid "Search for a variable…"
 msgstr ""
 
-#: assets/admin.js:2523 assets/admin.js:3425
+#: assets/admin.js:2528 assets/admin.js:3430
 msgid "Send test email"
 msgstr ""
 
-#: includes/class-wmd-ajax.php:894
+#: includes/class-wmd-ajax.php:944
 msgid "Sending the email failed. Check the shop's email settings."
 msgstr ""
 
-#: assets/admin.js:3406
+#: assets/admin.js:3411
 msgid "Sending…"
 msgstr ""
 
@@ -1201,27 +1201,27 @@ msgstr ""
 msgid "Set password link (new account)"
 msgstr ""
 
-#: assets/admin.js:2111
+#: assets/admin.js:2116
 msgid "Setting up updates needs permission to update plugins."
 msgstr ""
 
-#: assets/admin.js:2455
+#: assets/admin.js:2460
 msgid "Settings"
 msgstr ""
 
-#: includes/helpers.php:959
+#: includes/helpers.php:995
 msgid "Shipping"
 msgstr ""
 
-#: includes/class-wmd-tags.php:27 includes/helpers.php:701
+#: includes/class-wmd-tags.php:27 includes/helpers.php:737
 msgid "Shipping address"
 msgstr ""
 
-#: includes/helpers.php:699
+#: includes/helpers.php:735
 msgid "Shipping address heading"
 msgstr ""
 
-#: includes/helpers.php:687
+#: includes/helpers.php:723
 msgid "Shipping address only"
 msgstr ""
 
@@ -1253,23 +1253,23 @@ msgstr ""
 msgid "Shop name"
 msgstr ""
 
-#: includes/helpers.php:750
+#: includes/helpers.php:786
 msgid "Show header row"
 msgstr ""
 
-#: includes/helpers.php:705
+#: includes/helpers.php:741
 msgid "Show phone and email"
 msgstr ""
 
-#: assets/admin.js:2055
+#: assets/admin.js:2060
 msgid "Show the JSON"
 msgstr ""
 
-#: includes/helpers.php:355
+#: includes/helpers.php:391
 msgid "Size"
 msgstr ""
 
-#: includes/helpers.php:392
+#: includes/helpers.php:428
 msgid "Size (px)"
 msgstr ""
 
@@ -1281,31 +1281,31 @@ msgstr ""
 msgid "Slots left empty are not put into the real email — they are shown in the designer only so you can see the layout."
 msgstr ""
 
-#: includes/helpers.php:359
+#: includes/helpers.php:395
 msgid "Small"
 msgstr ""
 
-#: includes/helpers.php:610
+#: includes/helpers.php:646
 msgid "Social media"
 msgstr ""
 
-#: includes/helpers.php:424
+#: includes/helpers.php:460
 msgid "Solid"
 msgstr ""
 
-#: includes/helpers.php:334
+#: includes/helpers.php:370
 msgid "Space above/below (px)"
 msgstr ""
 
-#: includes/helpers.php:484
+#: includes/helpers.php:520
 msgid "Spacer"
 msgstr ""
 
-#: includes/helpers.php:562
+#: includes/helpers.php:598
 msgid "Square (1:1)"
 msgstr ""
 
-#: includes/helpers.php:422
+#: includes/helpers.php:458
 msgid "Style"
 msgstr ""
 
@@ -1313,7 +1313,7 @@ msgstr ""
 msgid "Subject line"
 msgstr ""
 
-#: includes/class-wmd-tags.php:52 includes/helpers.php:957
+#: includes/class-wmd-tags.php:52 includes/helpers.php:993
 msgid "Subtotal"
 msgstr ""
 
@@ -1321,7 +1321,7 @@ msgstr ""
 msgid "Subtotal:"
 msgstr ""
 
-#: includes/helpers.php:259
+#: includes/helpers.php:295
 msgid "System (recommended)"
 msgstr ""
 
@@ -1333,15 +1333,15 @@ msgstr ""
 msgid "Takes this email's current WooCommerce content apart into blocks and replaces the blocks below. Useful when you want to start again from the WooCommerce text."
 msgstr ""
 
-#: includes/helpers.php:205 includes/helpers.php:348 includes/helpers.php:379
+#: includes/helpers.php:241 includes/helpers.php:384 includes/helpers.php:415
 msgid "Text"
 msgstr ""
 
-#: includes/helpers.php:271
+#: includes/helpers.php:307
 msgid "Text size (px)"
 msgstr ""
 
-#: includes/helpers.php:349
+#: includes/helpers.php:385
 msgid "Thank you for your order!"
 msgstr ""
 
@@ -1353,15 +1353,15 @@ msgstr ""
 msgid "The WooCommerce part of the canvas shows "
 msgstr ""
 
-#: assets/admin.js:3393
+#: assets/admin.js:3398
 msgid "The design applies to emails"
 msgstr ""
 
-#: assets/admin.js:3393
+#: assets/admin.js:3398
 msgid "The design is switched off"
 msgstr ""
 
-#: assets/admin.js:3420
+#: assets/admin.js:3425
 msgid "The design was saved and the test email went to "
 msgstr ""
 
@@ -1369,35 +1369,35 @@ msgstr ""
 msgid "The designer needs JavaScript."
 msgstr ""
 
-#: assets/admin.js:2197
+#: assets/admin.js:2202
 msgid "The file could not be read"
 msgstr ""
 
-#: assets/admin.js:2466
+#: assets/admin.js:2471
 msgid "The footer is the same at the bottom of every email."
 msgstr ""
 
-#: assets/admin.js:2464
+#: assets/admin.js:2469
 msgid "The header is the same at the top of every email."
 msgstr ""
 
-#: assets/admin.js:2071
+#: assets/admin.js:2076
 msgid "The logo still points at the source shop's media library — in another shop it is worth uploading it again. Payment instructions carry over by their ID; if the target shop has other payment gateways, those rows are simply left unused."
 msgstr ""
 
-#: assets/admin.js:2134
+#: assets/admin.js:2139
 msgid "The plugin is not on WordPress.org, so updates come straight from your GitHub releases. WordPress shows the update notice on the ordinary Plugins page too."
 msgstr ""
 
-#: assets/admin.js:3549
+#: assets/admin.js:3554
 msgid "The server firewall blocked the request (HTTP 403). Ask your host to allow this address."
 msgstr ""
 
-#: assets/admin.js:3550
+#: assets/admin.js:3555
 msgid "The server replied unexpectedly (HTTP "
 msgstr ""
 
-#: assets/admin.js:2390
+#: assets/admin.js:2395
 msgid "The source did not respond"
 msgstr ""
 
@@ -1413,7 +1413,7 @@ msgstr ""
 msgid "The translation service sent an answer we could not read."
 msgstr ""
 
-#: assets/admin.js:1839
+#: assets/admin.js:1844
 msgid "The translation service sent back a different number of texts than we asked for."
 msgstr ""
 
@@ -1425,15 +1425,15 @@ msgstr ""
 msgid "The update source did not respond."
 msgstr ""
 
-#: assets/admin.js:1899
+#: assets/admin.js:1904
 msgid "The value comes from the selected order ("
 msgstr ""
 
-#: assets/admin.js:1901
+#: assets/admin.js:1906
 msgid "The value comes from the selected order."
 msgstr ""
 
-#: assets/admin.js:2049
+#: assets/admin.js:2054
 msgid "The whole design — brand, header, footer, every email and the payment instructions — in one file. In another shop you import it and have the same setup at once."
 msgstr ""
 
@@ -1445,7 +1445,7 @@ msgstr ""
 msgid "There is no newer version."
 msgstr ""
 
-#: assets/admin.js:1817
+#: assets/admin.js:1822
 msgid "There is nothing to translate here."
 msgstr ""
 
@@ -1461,11 +1461,11 @@ msgstr ""
 msgid "This email already has "
 msgstr ""
 
-#: assets/admin.js:1902
+#: assets/admin.js:1907
 msgid "This email does not come from an order, so the order variables have no value here."
 msgstr ""
 
-#: assets/admin.js:2185
+#: assets/admin.js:2190
 msgid "This is not an Email Designer design file."
 msgstr ""
 
@@ -1473,7 +1473,7 @@ msgstr ""
 msgid "This mode does not use the WooCommerce content template. Everything in the email comes from the blocks below — including the order table and the addresses."
 msgstr ""
 
-#: includes/helpers.php:962
+#: includes/helpers.php:998
 msgid "Total"
 msgstr ""
 
@@ -1481,15 +1481,15 @@ msgstr ""
 msgid "Total:"
 msgstr ""
 
-#: includes/helpers.php:780
+#: includes/helpers.php:816
 msgid "Totals (own table)"
 msgstr ""
 
-#: includes/helpers.php:905
+#: includes/helpers.php:941
 msgid "Tracking code"
 msgstr ""
 
-#: assets/admin.js:1888
+#: assets/admin.js:1893
 msgid "Translate this email automatically"
 msgstr ""
 
@@ -1497,39 +1497,39 @@ msgstr ""
 msgid "Translate this part"
 msgstr ""
 
-#: assets/admin.js:1826
+#: assets/admin.js:1831
 msgid "Translating…"
 msgstr ""
 
-#: assets/admin.js:2092
+#: assets/admin.js:2097
 msgid "Translation service"
 msgstr ""
 
-#: assets/admin.js:2374
+#: assets/admin.js:2379
 msgid "Try again"
 msgstr ""
 
-#: includes/helpers.php:498 includes/helpers.php:874
+#: includes/helpers.php:534 includes/helpers.php:910
 msgid "Two columns"
 msgstr ""
 
-#: includes/helpers.php:305
+#: includes/helpers.php:341
 msgid "Type"
 msgstr ""
 
-#: includes/helpers.php:603
+#: includes/helpers.php:639
 msgid "Underline the name"
 msgstr ""
 
-#: includes/helpers.php:942
+#: includes/helpers.php:978
 msgid "Unit price"
 msgstr ""
 
-#: assets/admin.js:2512
+#: assets/admin.js:2517
 msgid "Unsaved changes"
 msgstr ""
 
-#: assets/admin.js:2428
+#: assets/admin.js:2433
 msgid "Unticked = always show. Tick the payment methods for which the block goes into the email — that way bank transfer instructions can go only to bank transfer orders."
 msgstr ""
 
@@ -1537,19 +1537,19 @@ msgstr ""
 msgid "Up"
 msgstr ""
 
-#: assets/admin.js:2390
+#: assets/admin.js:2395
 msgid "Update "
 msgstr ""
 
-#: assets/admin.js:2164
+#: assets/admin.js:2169
 msgid "Update now to version "
 msgstr ""
 
-#: assets/admin.js:2136
+#: assets/admin.js:2141
 msgid "Update source"
 msgstr ""
 
-#: includes/helpers.php:911
+#: includes/helpers.php:947
 msgid "Use {{value}} where the field value goes."
 msgstr ""
 
@@ -1561,7 +1561,7 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: includes/class-wmd-tags.php:55 includes/helpers.php:961
+#: includes/class-wmd-tags.php:55 includes/helpers.php:997
 msgid "VAT"
 msgstr ""
 
@@ -1569,51 +1569,51 @@ msgstr ""
 msgid "Value or {{variable}}"
 msgstr ""
 
-#: assets/admin.js:2454
+#: assets/admin.js:2459
 msgid "Variables"
 msgstr ""
 
-#: includes/helpers.php:940
+#: includes/helpers.php:976
 msgid "Variations and extra fields"
 msgstr ""
 
-#: includes/helpers.php:410 includes/helpers.php:1299
+#: includes/helpers.php:446 includes/helpers.php:1335
 msgid "View order"
 msgstr ""
 
-#: assets/admin.js:2426
+#: assets/admin.js:2431
 msgid "Visibility"
 msgstr ""
 
-#: includes/helpers.php:380
+#: includes/helpers.php:416
 msgid "We have received your order and are getting it ready."
 msgstr ""
 
-#: includes/helpers.php:683
+#: includes/helpers.php:719
 msgid "What to show"
 msgstr ""
 
-#: assets/admin.js:2514
+#: assets/admin.js:2519
 msgid "What to show in the preview"
 msgstr ""
 
-#: assets/admin.js:3401
+#: assets/admin.js:3406
 msgid "Where should the test email go?"
 msgstr ""
 
-#: assets/admin.js:2522
+#: assets/admin.js:2527
 msgid "Whether the design applies to real emails"
 msgstr ""
 
-#: assets/admin.js:2487
+#: assets/admin.js:2492
 msgid "Which language's content to edit"
 msgstr ""
 
-#: assets/admin.js:2501
+#: assets/admin.js:2506
 msgid "Which order to fill the preview with"
 msgstr ""
 
-#: includes/helpers.php:460
+#: includes/helpers.php:496
 msgid "Width (px)"
 msgstr ""
 
@@ -1649,7 +1649,7 @@ msgstr ""
 msgid "Wool scarf"
 msgstr ""
 
-#: assets/admin.js:1995
+#: assets/admin.js:2000
 msgid "Write the instructions for each payment method here once. The block "
 msgstr ""
 
@@ -1657,7 +1657,7 @@ msgstr ""
 msgid "You are editing %s."
 msgstr ""
 
-#: includes/helpers.php:1260
+#: includes/helpers.php:1296
 msgid "You are getting this email because you placed an order in our shop."
 msgstr ""
 
@@ -1673,7 +1673,7 @@ msgstr ""
 msgid "You do not have permission."
 msgstr ""
 
-#: assets/admin.js:2349
+#: assets/admin.js:2354
 msgid "You have unsaved changes. Updating reloads the page and they will be lost. Continue?"
 msgstr ""
 
@@ -1681,11 +1681,11 @@ msgstr ""
 msgid "You will find this text under WooCommerce → Settings → Emails. It cannot be emptied there — an empty field is replaced by the default text (\"Thanks for shopping with us.\"). Here you can switch it off for good."
 msgstr ""
 
-#: includes/helpers.php:724
+#: includes/helpers.php:760
 msgid "Your note to the order"
 msgstr ""
 
-#: includes/class-wmd-ajax.php:883
+#: includes/class-wmd-ajax.php:933
 msgid "[TEST] %s"
 msgstr ""
 
@@ -1709,7 +1709,7 @@ msgstr ""
 msgid "greeting, info"
 msgstr ""
 
-#: assets/admin.js:2390
+#: assets/admin.js:2395
 msgid "is available"
 msgstr ""
 
@@ -1717,11 +1717,11 @@ msgstr ""
 msgid "no image"
 msgstr ""
 
-#: includes/helpers.php:1058
+#: includes/helpers.php:1094
 msgid "no payment method"
 msgstr ""
 
-#: assets/admin.js:2149
+#: assets/admin.js:2154
 msgid "only for a private repository"
 msgstr ""
 
@@ -1733,11 +1733,11 @@ msgstr ""
 msgid "the whole body"
 msgstr ""
 
-#: assets/admin.js:2145
+#: assets/admin.js:2150
 msgid "user/repository"
 msgstr ""
 
-#: assets/admin.js:2066
+#: assets/admin.js:2071
 msgid "…or paste JSON here"
 msgstr ""
 

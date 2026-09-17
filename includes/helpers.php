@@ -91,6 +91,42 @@ function wmd_languages() {
 }
 
 /**
+ * Keele lokaat, nt „en" -> „en_GB".
+ *
+ * Seda on vaja selleks, et ka WooCommerce'i enda tekstid (nt „sisaldab X KM")
+ * tuleksid õiges keeles. Need käivad WordPressi lokaadi, mitte WPML-i keele
+ * järgi, seega keelevahetusest üksi ei piisa.
+ *
+ * @param string $lang Keele kood.
+ * @return string Lokaat või sama kood, kui midagi paremat ei leia.
+ */
+function wmd_locale_for( $lang ) {
+	$lang = (string) $lang;
+
+	if ( '' === $lang ) {
+		return '';
+	}
+
+	$langs = apply_filters( 'wpml_active_languages', null, array( 'skip_missing' => 0 ) );
+
+	if ( is_array( $langs ) && ! empty( $langs[ $lang ]['default_locale'] ) ) {
+		return $langs[ $lang ]['default_locale'];
+	}
+
+	if ( function_exists( 'pll_languages_list' ) ) {
+		$codes   = pll_languages_list( array( 'fields' => 'slug' ) );
+		$locales = pll_languages_list( array( 'fields' => 'locale' ) );
+		$at      = is_array( $codes ) ? array_search( $lang, $codes, true ) : false;
+
+		if ( false !== $at && isset( $locales[ $at ] ) ) {
+			return $locales[ $at ];
+		}
+	}
+
+	return $lang;
+}
+
+/**
  * Mis keeles see kiri välja läheb.
  *
  * Tellimuse keel on kirjas tellimusel endal (WooCommerce Multilingual paneb

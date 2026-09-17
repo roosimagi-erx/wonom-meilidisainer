@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.26.0
+Stable tag: 0.27.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,12 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 0.27.0 =
+* **Fix: the test email always went out in the order's language.** If you were looking at English and pressed "Send test email", you got the Estonian email, because the real WooCommerce email always follows the order. Now the language you have picked in the designer wins, and when it differs from the order's the email is put together by the designer instead.
+* Fix: the test email's subject line was the name of the email type, not the subject. Now it comes from the same place as in the real email — from the design if you have filled it in, otherwise from the WooCommerce settings.
+* **Fix: the preview showed WooCommerce's own strings in the wrong language.** Things like "includes X tax" are built as the email is rendered and follow the WordPress locale, not the WPML language. The preview only switched the language, so it showed Estonian where the real email would be English — the preview was lying about the result. It now switches the locale as well.
+* Automatic translation now also fills the subject line and the large heading when they are empty in the default language. In that case the text comes from the WooCommerce settings, and until now it was simply left untranslated.
 
 = 0.26.0 =
 * The designer now says which language you are editing and what follows from it — before this the change was easy to miss, because an untranslated language looks exactly like the default one. That is correct behaviour, but it gave you no way to tell whether switching had done anything at all.

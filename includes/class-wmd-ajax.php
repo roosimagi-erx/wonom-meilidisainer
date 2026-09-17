@@ -787,9 +787,12 @@ class WMD_Ajax {
 	 * @return array Eelmine olek, mille restore_lang() tagasi paneb.
 	 */
 	protected static function switch_lang( $lang ) {
+		// Kujundajast tulnud keel pannakse lukku, et tellimuse enda keel seda
+		// üle ei kirjutaks — vaatad ju just seda keelt, mille valisid.
 		$was = array(
-			'design' => WMD_Design::set_lang( $lang ),
+			'design' => WMD_Design::set_lang( $lang, true ),
 			'site'   => null,
+			'locale' => false,
 		);
 
 		if ( '' === $lang ) {
@@ -803,6 +806,15 @@ class WMD_Ajax {
 			do_action( 'wpml_switch_language', $lang );
 		}
 
+		// Lokaat eraldi: WooCommerce'i enda tekstid (nt „sisaldab X KM") käivad
+		// WordPressi lokaadi järgi, mitte WPML-i keele järgi. Ilma selleta
+		// näitaks eelvaade neid vales keeles ja valetaks päris kirja kohta.
+		$locale = wmd_locale_for( $lang );
+
+		if ( '' !== $locale && $locale !== determine_locale() && function_exists( 'switch_to_locale' ) ) {
+			$was['locale'] = switch_to_locale( $locale );
+		}
+
 		return $was;
 	}
 
@@ -812,6 +824,10 @@ class WMD_Ajax {
 	 * @param array $was switch_lang() tagastus.
 	 */
 	protected static function restore_lang( $was ) {
+		if ( ! empty( $was['locale'] ) && function_exists( 'restore_previous_locale' ) ) {
+			restore_previous_locale();
+		}
+
 		WMD_Design::set_lang( $was['design'] );
 
 		if ( null !== $was['site'] ) {
@@ -856,12 +872,20 @@ class WMD_Ajax {
 		}
 
 		// Testmeil läheb selles keeles, mida kujundajas parasjagu vaatad.
-		$was   = self::switch_lang( self::posted_lang() );
+		$lang  = self::posted_lang();
+		$was   = self::switch_lang( $lang );
 		$order = self::preview_order( self::posted_order_id(), $email_id );
 		$sent  = false;
 		$mode  = 'design';
 
-		if ( $order && wmd_woo_active() ) {
+		// Päris WooCommerce'i meil läheb alati tellimuse enda keeles — seda ei
+		// saa me väljastpoolt ümber lükata. Kui kujundajas on valitud muu keel,
+		// koostame kirja ise, et testmeil oleks samas keeles, mida ekraanil
+		// vaatad. Muidu vaataksid inglise keelt ja saaksid eestikeelse kirja.
+		$order_lang = $order ? wmd_email_language( $order ) : '';
+		$same_lang  = ( '' === $lang ) || '' === $order_lang || $lang === $order_lang;
+
+		if ( $order && wmd_woo_active() && $same_lang ) {
 			$sent = self::send_real( $email_id, $order, $to );
 			$mode = $sent ? 'real' : 'design';
 		}
@@ -877,11 +901,37 @@ class WMD_Ajax {
 				$body = '' !== $part['html'] ? $part['html'] : null;
 			}
 
-			$html    = WMD_Render::full( $email_id, self::design_context( $email_id, $order ), $body );
+			$ctx  = self::design_context( $email_id, $order );
+			$html = WMD_Render::full( $email_id, $ctx, $body );
+
+			// Teema tuleb samast kohast, kust päris kirjas: kujundusest, kui see
+			// on täidetud, muidu WooCommerce'i seadetest. Varem tuli siia meili
+			// nimi, nii et teistkeelse testmeili teemat ei saanudki kontrollida.
+			$settings = WMD_Design::email( $email_id );
+			$subject  = trim( (string) $settings['subject'] );
+
+			if ( '' !== $subject ) {
+				$subject = wp_strip_all_tags( WMD_Tags::replace( $subject, $ctx ) );
+			} else {
+				$found = self::find_email( $email_id );
+
+				if ( $found ) {
+					if ( $order ) {
+						$found->object = $order;
+					}
+
+					$subject = wp_strip_all_tags( (string) $found->get_subject() );
+				}
+			}
+
+			if ( '' === $subject ) {
+				$subject = $list[ $email_id ]['label'];
+			}
+
 			$subject = sprintf(
-				/* translators: %s: meili nimi. */
+				/* translators: %s: email subject. */
 				__( '[TEST] %s', 'wonom-meilidisainer' ),
-				$list[ $email_id ]['label']
+				$subject
 			);
 
 			$headers = array( 'Content-Type: text/html; charset=UTF-8' );

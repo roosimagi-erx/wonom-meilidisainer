@@ -42,16 +42,47 @@ class WMD_Design {
 	}
 
 	/**
+	 * Kas keel on kinni pandud.
+	 *
+	 * Kujundajas valitud keel peab võitma tellimuse enda keele: kui vaatad
+	 * inglise keelt ja saadad testmeili, tahad näha ingliskeelset kirja, mitte
+	 * seda, mis keeles see tellimus juhtus tehtud olema.
+	 *
+	 * @var bool
+	 */
+	protected static $locked = false;
+
+	/**
 	 * Seab keele ja annab eelmise tagasi, et selle saaks pärast taastada.
 	 *
-	 * @param string $lang Keele kood või tühi.
-	 * @return string Eelmine keel.
+	 * @param string $lang   Keele kood või tühi.
+	 * @param bool   $locked Kas see keel võidab tellimuse oma.
+	 * @return array Eelmine olek, mille set_lang() tagasi võtab.
 	 */
-	public static function set_lang( $lang ) {
-		$was       = self::$lang;
-		self::$lang = is_string( $lang ) ? $lang : '';
+	public static function set_lang( $lang, $locked = false ) {
+		$was = array( self::$lang, self::$locked );
+
+		// Tagasipanek: anname sama massiivi, mille varem saime.
+		if ( is_array( $lang ) ) {
+			self::$lang   = $lang[0];
+			self::$locked = $lang[1];
+
+			return $was;
+		}
+
+		self::$lang   = is_string( $lang ) ? $lang : '';
+		self::$locked = (bool) $locked && '' !== self::$lang;
 
 		return $was;
+	}
+
+	/**
+	 * Kas keel on kinni pandud ja seda ei tohi tellimuse omaga üle kirjutada.
+	 *
+	 * @return bool
+	 */
+	public static function lang_locked() {
+		return self::$locked;
 	}
 
 	/**
