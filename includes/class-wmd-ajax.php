@@ -28,6 +28,8 @@ class WMD_Ajax {
 		add_action( 'wp_ajax_wmd_save_updates', array( __CLASS__, 'save_updates' ) );
 		add_action( 'wp_ajax_wmd_check_update', array( __CLASS__, 'check_update' ) );
 		add_action( 'wp_ajax_wmd_update_now', array( __CLASS__, 'update_now' ) );
+		add_action( 'wp_ajax_wmd_translate', array( __CLASS__, 'translate' ) );
+		add_action( 'wp_ajax_wmd_save_mt', array( __CLASS__, 'save_mt' ) );
 	}
 
 	/**
@@ -85,6 +87,49 @@ class WMD_Ajax {
 		}
 
 		wp_send_json_success( WMD_Updater::check_now() );
+	}
+
+	/**
+	 * Masintõlge kujundaja jaoks.
+	 *
+	 * Kujundaja korjab tõlgitavad tekstid ise kokku ja paneb tulemuse tagasi —
+	 * server ainult vahendab päringu. Nii ei pea server plokkide ehitust teadma
+	 * ja uue ploki lisamine ei nõua siin midagi.
+	 */
+	public static function translate() {
+		self::guard();
+
+		// Tekst läheb tõlketeenusesse ja tuleb kujundajasse tagasi; salvestamisel
+		// käib see läbi WMD_Design::sanitize nagu iga muu sisu.
+		$texts  = isset( $_POST['texts'] ) ? (array) wp_unslash( $_POST['texts'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- vt kommentaari.
+		$target = isset( $_POST['target'] ) ? sanitize_key( wp_unslash( $_POST['target'] ) ) : '';
+		$source = isset( $_POST['source'] ) ? sanitize_key( wp_unslash( $_POST['source'] ) ) : '';
+
+		if ( empty( $texts ) ) {
+			wp_send_json_success( array( 'texts' => array() ) );
+		}
+
+		$done = WMD_Translate::translate( $texts, $target, $source );
+
+		if ( is_wp_error( $done ) ) {
+			wp_send_json_error( array( 'message' => $done->get_error_message() ) );
+		}
+
+		wp_send_json_success( array( 'texts' => $done ) );
+	}
+
+	/**
+	 * Masintõlke seadete salvestus.
+	 */
+	public static function save_mt() {
+		self::guard();
+
+		$input = array(
+			'provider' => isset( $_POST['provider'] ) ? sanitize_key( wp_unslash( $_POST['provider'] ) ) : 'off',
+			'key'      => isset( $_POST['key'] ) ? sanitize_text_field( wp_unslash( $_POST['key'] ) ) : '',
+		);
+
+		wp_send_json_success( array( 'mt' => WMD_Translate::save_settings( $input ) ) );
 	}
 
 	/**

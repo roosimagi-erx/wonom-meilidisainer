@@ -19,6 +19,15 @@
 		return text;
 	};
 
+	var sprintf = ( window.wp && window.wp.i18n && window.wp.i18n.sprintf ) || function ( text ) {
+		var args = Array.prototype.slice.call( arguments, 1 );
+		var i = 0;
+
+		return String( text ).replace( /%[sd]/g, function () {
+			return args[ i++ ];
+		} );
+	};
+
 	var emailIds = Object.keys( cfg.emails || {} );
 
 	/**
@@ -336,6 +345,60 @@
 		}
 
 		return isBaseLang() ? ( ( state.design.payments || {} )[ id ] || '' ) : '';
+	}
+
+	/**
+	 * Teade, mis ütleb, mis keelt sa muudad ja mis sellest praegu järeldub.
+	 *
+	 * Ilma selleta näeb teine keel enne tõlkimist vaikekeelega identne välja —
+	 * see ongi õige, aga kasutaja ei saa aru, kas keelevahetus üldse mõjus.
+	 *
+	 * @return {string} HTML või tühi string vaikekeeles.
+	 */
+	function langNoteHtml() {
+		if ( isBaseLang() ) {
+			return '';
+		}
+
+		var name = ( cfg.languages || {} )[ state.lang ] || state.lang;
+		var base = ( cfg.languages || {} )[ cfg.defaultLang ] || cfg.defaultLang;
+		var layer = langLayer( false );
+		var own = 0;
+		var zones = [ 'header', 'footer', 'before', 'after', 'body' ];
+
+		zones.forEach( function ( zone ) {
+			if ( zoneOverride( zone, false ) ) {
+				own++;
+			}
+		} );
+
+		if ( layer && layer.emails && layer.emails[ state.email ] ) {
+			[ 'subject', 'heading' ].forEach( function ( key ) {
+				if ( layer.emails[ state.email ][ key ] ) {
+					own++;
+				}
+			} );
+		}
+
+		var what = own
+			? sprintf(
+				/* translators: %s: language name. */
+				__( 'Anything you have not translated still comes from %s.', 'wonom-meilidisainer' ),
+				base
+			)
+			: sprintf(
+				/* translators: %s: language name. */
+				__( 'Nothing is translated here yet — everything comes from %s.', 'wonom-meilidisainer' ),
+				base
+			);
+
+		return '<div class="wmd-langnote">' +
+			'<strong>' + esc( sprintf(
+				/* translators: %s: language name. */
+				__( 'You are editing %s.', 'wonom-meilidisainer' ),
+				name
+			) ) + '</strong> ' + esc( what ) +
+			'</div>';
 	}
 
 	/**
@@ -1230,7 +1293,11 @@
 		var e = emailSettings();
 		var full = e.mode === 'full';
 
-		var html = '<div class="wmd-intro">' + __( 'Pick an email and add to it. A field left empty means the WooCommerce default is used.', 'wonom-meilidisainer' ) + '</div>';
+		var html = langNoteHtml();
+
+		html += '<div class="wmd-intro">' + __( 'Pick an email and add to it. A field left empty means the WooCommerce default is used.', 'wonom-meilidisainer' ) + '</div>';
+
+		html += machineButtonHtml();
 		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-email-pick">' + __( 'Email', 'wonom-meilidisainer' ) + '</label>' +
 			'<select class="wmd-input" id="wmd-email-pick">' + opts + '</select></div>';
 
@@ -1642,6 +1709,187 @@
 		} );
 	}
 
+	/* -------------------------------------------------------- masintõlge */
+
+	/**
+	 * Korjab plokkidest kokku tekstid, mida tohib masinaga tõlkida.
+	 *
+	 * Millised väljad need on, ütleb skeem ise (`translate` lipp) — uue ploki
+	 * lisamisel piisab seal lipu panemisest, siia ei pea midagi kirjutama.
+	 * Aadressid, värvid ja „Oma HTML" jäävad meelega välja.
+	 *
+	 * @param {Array} blocks Plokid.
+	 * @return {Array} Kirjed kujul { text, set }.
+	 */
+	function translatableInBlocks( blocks ) {
+		var out = [];
+
+		( blocks || [] ).forEach( function ( block ) {
+			var def = cfg.blockTypes[ block.type ];
+
+			if ( ! def ) {
+				return;
+			}
+
+			Object.keys( def.fields ).forEach( function ( key ) {
+				var field = def.fields[ key ];
+				var value = block.props[ key ];
+
+				if ( field.translate && typeof value === 'string' && value.trim() ) {
+					out.push( {
+						text: value,
+						set: function ( translated ) {
+							block.props[ key ] = translated;
+						},
+					} );
+					return;
+				}
+
+				// Veergude, ridade ja piltide siltidel on tekst rea sees.
+				if ( ! Array.isArray( value ) ) {
+					return;
+				}
+
+				if ( 'columns' !== field.type && 'pairs' !== field.type && 'cards' !== field.type ) {
+					return;
+				}
+
+				value.forEach( function ( row ) {
+					if ( row && typeof row.label === 'string' && row.label.trim() ) {
+						out.push( {
+							text: row.label,
+							set: function ( translated ) {
+								row.label = translated;
+							},
+						} );
+					}
+				} );
+			} );
+		} );
+
+		return out;
+	}
+
+	/**
+	 * Kõik selles keeles tõlgitavad tekstid: pealkirjad ja kõigi alade plokid.
+	 *
+	 * Loob vajalikud keelekihi kirjed, sest tõlge läheb sinna, mitte vaikekeelde.
+	 *
+	 * @return {Array} Kirjed kujul { text, set }.
+	 */
+	function translatableForEmail() {
+		var out = [];
+		var own = langEmail( true );
+		var base = emailSettings();
+
+		[ 'subject', 'heading' ].forEach( function ( key ) {
+			var source = base[ key ];
+
+			if ( typeof source === 'string' && source.trim() ) {
+				out.push( {
+					text: source,
+					set: function ( translated ) {
+						own[ key ] = translated;
+					},
+				} );
+			}
+		} );
+
+		// Täisrežiimis on sisu kehas, muidu enne ja pärast tellimuse tabelit.
+		var zones = 'full' === base.mode ? [ 'body' ] : [ 'before', 'after' ];
+
+		zones.forEach( function ( zone ) {
+			out = out.concat( translatableInBlocks( zoneOverride( zone, true ) ) );
+		} );
+
+		return out;
+	}
+
+	/**
+	 * Saadab tekstid tõlkesse ja paneb tulemuse tagasi.
+	 *
+	 * @param {Array}    items Kirjed kujul { text, set }.
+	 * @param {Element}  btn   Nupp, mis ootamise ajaks kinni panna.
+	 * @param {Function} done  Kutsutakse lõpus.
+	 */
+	function machineTranslate( items, btn, done ) {
+		if ( ! items.length ) {
+			toast( __( 'There is nothing to translate here.', 'wonom-meilidisainer' ), 'error' );
+			done();
+			return;
+		}
+
+		var label = btn ? btn.textContent : '';
+
+		if ( btn ) {
+			btn.disabled = true;
+			btn.textContent = __( 'Translating…', 'wonom-meilidisainer' );
+		}
+
+		post( 'wmd_translate', {
+			texts: items.map( function ( row ) {
+				return row.text;
+			} ),
+			target: state.lang,
+			source: cfg.defaultLang || '',
+		} ).then( function ( res ) {
+			var texts = ( res && res.texts ) || [];
+
+			if ( texts.length !== items.length ) {
+				toast( __( 'The translation service sent back a different number of texts than we asked for.', 'wonom-meilidisainer' ), 'error' );
+				return;
+			}
+
+			texts.forEach( function ( translated, i ) {
+				if ( translated && translated.trim() ) {
+					items[ i ].set( translated );
+				}
+			} );
+
+			markDirty();
+			render();
+			invalidatePreview();
+			toast( sprintf(
+				/* translators: %d: number of texts. */
+				__( '%d texts translated — read them over and fix what needs fixing.', 'wonom-meilidisainer' ),
+				texts.length
+			), 'ok' );
+		} ).catch( function ( err ) {
+			toast( err, 'error' );
+		} ).then( function () {
+			if ( btn ) {
+				btn.disabled = false;
+				btn.textContent = label;
+			}
+
+			done();
+		} );
+	}
+
+	/**
+	 * Nupp, mis tõlgib kogu selle kirja masinaga.
+	 *
+	 * @return {string} HTML või tühi string.
+	 */
+	function machineButtonHtml() {
+		if ( isBaseLang() ) {
+			return '';
+		}
+
+		var mt = cfg.mt || {};
+
+		if ( 'deepl' !== mt.provider || ! mt.hasKey ) {
+			return '<p class="wmd-hint">' +
+				esc( __( 'Automatic translation is not set up. You can add a DeepL key under Settings — the free tier is plenty for email templates.', 'wonom-meilidisainer' ) ) +
+				'</p>';
+		}
+
+		return '<div class="wmd-updates-actions">' +
+			'<button type="button" class="button wmd-mt-email">' + esc( __( 'Translate this email automatically', 'wonom-meilidisainer' ) ) + '</button>' +
+			'</div>' +
+			'<p class="wmd-hint">' + esc( __( 'Fills this language from the default one with a machine translation, which you then correct. Variables and links are left alone.', 'wonom-meilidisainer' ) ) + '</p>';
+	}
+
 	/* ------------------------------------------------------- muutujad */
 
 	function varsPanelHtml() {
@@ -1744,7 +1992,7 @@
 			state.design.payments = {};
 		}
 
-		var html = '<div class="wmd-intro">' + __( 'Write the instructions for each payment method here once. The block ', 'wonom-meilidisainer' ) + '<strong>' + __( '"Payment instructions (own text)"', 'wonom-meilidisainer' ) + '</strong>' + __( ' brings them into the email — it always shows the text for that order\'s payment method. For a payment method left empty the block simply does not appear.', 'wonom-meilidisainer' ) + '</div>';
+		var html = langNoteHtml() + '<div class="wmd-intro">' + __( 'Write the instructions for each payment method here once. The block ', 'wonom-meilidisainer' ) + '<strong>' + __( '"Payment instructions (own text)"', 'wonom-meilidisainer' ) + '</strong>' + __( ' brings them into the email — it always shows the text for that order\'s payment method. For a payment method left empty the block simply does not appear.', 'wonom-meilidisainer' ) + '</div>';
 
 		keys.forEach( function ( id ) {
 			var value = paymentText( id );
@@ -1824,9 +2072,43 @@
 			'</div></details>';
 	}
 
+	/**
+	 * Masintõlke seaded. Ilmub ainult mitmekeelses poes — ühe keelega ei ole
+	 * midagi tõlkida.
+	 */
+	function machinePanelHtml() {
+		if ( Object.keys( cfg.languages || {} ).length < 2 ) {
+			return '';
+		}
+
+		var mt = cfg.mt || { provider: 'off', hasKey: false };
+		var on = 'deepl' === mt.provider;
+
+		return '<details class="wmd-group"' + ( on ? ' open' : '' ) + '><summary>' +
+			esc( __( 'Automatic translation', 'wonom-meilidisainer' ) ) + '</summary><div class="wmd-group-body">' +
+
+			'<p class="wmd-hint">' + esc( __( 'Fills another language from the default one, so you only have to correct it instead of writing everything twice. DeepL is used because it is the only service that leaves {{variables}} untouched — without that the emails would break. The free tier gives 500,000 characters a month, which is far more than email templates need.', 'wonom-meilidisainer' ) ) + '</p>' +
+
+			'<div class="wmd-field"><label class="wmd-label" for="wmd-mt-provider">' + esc( __( 'Translation service', 'wonom-meilidisainer' ) ) + '</label>' +
+			'<select class="wmd-input" id="wmd-mt-provider">' +
+			'<option value="off"' + ( on ? '' : ' selected' ) + '>' + esc( __( 'Off', 'wonom-meilidisainer' ) ) + '</option>' +
+			'<option value="deepl"' + ( on ? ' selected' : '' ) + '>DeepL</option>' +
+			'</select></div>' +
+
+			'<div class="wmd-field"><label class="wmd-label" for="wmd-mt-key">' + esc( __( 'DeepL key', 'wonom-meilidisainer' ) ) + '</label>' +
+			'<input type="password" class="wmd-input" id="wmd-mt-key" value="' + ( mt.hasKey ? '********' : '' ) + '" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:fx" autocomplete="off" />' +
+			'<p class="wmd-hint">' + esc( __( 'Get one free at deepl.com/pro-api — choose the free plan. A free key ends with :fx.', 'wonom-meilidisainer' ) ) + '</p></div>' +
+
+			'<div class="wmd-updates-actions">' +
+			'<button type="button" class="button button-primary wmd-mt-save">' + esc( __( 'Save the key', 'wonom-meilidisainer' ) ) + '</button>' +
+			'</div>' +
+
+			'</div></details>';
+	}
+
 	function updatesPanelHtml() {
 		if ( ! cfg.canUpdate ) {
-			return backupPanelHtml() + '<div class="wmd-intro">' + __( 'Setting up updates needs permission to update plugins.', 'wonom-meilidisainer' ) + '</div>';
+			return backupPanelHtml() + machinePanelHtml() + '<div class="wmd-intro">' + __( 'Setting up updates needs permission to update plugins.', 'wonom-meilidisainer' ) + '</div>';
 		}
 
 		var u = state.updates;
@@ -1846,7 +2128,7 @@
 
 		var canInstall = u.remote && u.remote !== u.current;
 
-		var html = backupPanelHtml();
+		var html = backupPanelHtml() + machinePanelHtml();
 
 		html += '<details class="wmd-group" open><summary>' + __( 'Automatic updates', 'wonom-meilidisainer' ) + '</summary><div class="wmd-group-body">';
 		html += '<p class="wmd-hint">' + __( 'The plugin is not on WordPress.org, so updates come straight from your GitHub releases. WordPress shows the update notice on the ordinary Plugins page too.', 'wonom-meilidisainer' ) + '</p>';
@@ -1995,8 +2277,37 @@
 		}
 	}
 
+	/**
+	 * Masintõlke seadete salvestus.
+	 */
+	function bindMachine() {
+		var save = root.querySelector( '.wmd-mt-save' );
+
+		if ( ! save ) {
+			return;
+		}
+
+		save.addEventListener( 'click', function () {
+			save.disabled = true;
+
+			post( 'wmd_save_mt', {
+				provider: ( root.querySelector( '#wmd-mt-provider' ) || {} ).value || 'off',
+				key: ( root.querySelector( '#wmd-mt-key' ) || {} ).value || '',
+			} ).then( function ( res ) {
+				cfg.mt = res.mt;
+				render();
+				toast( __( 'Saved', 'wonom-meilidisainer' ), 'ok' );
+			} ).catch( function ( err ) {
+				toast( err, 'error' );
+			} ).then( function () {
+				save.disabled = false;
+			} );
+		} );
+	}
+
 	function bindUpdates() {
 		bindBackup();
+		bindMachine();
 
 		var source = root.querySelector( '#wmd-u-source' );
 		if ( ! source ) {
@@ -2150,9 +2461,9 @@
 		if ( state.tab === 'brand' ) {
 			panel = brandPanelHtml();
 		} else if ( state.tab === 'header' ) {
-			panel = '<div class="wmd-intro">' + __( 'The header is the same at the top of every email.', 'wonom-meilidisainer' ) + '</div>' + blockListHtml( 'header', '', '' );
+			panel = langNoteHtml() + '<div class="wmd-intro">' + __( 'The header is the same at the top of every email.', 'wonom-meilidisainer' ) + '</div>' + blockListHtml( 'header', '', '' );
 		} else if ( state.tab === 'footer' ) {
-			panel = '<div class="wmd-intro">' + __( 'The footer is the same at the bottom of every email.', 'wonom-meilidisainer' ) + '</div>' + blockListHtml( 'footer', '', '' );
+			panel = langNoteHtml() + '<div class="wmd-intro">' + __( 'The footer is the same at the bottom of every email.', 'wonom-meilidisainer' ) + '</div>' + blockListHtml( 'footer', '', '' );
 		} else if ( state.tab === 'payments' ) {
 			panel = paymentsPanelHtml();
 		} else if ( state.tab === 'vars' ) {
@@ -2851,6 +3162,14 @@
 			} );
 		} );
 
+		var mtEmail = root.querySelector( '.wmd-mt-email' );
+
+		if ( mtEmail ) {
+			mtEmail.addEventListener( 'click', function () {
+				machineTranslate( translatableForEmail(), mtEmail, function () {} );
+			} );
+		}
+
 		// „Tõlgi see osa": kopeerib vaikekeele plokid sellesse keelde, kust neid
 		// saab edasi muuta. Alles siis hakkab see keel oma teed minema.
 		root.querySelectorAll( '[data-translate]' ).forEach( function ( btn ) {
@@ -3193,6 +3512,15 @@
 			// enne WordPressi ja salvestus katkeks 403-ga.
 			if ( 'design' === key ) {
 				body.append( 'design_b64', toBase64( String( data[ key ] ) ) );
+				return;
+			}
+
+			// Massiiv tuleb saata kirje kaupa. FormData teeks sellest muidu ühe
+			// komadega stringi ja server saaks kätte hoopis ühe teksti.
+			if ( Array.isArray( data[ key ] ) ) {
+				data[ key ].forEach( function ( value ) {
+					body.append( key + '[]', value );
+				} );
 				return;
 			}
 

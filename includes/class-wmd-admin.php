@@ -124,6 +124,7 @@ class WMD_Admin {
 				'defaultLang' => wmd_default_language(),
 				'canUpdate'   => current_user_can( 'update_plugins' ) ? 1 : 0,
 				'updates'     => WMD_Updater::settings(),
+				'mt'          => WMD_Translate::settings(),
 				'pluginsUrl'  => admin_url( 'plugins.php' ),
 				// Tekstid ei käi enam siit läbi: skriptid kasutavad wp.i18n,
 				// nii on kõik tõlgitav ühest kohast ja üht teed pidi.

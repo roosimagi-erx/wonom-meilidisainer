@@ -348,6 +348,7 @@ function wmd_block_types() {
 					'label'   => __( 'Text', 'wonom-meilidisainer' ),
 					'default' => __( 'Thank you for your order!', 'wonom-meilidisainer' ),
 					'tags'    => true,
+					'translate' => true,
 				),
 				'size'  => array(
 					'type'    => 'select',
@@ -378,6 +379,7 @@ function wmd_block_types() {
 					'label'   => __( 'Text', 'wonom-meilidisainer' ),
 					'default' => __( 'We have received your order and are getting it ready.', 'wonom-meilidisainer' ),
 					'tags'    => true,
+					'translate' => true,
 				),
 				'color' => array(
 					'type'    => 'color',
@@ -407,6 +409,7 @@ function wmd_block_types() {
 					'label'   => __( 'Button text', 'wonom-meilidisainer' ),
 					'default' => __( 'View order', 'wonom-meilidisainer' ),
 					'tags'    => true,
+					'translate' => true,
 				),
 				'url'   => array(
 					'type'    => 'url',
@@ -444,6 +447,7 @@ function wmd_block_types() {
 				'alt'   => array(
 					'type'    => 'text',
 					'label'   => __( 'Alt text', 'wonom-meilidisainer' ),
+					'translate' => true,
 					'default' => '',
 				),
 				'link'  => array(
@@ -499,12 +503,14 @@ function wmd_block_types() {
 					'label'   => __( 'Left column', 'wonom-meilidisainer' ),
 					'default' => __( '<strong>Delivery time</strong><br>1–3 business days', 'wonom-meilidisainer' ),
 					'tags'    => true,
+					'translate' => true,
 				),
 				'right' => array(
 					'type'    => 'richtext',
 					'label'   => __( 'Right column', 'wonom-meilidisainer' ),
 					'default' => __( '<strong>Questions?</strong><br>Just write to us.', 'wonom-meilidisainer' ),
 					'tags'    => true,
+					'translate' => true,
 				),
 				'pad'   => $pad,
 			),
@@ -685,11 +691,13 @@ function wmd_block_types() {
 				'billing_title'  => array(
 					'type'    => 'text',
 					'label'   => __( 'Billing address heading', 'wonom-meilidisainer' ),
+					'translate' => true,
 					'default' => __( 'Billing address', 'wonom-meilidisainer' ),
 				),
 				'shipping_title' => array(
 					'type'    => 'text',
 					'label'   => __( 'Shipping address heading', 'wonom-meilidisainer' ),
+					'translate' => true,
 					'default' => __( 'Shipping address', 'wonom-meilidisainer' ),
 				),
 				'contacts'       => array(
@@ -714,6 +722,7 @@ function wmd_block_types() {
 					'type'    => 'text',
 					'label'   => __( 'Heading', 'wonom-meilidisainer' ),
 					'default' => __( 'Your note to the order', 'wonom-meilidisainer' ),
+					'translate' => true,
 				),
 				'hide_empty' => array(
 					'type'    => 'toggle',
@@ -816,6 +825,7 @@ function wmd_block_types() {
 					'label'   => __( 'Heading', 'wonom-meilidisainer' ),
 					'default' => __( 'Payment instructions', 'wonom-meilidisainer' ),
 					'tags'    => true,
+					'translate' => true,
 				),
 				'box'   => array(
 					'type'    => 'toggle',
@@ -893,6 +903,7 @@ function wmd_block_types() {
 					'type'    => 'text',
 					'label'   => __( 'Label', 'wonom-meilidisainer' ),
 					'default' => __( 'Tracking code', 'wonom-meilidisainer' ),
+					'translate' => true,
 				),
 				'link'       => array(
 					'type'    => 'text',

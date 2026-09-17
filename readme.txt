@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.25.0
+Stable tag: 0.26.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,13 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 0.26.0 =
+* The designer now says which language you are editing and what follows from it — before this the change was easy to miss, because an untranslated language looks exactly like the default one. That is correct behaviour, but it gave you no way to tell whether switching had done anything at all.
+* **Automatic translation.** One button fills a language from the default one, and you correct it instead of writing everything twice. Set a DeepL key under Settings; the free tier gives 500,000 characters a month, far more than email templates need.
+* DeepL was chosen because it is the only service that leaves `{{variables}}` untouched. Without that the machine would translate `{{customer_first_name}}` as well and the emails would break. Links, colours and the "Custom HTML" block are left alone too.
+* Which fields get translated is declared in the block schema itself, so a new block only has to say so — nothing needs changing in the translation code.
+* Fix: arrays sent to the server were flattened by the browser into one comma-separated string, so only the first text would have come back translated.
 
 = 0.25.0 =
 * Emails now go out in the customer's language. In a multilingual shop (WPML / WooCommerce Multilingual or Polylang) the designer gets a language picker, and each language can have its own subject lines, headings, blocks and payment instructions.

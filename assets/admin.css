@@ -967,6 +967,22 @@
 	max-width: 160px;
 }
 
+/* Teade, mis ütleb, mis keelt sa muudad. Ainult teises keeles nähtav. */
+.wmd-langnote {
+	background: #eef4fb;
+	border-left: 3px solid #2271b1;
+	border-radius: 0 5px 5px 0;
+	padding: 9px 12px;
+	margin-bottom: 10px;
+	font-size: 12px;
+	line-height: 1.5;
+	color: #1d3a56;
+}
+
+.wmd-langnote strong {
+	display: block;
+}
+
 /* Vaikekeelest päritud plokid: näha, aga mitte muudetavad. */
 .wmd-list-inherited {
 	opacity: 0.6;

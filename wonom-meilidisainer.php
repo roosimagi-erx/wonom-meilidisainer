@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Wonom Email Designer
  * Description:       A visual designer for WooCommerce order emails. Set the brand once and it applies to every email; add blocks to individual emails only where you need them. Live preview, test email, not a line of code.
- * Version:           0.25.0
+ * Version:           0.26.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * WC requires at least: 6.0
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WMD_VERSION', '0.25.0' );
+define( 'WMD_VERSION', '0.26.0' );
 define( 'WMD_FILE', __FILE__ );
 define( 'WMD_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WMD_URL', plugin_dir_url( __FILE__ ) );
@@ -32,6 +32,7 @@ require_once WMD_DIR . 'includes/class-wmd-render.php';
 require_once WMD_DIR . 'includes/class-wmd-emails.php';
 require_once WMD_DIR . 'includes/class-wmd-admin.php';
 require_once WMD_DIR . 'includes/class-wmd-ajax.php';
+require_once WMD_DIR . 'includes/class-wmd-translate.php';
 require_once WMD_DIR . 'includes/class-wmd-updater.php';
 
 add_action(
