@@ -1,0 +1,1640 @@
+# Wonom Email Designer
+msgid ""
+msgstr ""
+"Project-Id-Version: Wonom Email Designer\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-17 10:11+0000\n"
+"Language: et\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: wonom-meilidisainer\n"
+
+#: assets/admin.js:1524
+msgid " (installed "
+msgstr " (paigaldatud "
+
+#: assets/admin.js:1493
+msgid " Pick a file or paste JSON."
+msgstr " Vali fail või kleebi JSON."
+
+#: assets/admin.js:894
+msgid " WooCommerce email. Set them once and you are done."
+msgstr " WooCommerce'i meilidele. Sea üks kord ja oledki valmis."
+
+#: assets/admin.js:1427
+msgid " brings them into the email — it always shows the text for that order's payment method. For a payment method left empty the block simply does not appear."
+msgstr " — see näitab alati selle tellimuse makseviisi teksti. Tühjaks jäetud makseviisi puhul plokk lihtsalt ei ilmu."
+
+#: assets/admin.js:1427
+msgid "\"Payment instructions (own text)\""
+msgstr "„Makseviisi juhised (oma tekst)\""
+
+#: includes/class-wmd-render.php:582 assets/renderer.js:523
+msgid "(no note)"
+msgstr "(märkust ei ole)"
+
+#: assets/admin.js:2842
+msgid "). Check the server error log."
+msgstr "). Vaata serveri vealogi."
+
+#: assets/admin.js:708
+msgid "+ Add image"
+msgstr "+ Lisa pilt"
+
+#: assets/admin.js:649
+msgid "+ Add row"
+msgstr "+ Lisa rida"
+
+#: assets/admin.js:360
+msgid ", not the real text"
+msgstr ", mitte päris tekst"
+
+#: assets/admin.js:1522
+msgid ", source "
+msgstr ", allikas "
+
+#: includes/helpers.php:438
+msgid "2 across"
+msgstr "2 kõrvuti"
+
+#: includes/helpers.php:439
+msgid "3 across"
+msgstr "3 kõrvuti"
+
+#: includes/helpers.php:440
+msgid "4 across"
+msgstr "4 kõrvuti"
+
+#: includes/helpers.php:392
+msgid "<strong>Delivery time</strong><br>1–3 business days"
+msgstr "<strong>Tarneaeg</strong><br>1–3 tööpäeva"
+
+#: includes/helpers.php:398
+msgid "<strong>Questions?</strong><br>Just write to us."
+msgstr "<strong>Küsimused?</strong><br>Kirjuta meile julgelt."
+
+#: assets/admin.js:696
+msgid "A click adds the category to the next empty slot."
+msgstr "Klõps lisab kategooria järgmisse tühja kohta."
+
+#: assets/admin.js:1337
+msgid "A click copies the variable — you can paste it into any field, including the \"Custom HTML\" block or the extra CSS."
+msgstr "Klõps kopeerib muutuja — saad selle kleepida ükskõik millisesse välja, ka „Oma HTML\" plokki või lisa-CSS-i."
+
+#: includes/helpers.php:115
+msgid "Accent colour (links)"
+msgstr "Aktsentvärv (lingid)"
+
+#: assets/admin.js:1546
+msgid "Access token"
+msgstr "Juurdepääsuvõti"
+
+#: includes/class-wmd-tags.php:29
+msgid "Account"
+msgstr "Konto"
+
+#: includes/helpers.php:1099
+msgid "Account emails"
+msgstr "Konto meilid"
+
+#: includes/class-wmd-tags.php:72 includes/class-wmd-tags.php:86
+msgid "Address line 1"
+msgstr "Aadressirida 1"
+
+#: includes/class-wmd-tags.php:73 includes/class-wmd-tags.php:87
+msgid "Address line 2"
+msgstr "Aadressirida 2"
+
+#: includes/helpers.php:563
+msgid "Addresses"
+msgstr "Aadressid"
+
+#: includes/helpers.php:220
+msgid "Alignment"
+msgstr "Joondus"
+
+#: includes/helpers.php:338
+msgid "Alt text"
+msgstr "Alt-tekst"
+
+#: includes/helpers.php:956 assets/admin.js:953
+msgid "Around WooCommerce content"
+msgstr "WooCommerce'i sisu ümber"
+
+#: assets/admin.js:1531
+msgid "Automatic updates"
+msgstr "Automaatsed uuendused"
+
+#: assets/admin.js:1518
+msgid "Automatic updates are switched off."
+msgstr "Automaatsed uuendused on välja lülitatud."
+
+#: assets/admin.js:1524
+msgid "Available: "
+msgstr "Saadaval on "
+
+#: includes/class-wmd-render.php:1430 includes/class-wmd-tags.php:96 assets/renderer.js:631
+msgid "Bank transfer"
+msgstr "Panga ülekanne"
+
+#: includes/helpers.php:653 includes/helpers.php:691
+msgid "Between rows"
+msgstr "Ridade vahel"
+
+#: includes/class-wmd-render.php:1448 includes/class-wmd-tags.php:26 includes/helpers.php:580 assets/renderer.js:878
+msgid "Billing address"
+msgstr "Arveaadress"
+
+#: includes/helpers.php:579
+msgid "Billing address heading"
+msgstr "Arveaadressi pealkiri"
+
+#: includes/helpers.php:572
+msgid "Billing address only"
+msgstr "Ainult arveaadress"
+
+#: includes/helpers.php:571
+msgid "Billing and shipping address"
+msgstr "Arve- ja tarneaadress"
+
+#: assets/admin.js:760 assets/admin.js:1437
+msgid "Bold"
+msgstr "Rasvane"
+
+#: assets/admin.js:1818
+msgid "Brand"
+msgstr "Bränd"
+
+#: includes/helpers.php:957 assets/admin.js:954
+msgid "Build the whole email"
+msgstr "Terve meil ise"
+
+#: includes/helpers.php:294
+msgid "Button"
+msgstr "Nupp"
+
+#: includes/helpers.php:127
+msgid "Button background"
+msgstr "Nupu taust"
+
+#: includes/helpers.php:139
+msgid "Button radius (px)"
+msgstr "Nupu ümarus (px)"
+
+#: includes/helpers.php:133 includes/helpers.php:299
+msgid "Button text"
+msgstr "Nupu tekst"
+
+#: includes/helpers.php:198
+msgid "Buttons"
+msgstr "Nupud"
+
+#: includes/helpers.php:1059
+msgid "Cancelled order (to shop)"
+msgstr "Tühistatud tellimus (poele)"
+
+#: assets/admin.js:675 assets/admin.js:820
+msgid "Change"
+msgstr "Vaheta"
+
+#: assets/admin.js:1555 assets/admin.js:1764
+msgid "Check now"
+msgstr "Kontrolli kohe"
+
+#: assets/admin.js:1751
+msgid "Checking…"
+msgstr "Kontrollin…"
+
+#: assets/admin.js:1495
+msgid "Choose a file…"
+msgstr "Vali fail…"
+
+#: assets/admin.js:675 assets/admin.js:820 assets/admin.js:2769
+msgid "Choose image"
+msgstr "Vali pilt"
+
+#: includes/class-wmd-tags.php:74 includes/class-wmd-tags.php:88
+msgid "City"
+msgstr "Linn"
+
+#: assets/admin.js:1777
+msgid "Click a block in the preview, or pick one from the list on the left, to make its settings appear here."
+msgstr "Klõpsa eelvaates mõnel plokil või vali see vasakust nimekirjast, et selle seaded siia ilmuksid."
+
+#: includes/helpers.php:256 includes/helpers.php:276 includes/helpers.php:364
+msgid "Colour"
+msgstr "Värv"
+
+#: includes/class-wmd-render.php:1412 assets/renderer.js:622
+msgid "Colour: grey"
+msgstr "Värv: hall"
+
+#: includes/helpers.php:196
+msgid "Colours"
+msgstr "Värvid"
+
+#: includes/helpers.php:627
+msgid "Columns"
+msgstr "Veerud"
+
+#: includes/class-wmd-tags.php:71 includes/class-wmd-tags.php:85
+msgid "Company"
+msgstr "Ettevõte"
+
+#: assets/admin.js:964
+msgid "Content after the order table"
+msgstr "Sisu pärast tellimuse tabelit"
+
+#: assets/admin.js:963
+msgid "Content before the order table"
+msgstr "Sisu enne tellimuse tabelit"
+
+#: assets/admin.js:1386
+msgid "Copied: "
+msgstr "Kopeeritud: "
+
+#: assets/admin.js:1405
+msgid "Copying failed"
+msgstr "Kopeerimine ei õnnestunud"
+
+#: includes/helpers.php:67
+msgid "Corner radius (px)"
+msgstr "Nurkade ümarus (px)"
+
+#: includes/class-wmd-render.php:1399 assets/renderer.js:621
+msgid "Cotton T-shirt"
+msgstr "Puuvillane T-särk"
+
+#: includes/class-wmd-render.php:1378 assets/renderer.js:908
+msgid "Cotton T-shirt, M"
+msgstr "Puuvillane T-särk, M"
+
+#: assets/admin.js:401
+msgid "Could not fetch the WooCommerce content."
+msgstr "Ei saanud WooCommerce'i sisu kätte."
+
+#: assets/admin.js:1520
+msgid "Could not get a version from the source. Check the repository name, the release and the token."
+msgstr "Allikast ei saanud versiooni kätte. Kontrolli hoidla nime, väljalaset ja võtit."
+
+#: assets/admin.js:1301
+msgid "Could not get the WooCommerce content — starting from the default blocks"
+msgstr "WooCommerce'i sisu ei saanud — alustame vaikeplokkidest"
+
+#: includes/class-wmd-tags.php:77 includes/class-wmd-tags.php:91
+msgid "Country"
+msgstr "Riik"
+
+#: includes/class-wmd-tags.php:75 includes/class-wmd-tags.php:89
+msgid "County"
+msgstr "Maakond"
+
+#: includes/class-wmd-tags.php:56
+msgid "Currency"
+msgstr "Valuuta"
+
+#: includes/class-wmd-tags.php:114
+msgid "Current year"
+msgstr "Käesolev aasta"
+
+#: includes/helpers.php:539
+msgid "Custom HTML"
+msgstr "Oma HTML"
+
+#: includes/class-wmd-tags.php:25
+msgid "Customer"
+msgstr "Klient"
+
+#: includes/class-wmd-tags.php:58 includes/helpers.php:601
+msgid "Customer note"
+msgstr "Kliendi märkus"
+
+#: includes/helpers.php:1098
+msgid "Customer order emails"
+msgstr "Kliendi tellimusmeilid"
+
+#: includes/class-wmd-tags.php:49
+msgid "Date paid"
+msgstr "Maksmise kuupäev"
+
+#: assets/admin.js:683 assets/admin.js:850 assets/admin.js:1808
+msgid "Delete"
+msgstr "Kustuta"
+
+#: assets/admin.js:637
+msgid "Delete row"
+msgstr "Kustuta rida"
+
+#: assets/admin.js:2476
+msgid "Delete this block?"
+msgstr "Kustutan selle ploki?"
+
+#: includes/class-wmd-tags.php:110
+msgid "Demo Shop"
+msgstr "Näidispood"
+
+#: assets/admin.js:1634
+msgid "Design downloaded"
+msgstr "Kujundus laaditi alla"
+
+#: includes/class-wmd-admin.php:74
+msgid "Design emails"
+msgstr "Kujunda meilid"
+
+#: assets/admin.js:1610
+msgid "Design imported"
+msgstr "Kujundus imporditud"
+
+#: assets/admin.js:1875
+msgid "Design on"
+msgstr "Kujundus sees"
+
+#: assets/admin.js:1871
+msgid "Desktop"
+msgstr "Arvuti"
+
+#: includes/class-wmd-tags.php:53 includes/helpers.php:839
+msgid "Discount"
+msgstr "Allahindlus"
+
+#: includes/class-wmd-render.php:1428 assets/renderer.js:629
+msgid "Discount:"
+msgstr "Allahindlus:"
+
+#: includes/class-wmd-tags.php:104
+msgid "Display name"
+msgstr "Kuvatav nimi"
+
+#: includes/helpers.php:359
+msgid "Divider"
+msgstr "Joon"
+
+#: assets/admin.js:612 assets/admin.js:636 assets/admin.js:848
+msgid "Down"
+msgstr "Alla"
+
+#: assets/admin.js:1484
+msgid "Download the design"
+msgstr "Laadi kujundus alla"
+
+#: assets/admin.js:849
+msgid "Duplicate"
+msgstr "Kopeeri"
+
+#: assets/admin.js:1807
+msgid "Duplicate block"
+msgstr "Kopeeri plokk"
+
+#: includes/class-wmd-tags.php:66 includes/class-wmd-tags.php:79 assets/admin.js:935
+msgid "Email"
+msgstr "Meil"
+
+#: includes/class-wmd-admin.php:42 includes/class-wmd-admin.php:43 includes/class-wmd-admin.php:53 includes/class-wmd-admin.php:54
+msgid "Email Designer"
+msgstr "Meilidisainer"
+
+#: includes/helpers.php:91
+msgid "Email background"
+msgstr "Meili taust"
+
+#: assets/admin.js:961
+msgid "Email content"
+msgstr "Meili sisu"
+
+#: assets/admin.js:1884
+msgid "Email preview"
+msgstr "Meili eelvaade"
+
+#: includes/helpers.php:58
+msgid "Email width (px)"
+msgstr "Meili laius (px)"
+
+#: assets/admin.js:1821
+msgid "Emails"
+msgstr "Meilid"
+
+#: assets/admin.js:1336
+msgid "Every variable you can use in the email."
+msgstr "Kõik muutujad, mida kirjas kasutada saab."
+
+#: assets/admin.js:1759
+msgid "Everything is up to date"
+msgstr "Kõik on värske"
+
+#: assets/admin.js:1522
+msgid "Everything is up to date — installed "
+msgstr "Kõik on värske — paigaldatud "
+
+#: assets/admin.js:1480
+msgid "Export and import the design"
+msgstr "Kujunduse eksport ja import"
+
+#: includes/helpers.php:181
+msgid "Extra CSS (advanced)"
+msgstr "Lisa-CSS (edasijõudnutele)"
+
+#: includes/helpers.php:1064
+msgid "Failed order (to shop)"
+msgstr "Ebaõnnestunud tellimus (poele)"
+
+#: includes/helpers.php:780
+msgid "Field key on the order"
+msgstr "Välja võti tellimusel"
+
+#: assets/admin.js:577
+msgid "Fields on this order"
+msgstr "Selle tellimuse väljad"
+
+#: includes/class-wmd-tags.php:65
+msgid "First and last name"
+msgstr "Ees- ja perenimi"
+
+#: includes/class-wmd-tags.php:63 includes/class-wmd-tags.php:69 includes/class-wmd-tags.php:83
+msgid "First name"
+msgstr "Eesnimi"
+
+#: includes/helpers.php:148
+msgid "Font"
+msgstr "Kirjatüüp"
+
+#: assets/admin.js:1820
+msgid "Footer"
+msgstr "Jalus"
+
+#: assets/admin.js:1444
+msgid "For example: please transfer the amount from your bank straight to our account…"
+msgstr "Nt: Palun tee ülekanne oma pangast otse meie kontole…"
+
+#: assets/admin.js:790 assets/admin.js:791
+msgid "From brand"
+msgstr "Brändist"
+
+#: includes/class-wmd-tags.php:80 includes/class-wmd-tags.php:93
+msgid "Full address on one line"
+msgstr "Terve aadress ühes reas"
+
+#: includes/helpers.php:654
+msgid "Full grid"
+msgstr "Täisvõrgustik"
+
+#: includes/helpers.php:320 includes/helpers.php:678
+msgid "Full width"
+msgstr "Terve laius"
+
+#: includes/helpers.php:509
+msgid "Gap between icons (px)"
+msgstr "Vahe ikoonide vahel (px)"
+
+#: includes/helpers.php:458
+msgid "Gap between images (px)"
+msgstr "Vahe piltide vahel (px)"
+
+#: assets/admin.js:1537
+msgid "GitHub release"
+msgstr "GitHubi väljalase"
+
+#: assets/admin.js:1542
+msgid "GitHub repository"
+msgstr "GitHubi hoidla"
+
+#: includes/helpers.php:684
+msgid "Grand total in bold"
+msgstr "Lõppsumma rasvaselt"
+
+#: includes/helpers.php:544
+msgid "HTML"
+msgstr "HTML"
+
+#: assets/admin.js:1819
+msgid "Header"
+msgstr "Päis"
+
+#: includes/helpers.php:51
+msgid "Header background"
+msgstr "Päise taust"
+
+#: includes/helpers.php:235 includes/helpers.php:607 includes/helpers.php:708
+msgid "Heading"
+msgstr "Pealkiri"
+
+#: includes/helpers.php:103
+msgid "Headings"
+msgstr "Pealkirjad"
+
+#: includes/helpers.php:377
+msgid "Height (px)"
+msgstr "Kõrgus (px)"
+
+#: includes/helpers.php:971
+msgid "Hi {{customer_first_name}}! We have received your order <strong>#{{order_number}}</strong> and are getting it ready."
+msgstr "Tere {{customer_first_name}}! Saime su tellimuse <strong>#{{order_number}}</strong> kätte ja asume seda komplekteerima."
+
+#: includes/helpers.php:1171
+msgid "Hi {{customer_first_name}}! We have received your order <strong>#{{order_number}}</strong> and are getting it ready. We will let you know when it ships."
+msgstr "Tere {{customer_first_name}}! Saime su tellimuse <strong>#{{order_number}}</strong> kätte ja asume seda komplekteerima. Anname teada, kui pakk teele läheb."
+
+#: assets/admin.js:709
+msgid "Hide categories"
+msgstr "Peida kategooriad"
+
+#: includes/helpers.php:762
+msgid "Hide rows left empty"
+msgstr "Peida tühjaks jäänud read"
+
+#: includes/helpers.php:797
+msgid "Hide when the field is empty"
+msgstr "Peida, kui väli on tühi"
+
+#: includes/helpers.php:612
+msgid "Hide when there is no note"
+msgstr "Peida, kui märkust pole"
+
+#: includes/helpers.php:436
+msgid "How many per row"
+msgstr "Mitu ühes reas"
+
+#: assets/admin.js:951
+msgid "How the email is put together"
+msgstr "Kuidas meil kokku pannakse"
+
+#: includes/helpers.php:501
+msgid "Icon size (px)"
+msgstr "Ikooni suurus (px)"
+
+#: includes/helpers.php:328 includes/helpers.php:333 includes/helpers.php:818
+msgid "Image"
+msgstr "Pilt"
+
+#: assets/admin.js:2759
+msgid "Image address"
+msgstr "Pildi aadress"
+
+#: assets/admin.js:686
+msgid "Image address https://…"
+msgstr "Pildi aadress https://…"
+
+#: includes/helpers.php:466
+msgid "Image corner radius (px)"
+msgstr "Nurga ümardus (px)"
+
+#: includes/helpers.php:446
+msgid "Image shape"
+msgstr "Pildi kuju"
+
+#: includes/helpers.php:638
+msgid "Image width (px)"
+msgstr "Pildi laius (px)"
+
+#: includes/helpers.php:410
+msgid "Images"
+msgstr "Pildid"
+
+#: includes/helpers.php:454
+msgid "Images are cropped from the centre to the same size, so the row stays even. \"Original\" leaves each image its own shape."
+msgstr "Pildid lõigatakse keskelt ühesuuruseks, et rida oleks sirge. „Originaal\" jätab igale pildile tema oma kuju."
+
+#: includes/helpers.php:405
+msgid "Images side by side"
+msgstr "Pildid kõrvuti"
+
+#: assets/admin.js:1612
+msgid "Import failed"
+msgstr "Import ebaõnnestus"
+
+#: assets/admin.js:1500
+msgid "Import the pasted JSON"
+msgstr "Impordi kleebitud JSON"
+
+#: assets/admin.js:1599
+msgid "Importing overwrites the whole current design — brand, header, footer, every email and the payment instructions. Continue?"
+msgstr "Import kirjutab kogu praeguse kujunduse üle — bränd, päis, jalus, kõik meilid ja makseviiside juhised. Jätkan?"
+
+#: assets/admin.js:1493
+msgid "Importing overwrites the whole current design."
+msgstr "Import kirjutab kogu praeguse kujunduse üle."
+
+#: includes/helpers.php:594 includes/helpers.php:714 includes/helpers.php:767
+msgid "In a bordered box"
+msgstr "Raamitud kastis"
+
+#: includes/helpers.php:76
+msgid "Inner padding (px)"
+msgstr "Sisemine veeris (px)"
+
+#: assets/admin.js:594
+msgid "Insert a variable"
+msgstr "Lisa muutuja"
+
+#: includes/class-wmd-updater.php:511
+msgid "Installed version %s."
+msgstr "Paigaldatud versioon %s."
+
+#: assets/admin.js:1723
+msgid "Installing…"
+msgstr "Paigaldan…"
+
+#: assets/admin.js:1564
+msgid "Installs the new version right here. The page reloads afterwards; save any unsaved changes first."
+msgstr "Paigaldab uue versiooni siinsamas. Leht laaditakse pärast uuesti; salvestamata muudatused salvesta enne ära."
+
+#: includes/helpers.php:1100
+msgid "Internal shop emails"
+msgstr "Poe sisemised meilid"
+
+#: includes/class-wmd-ajax.php:735
+msgid "Invalid email address."
+msgstr "Vigane e-posti aadress."
+
+#: includes/helpers.php:1030
+msgid "Invoice / pending payment"
+msgstr "Arve / makseootel tellimus"
+
+#: assets/admin.js:761 assets/admin.js:1438
+msgid "Italic"
+msgstr "Kaldkiri"
+
+#: includes/helpers.php:786 assets/admin.js:633
+msgid "Label"
+msgstr "Silt"
+
+#: includes/helpers.php:450
+msgid "Landscape (4:3)"
+msgstr "Lamav (4:3)"
+
+#: includes/helpers.php:248
+msgid "Large"
+msgstr "Suur"
+
+#: assets/admin.js:942
+msgid "Large heading in the email"
+msgstr "Suur pealkiri meilis"
+
+#: includes/class-wmd-tags.php:64 includes/class-wmd-tags.php:70 includes/class-wmd-tags.php:84
+msgid "Last name"
+msgstr "Perenimi"
+
+#: assets/admin.js:1856
+msgid "Latest order in the shop"
+msgstr "Poe viimane tellimus"
+
+#: includes/helpers.php:199 includes/helpers.php:675
+msgid "Layout"
+msgstr "Paigutus"
+
+#: assets/admin.js:681
+msgid "Left"
+msgstr "Vasakule"
+
+#: includes/helpers.php:391
+msgid "Left column"
+msgstr "Vasak veerg"
+
+#: assets/admin.js:762 assets/admin.js:1439
+msgid "Line break"
+msgstr "Reavahetus"
+
+#: includes/helpers.php:824
+msgid "Line total"
+msgstr "Rea summa"
+
+#: includes/helpers.php:651 includes/helpers.php:689
+msgid "Lines"
+msgstr "Jooned"
+
+#: includes/helpers.php:121
+msgid "Lines and borders"
+msgstr "Jooned ja piirded"
+
+#: includes/helpers.php:305 assets/admin.js:763 assets/admin.js:1440
+msgid "Link"
+msgstr "Link"
+
+#: includes/helpers.php:791
+msgid "Link (optional)"
+msgstr "Link (valikuline)"
+
+#: assets/admin.js:643
+msgid "Link (optional), {{value}} = the value"
+msgstr "Link (valikuline), {{value}} = väärtus"
+
+#: assets/admin.js:2606
+msgid "Link address"
+msgstr "Lingi aadress"
+
+#: includes/helpers.php:343
+msgid "Link on click"
+msgstr "Link klõpsamisel"
+
+#: assets/admin.js:685
+msgid "Link, for example the category address"
+msgstr "Link, nt kategooria aadress"
+
+#: assets/admin.js:709 assets/admin.js:2291
+msgid "Load product categories"
+msgstr "Lae tootekategooriad"
+
+#: assets/admin.js:959
+msgid "Load the WooCommerce content as blocks"
+msgstr "Lae WooCommerce'i sisu plokkidena"
+
+#: includes/class-wmd-admin.php:179
+msgid "Loading the designer…"
+msgstr "Laen kujundajat…"
+
+#: assets/admin.js:1282 assets/admin.js:2283
+msgid "Loading…"
+msgstr "Laen…"
+
+#: includes/class-wmd-tags.php:107
+msgid "Log in link"
+msgstr "Sisselogimise link"
+
+#: includes/helpers.php:30
+msgid "Logo"
+msgstr "Logo"
+
+#: includes/helpers.php:45
+msgid "Logo alignment"
+msgstr "Logo joondus"
+
+#: includes/helpers.php:195
+msgid "Logo and header"
+msgstr "Logo ja päis"
+
+#: includes/helpers.php:36
+msgid "Logo width (px)"
+msgstr "Logo laius (px)"
+
+#: includes/helpers.php:172
+msgid "Main heading size (px)"
+msgstr "Peapealkirja suurus (px)"
+
+#: assets/admin.js:1550
+msgid "Manifest address"
+msgstr "Manifesti aadress"
+
+#: assets/renderer.js:818
+msgid "Mary Smith<br/>12 High Street<br/>10123 London<br/>United Kingdom"
+msgstr "Mari Tamm<br/>Pikk 12-4<br/>10123 Tallinn<br/>Eesti"
+
+#: assets/renderer.js:819
+msgid "Mary Smith<br/>Market Square parcel locker<br/>10411 London"
+msgstr "Mari Tamm<br/>Tallinna Balti Jaama Turg<br/>10411 Tallinn"
+
+#: assets/renderer.js:879
+msgid "Mary Smith<br>12 High Street<br>10123 London<br>United Kingdom"
+msgstr "Mari Tamm<br>Pikk 12-4<br>10123 Tallinn<br>Eesti"
+
+#: includes/helpers.php:249
+msgid "Medium"
+msgstr "Keskmine"
+
+#: assets/admin.js:1872
+msgid "Mobile"
+msgstr "Mobiil"
+
+#: includes/helpers.php:109
+msgid "Muted text"
+msgstr "Hall abitekst"
+
+#: includes/class-wmd-tags.php:112
+msgid "My account link"
+msgstr "Minu konto link"
+
+#: includes/class-wmd-render.php:1253 assets/renderer.js:196
+msgid "Name"
+msgstr "Nimi"
+
+#: includes/helpers.php:483
+msgid "Name colour"
+msgstr "Nime värv"
+
+#: includes/helpers.php:474
+msgid "Name size (px)"
+msgstr "Nime suurus (px)"
+
+#: assets/admin.js:679
+msgid "Name under the image"
+msgstr "Nimi pildi all"
+
+#: includes/helpers.php:1048
+msgid "New account"
+msgstr "Uus konto"
+
+#: includes/helpers.php:1054
+msgid "New order (to shop)"
+msgstr "Uus tellimus (poele)"
+
+#: assets/admin.js:855
+msgid "No blocks here yet. Add one below."
+msgstr "Siin pole veel ühtegi plokki. Lisa allpool."
+
+#: includes/class-wmd-updater.php:341
+msgid "No changelog was provided."
+msgstr "Muudatuste nimekirja ei ole antud."
+
+#: includes/helpers.php:655 includes/helpers.php:692
+msgid "No lines"
+msgstr "Ilma joonteta"
+
+#: assets/admin.js:1420
+msgid "No payment methods were found in the shop."
+msgstr "Poes ei leitud ühtegi makseviisi."
+
+#: assets/admin.js:702
+msgid "No product categories were found."
+msgstr "Tootekategooriaid ei leitud."
+
+#: includes/helpers.php:1035
+msgid "Note to customer"
+msgstr "Märkus kliendile"
+
+#: assets/admin.js:1348 assets/admin.js:1367
+msgid "Nothing found."
+msgstr "Midagi ei leitud."
+
+#: assets/admin.js:1776
+msgid "Nothing selected"
+msgstr "Midagi pole valitud"
+
+#: includes/helpers.php:753
+msgid "Number of columns"
+msgstr "Veerge"
+
+#: includes/class-wmd-tags.php:57
+msgid "Number of items"
+msgstr "Toodete arv"
+
+#: assets/admin.js:1536
+msgid "Off"
+msgstr "Väljas"
+
+#: includes/helpers.php:755
+msgid "One column"
+msgstr "Üks veerg"
+
+#: includes/class-wmd-tags.php:24
+msgid "Order"
+msgstr "Tellimus"
+
+#: includes/class-wmd-render.php:1371 assets/renderer.js:902
+msgid "Order #1042"
+msgstr "Tellimus #1042"
+
+#: includes/class-wmd-tags.php:47
+msgid "Order ID in the database"
+msgstr "Tellimuse ID andmebaasis"
+
+#: includes/helpers.php:1015
+msgid "Order completed"
+msgstr "Tellimus täidetud"
+
+#: includes/class-wmd-tags.php:48
+msgid "Order date"
+msgstr "Tellimuse kuupäev"
+
+#: includes/helpers.php:731
+msgid "Order details (table)"
+msgstr "Tellimuse andmed (tabel)"
+
+#: assets/admin.js:579
+msgid "Order field"
+msgstr "Tellimuse väli"
+
+#: includes/helpers.php:774
+msgid "Order field (one line)"
+msgstr "Tellimuse väli (üks rida)"
+
+#: includes/class-wmd-tags.php:46 includes/helpers.php:740
+msgid "Order number"
+msgstr "Tellimuse number"
+
+#: includes/helpers.php:1020
+msgid "Order on hold"
+msgstr "Tellimus ootel"
+
+#: includes/helpers.php:1010
+msgid "Order processing"
+msgstr "Tellimus töösse võetud"
+
+#: includes/helpers.php:1025
+msgid "Order refunded"
+msgstr "Tellimus tagastatud"
+
+#: includes/class-wmd-tags.php:50
+msgid "Order status"
+msgstr "Tellimuse olek"
+
+#: includes/helpers.php:555
+msgid "Order table (WooCommerce)"
+msgstr "Tellimuse tabel (WooCommerce)"
+
+#: includes/class-wmd-tags.php:51
+msgid "Order total"
+msgstr "Tellimuse summa"
+
+#: includes/class-wmd-tags.php:59
+msgid "Order view link"
+msgstr "Tellimuse vaate link"
+
+#: includes/helpers.php:451
+msgid "Original (each keeps its shape)"
+msgstr "Originaal (igaüks oma kuju)"
+
+#: includes/helpers.php:200
+msgid "Other"
+msgstr "Muu"
+
+#: includes/helpers.php:314
+msgid "Outlined"
+msgstr "Raamiga"
+
+#: assets/admin.js:1538
+msgid "Own JSON manifest"
+msgstr "Oma JSON-manifest"
+
+#: includes/helpers.php:85
+msgid "Page background"
+msgstr "Lehe taust"
+
+#: includes/helpers.php:265
+msgid "Paragraph"
+msgstr "Tekstilõik"
+
+#: includes/class-wmd-tags.php:98
+msgid "Parcel locker"
+msgstr "Pakiautomaat"
+
+#: includes/helpers.php:1042
+msgid "Password reset"
+msgstr "Parooli lähtestamine"
+
+#: includes/class-wmd-tags.php:106
+msgid "Password reset link"
+msgstr "Parooli lähtestamise link"
+
+#: assets/admin.js:1669
+msgid "Paste the JSON first"
+msgstr "Kleebi kõigepealt JSON"
+
+#: includes/class-wmd-tags.php:28
+msgid "Payment and delivery"
+msgstr "Makse ja tarne"
+
+#: includes/helpers.php:709
+msgid "Payment instructions"
+msgstr "Makse juhised"
+
+#: includes/helpers.php:721
+msgid "Payment instructions (WooCommerce)"
+msgstr "Makseviisi juhised (WooCommerce)"
+
+#: assets/renderer.js:512
+msgid "Payment instructions (for example bank transfer details) appear here in the real email, if the payment method sends them."
+msgstr "Makselahenduse juhised (nt pangaülekande rekvisiidid) ilmuvad siia päris meilis, kui makselahendus neid saadab."
+
+#: includes/helpers.php:702
+msgid "Payment instructions (own text)"
+msgstr "Makseviisi juhised (oma tekst)"
+
+#: includes/class-wmd-tags.php:60
+msgid "Payment link"
+msgstr "Maksmise link"
+
+#: includes/helpers.php:745 includes/helpers.php:841
+msgid "Payment method"
+msgstr "Makseviis"
+
+#: includes/class-wmd-tags.php:97
+msgid "Payment method ID"
+msgstr "Makseviisi tunnus"
+
+#: includes/class-wmd-tags.php:96
+msgid "Payment method name"
+msgstr "Makseviisi nimi"
+
+#: includes/class-wmd-render.php:1430 assets/renderer.js:631
+msgid "Payment method:"
+msgstr "Makseviis:"
+
+#: assets/admin.js:1822
+msgid "Payment methods"
+msgstr "Makseviisid"
+
+#: includes/class-wmd-tags.php:78 includes/class-wmd-tags.php:92
+msgid "Phone"
+msgstr "Telefon"
+
+#: assets/admin.js:934
+msgid "Pick an email and add to it. A field left empty means the WooCommerce default is used."
+msgstr "Vali meil ja täienda seda. Tühjaks jäetud väli tähendab, et kasutatakse WooCommerce'i vaikeväärtust."
+
+#: includes/helpers.php:781
+msgid "Pick from the list or type your own. The form {{meta:key}} works too."
+msgstr "Vali nimekirjast või kirjuta ise. Töötab ka kujul {{meta:võti}}."
+
+#: includes/class-wmd-tags.php:58 assets/renderer.js:527
+msgid "Please leave it in the parcel locker."
+msgstr "Palun jätke pakk pakiautomaati."
+
+#: includes/helpers.php:449
+msgid "Portrait (3:4)"
+msgstr "Püstine (3:4)"
+
+#: includes/class-wmd-tags.php:76 includes/class-wmd-tags.php:90
+msgid "Postcode"
+msgstr "Sihtnumber"
+
+#: includes/class-wmd-render.php:1376
+msgid "Price"
+msgstr "Hind"
+
+#: includes/class-wmd-tags.php:50
+msgid "Processing"
+msgstr "Töötlemisel"
+
+#: includes/class-wmd-render.php:1374 includes/helpers.php:819
+msgid "Product"
+msgstr "Toode"
+
+#: includes/helpers.php:646
+msgid "Product name as a link"
+msgstr "Toote nimi lingiks"
+
+#: includes/helpers.php:621
+msgid "Products (own table)"
+msgstr "Tooted (oma tabel)"
+
+#: includes/class-wmd-render.php:1375 includes/helpers.php:822
+msgid "Quantity"
+msgstr "Kogus"
+
+#: assets/admin.js:1657
+msgid "Reading the file failed"
+msgstr "Faili lugemine ebaõnnestus"
+
+#: assets/admin.js:1730
+msgid "Reloading the page…"
+msgstr "Laen lehe uuesti…"
+
+#: assets/admin.js:821
+msgid "Remove"
+msgstr "Eemalda"
+
+#: includes/class-wmd-updater.php:379
+msgid "Renaming the update folder failed."
+msgstr "Uuenduse kausta ümbernimetamine ebaõnnestus."
+
+#: assets/admin.js:1878
+msgid "Reset"
+msgstr "Lähtesta"
+
+#: assets/admin.js:1878
+msgid "Reset the design"
+msgstr "Lähtesta kujundus"
+
+#: assets/admin.js:2676
+msgid "Reset the whole design to its defaults? This cannot be undone."
+msgstr "Kas lähtestada kogu kujundus vaikeväärtustele? Seda ei saa tagasi võtta."
+
+#: includes/helpers.php:677 assets/admin.js:682
+msgid "Right"
+msgstr "Paremale"
+
+#: includes/helpers.php:397
+msgid "Right column"
+msgstr "Parem veerg"
+
+#: includes/helpers.php:669 includes/helpers.php:737
+msgid "Rows"
+msgstr "Read"
+
+#: includes/helpers.php:820
+msgid "SKU"
+msgstr "Tootekood"
+
+#: assets/admin.js:1877
+msgid "Save"
+msgstr "Salvesta"
+
+#: assets/admin.js:1554
+msgid "Save the source"
+msgstr "Salvesta allikas"
+
+#: assets/admin.js:1707 assets/admin.js:2685 assets/admin.js:2742
+msgid "Saved"
+msgstr "Salvestatud"
+
+#: assets/admin.js:2744 assets/admin.js:2846
+msgid "Saving failed"
+msgstr "Salvestamine ebaõnnestus"
+
+#: assets/admin.js:1339
+msgid "Search for a variable…"
+msgstr "Otsi muutujat…"
+
+#: assets/admin.js:1876 assets/admin.js:2726
+msgid "Send test email"
+msgstr "Saada testmeil"
+
+#: includes/class-wmd-ajax.php:780
+msgid "Sending the email failed. Check the shop's email settings."
+msgstr "Meili saatmine ebaõnnestus. Kontrolli poe meiliseadeid."
+
+#: assets/admin.js:2708
+msgid "Sending…"
+msgstr "Saadan…"
+
+#: includes/class-wmd-tags.php:105
+msgid "Set password link (new account)"
+msgstr "Parooli seadmise link (uus konto)"
+
+#: assets/admin.js:1509
+msgid "Setting up updates needs permission to update plugins."
+msgstr "Uuenduste seadistamiseks on vaja õigust pluginaid uuendada."
+
+#: assets/admin.js:1824
+msgid "Settings"
+msgstr "Seaded"
+
+#: includes/helpers.php:840
+msgid "Shipping"
+msgstr "Tarne"
+
+#: includes/class-wmd-tags.php:27 includes/helpers.php:585
+msgid "Shipping address"
+msgstr "Tarneaadress"
+
+#: includes/helpers.php:584
+msgid "Shipping address heading"
+msgstr "Tarneaadressi pealkiri"
+
+#: includes/helpers.php:573
+msgid "Shipping address only"
+msgstr "Ainult tarneaadress"
+
+#: includes/class-wmd-tags.php:98
+msgid "Shipping method"
+msgstr "Tarneviis"
+
+#: includes/class-wmd-tags.php:54
+msgid "Shipping total"
+msgstr "Tarne summa"
+
+#: includes/class-wmd-render.php:1382 includes/class-wmd-render.php:1429 assets/renderer.js:630
+msgid "Shipping:"
+msgstr "Tarne:"
+
+#: includes/class-wmd-tags.php:30
+msgid "Shop"
+msgstr "Pood"
+
+#: includes/class-wmd-tags.php:111
+msgid "Shop address"
+msgstr "Poe aadress"
+
+#: includes/class-wmd-tags.php:113
+msgid "Shop email"
+msgstr "Poe e-post"
+
+#: includes/class-wmd-tags.php:110
+msgid "Shop name"
+msgstr "Poe nimi"
+
+#: includes/helpers.php:633
+msgid "Show header row"
+msgstr "Näita päiserida"
+
+#: includes/helpers.php:589
+msgid "Show phone and email"
+msgstr "Näita telefoni ja e-posti"
+
+#: assets/admin.js:1487
+msgid "Show the JSON"
+msgstr "Näita JSON-i"
+
+#: includes/helpers.php:246
+msgid "Size"
+msgstr "Suurus"
+
+#: includes/helpers.php:282
+msgid "Size (px)"
+msgstr "Suurus (px)"
+
+#: includes/class-wmd-render.php:1402 assets/renderer.js:621
+msgid "Size: M"
+msgstr "Suurus: M"
+
+#: assets/admin.js:712
+msgid "Slots left empty are not put into the real email — they are shown in the designer only so you can see the layout."
+msgstr "Tühjaks jäänud kohti päris kirja ei panda — kujundajas on need näha ainult selleks, et paigutust näeksid."
+
+#: includes/helpers.php:250
+msgid "Small"
+msgstr "Väike"
+
+#: includes/helpers.php:496
+msgid "Social media"
+msgstr "Sotsiaalmeedia"
+
+#: includes/helpers.php:313
+msgid "Solid"
+msgstr "Täidetud"
+
+#: includes/helpers.php:226
+msgid "Space above/below (px)"
+msgstr "Vahe ülal/all (px)"
+
+#: includes/helpers.php:372
+msgid "Spacer"
+msgstr "Tühi ruum"
+
+#: includes/helpers.php:448
+msgid "Square (1:1)"
+msgstr "Ruut (1:1)"
+
+#: includes/helpers.php:311
+msgid "Style"
+msgstr "Stiil"
+
+#: assets/admin.js:938
+msgid "Subject line"
+msgstr "Pealkiri postkastis"
+
+#: includes/class-wmd-tags.php:52 includes/helpers.php:838
+msgid "Subtotal"
+msgstr "Vahesumma"
+
+#: includes/class-wmd-render.php:1381 includes/class-wmd-render.php:1427 assets/renderer.js:628
+msgid "Subtotal:"
+msgstr "Vahesumma:"
+
+#: includes/helpers.php:151
+msgid "System (recommended)"
+msgstr "Süsteemne (soovitatud)"
+
+#: assets/renderer.js:939
+msgid "Take over"
+msgstr "Võta üle"
+
+#: assets/admin.js:960
+msgid "Takes this email's current WooCommerce content apart into blocks and replaces the blocks below. Useful when you want to start again from the WooCommerce text."
+msgstr "Võtab selle meili praeguse WooCommerce'i sisu plokkideks lahti ja asendab allolevad plokid. Kasulik, kui tahad alustada uuesti WooCommerce'i tekstist."
+
+#: includes/helpers.php:97 includes/helpers.php:240 includes/helpers.php:270
+msgid "Text"
+msgstr "Tekst"
+
+#: includes/helpers.php:163
+msgid "Text size (px)"
+msgstr "Teksti suurus (px)"
+
+#: includes/helpers.php:241
+msgid "Thank you for your order!"
+msgstr "Aitäh tellimuse eest!"
+
+#: assets/admin.js:360
+msgid "The WooCommerce part of the canvas shows "
+msgstr "Kanvasel on WooCommerce'i osas "
+
+#: assets/admin.js:2695
+msgid "The design applies to emails"
+msgstr "Kujundus rakendub meilidele"
+
+#: assets/admin.js:2695
+msgid "The design is switched off"
+msgstr "Kujundus on välja lülitatud"
+
+#: assets/admin.js:2721
+msgid "The design was saved and the test email went to "
+msgstr "Kujundus salvestati ja testmeil läks aadressile "
+
+#: includes/class-wmd-admin.php:182
+msgid "The designer needs JavaScript."
+msgstr "Kujundaja vajab JavaScripti."
+
+#: assets/admin.js:1595
+msgid "The file could not be read"
+msgstr "Faili ei õnnestunud lugeda"
+
+#: assets/admin.js:1835
+msgid "The footer is the same at the bottom of every email."
+msgstr "Jalus on kõigi meilide all ühesugune."
+
+#: assets/admin.js:1833
+msgid "The header is the same at the top of every email."
+msgstr "Päis on kõigi meilide ülaosas ühesugune."
+
+#: assets/admin.js:1503
+msgid "The logo still points at the source shop's media library — in another shop it is worth uploading it again. Payment instructions carry over by their ID; if the target shop has other payment gateways, those rows are simply left unused."
+msgstr "Logo viitab endiselt lähtepoe meediateegile — teises poes tasub see uuesti üles laadida. Makseviiside juhised kanduvad üle nende tunnuse järgi; kui sihtpoes on teised makselahendused, jäävad need read lihtsalt kasutamata."
+
+#: assets/admin.js:1532
+msgid "The plugin is not on WordPress.org, so updates come straight from your GitHub releases. WordPress shows the update notice on the ordinary Plugins page too."
+msgstr "Plugin ei ole WordPress.org-is, seega uuendused tulevad otse sinu GitHubi väljalasetest. WordPress näitab uuendusteadet ka tavalisel Pluginad-lehel."
+
+#: assets/admin.js:2841
+msgid "The server firewall blocked the request (HTTP 403). Ask your host to allow this address."
+msgstr "Serveri tulemüür blokeeris päringu (HTTP 403). Küsi majutajalt, et see aadress lubataks."
+
+#: assets/admin.js:2842
+msgid "The server replied unexpectedly (HTTP "
+msgstr "Server vastas ootamatult (HTTP "
+
+#: assets/admin.js:1759
+msgid "The source did not respond"
+msgstr "Allikast ei saanud vastust"
+
+#: assets/admin.js:618
+msgid "The tick shows whether the column goes into the email. You can rewrite the label and reorder it with the arrows."
+msgstr "Linnuke näitab, kas veerg läheb kirja. Silti saab ümber kirjutada, nooltega järjekorda muuta."
+
+#: includes/class-wmd-updater.php:492
+msgid "The update failed. Check file permissions or install the ZIP by hand."
+msgstr "Uuendus ei õnnestunud. Vaata failiõigusi või paigalda ZIP käsitsi."
+
+#: includes/class-wmd-updater.php:452
+msgid "The update source did not respond."
+msgstr "Uuenduste allikast ei saanud vastust."
+
+#: assets/admin.js:1331
+msgid "The value comes from the selected order ("
+msgstr "Väärtus on valitud tellimuse pealt ("
+
+#: assets/admin.js:1333
+msgid "The value comes from the selected order."
+msgstr "Väärtus on valitud tellimuse pealt."
+
+#: assets/admin.js:1481
+msgid "The whole design — brand, header, footer, every email and the payment instructions — in one file. In another shop you import it and have the same setup at once."
+msgstr "Kogu kujundus — bränd, päis, jalus, kõik meilid ja makseviiside juhised — ühes failis. Teises poes impordid selle ja oled kohe sama seadistusega."
+
+#: includes/class-wmd-updater.php:459
+msgid "There is no newer version."
+msgstr "Uuemat versiooni ei ole."
+
+#: assets/admin.js:894
+msgid "These settings apply to "
+msgstr "Need seaded kehtivad "
+
+#: assets/admin.js:1273
+msgid "This email already has "
+msgstr "Selles meilis on juba "
+
+#: assets/admin.js:1334
+msgid "This email does not come from an order, so the order variables have no value here."
+msgstr "See kiri ei käi tellimuse pealt, seega tellimuse muutujatel siin väärtust ei ole."
+
+#: assets/admin.js:1583
+msgid "This is not an Email Designer design file."
+msgstr "See ei ole Meilidisaineri kujundusfail."
+
+#: assets/admin.js:958
+msgid "This mode does not use the WooCommerce content template. Everything in the email comes from the blocks below — including the order table and the addresses."
+msgstr "Selles režiimis ei kasutata WooCommerce'i sisumalli. Kõik, mis meilis on, tuleb allolevatest plokkidest — ka tellimuse tabel ja aadressid."
+
+#: includes/helpers.php:843
+msgid "Total"
+msgstr "Kokku"
+
+#: includes/class-wmd-render.php:1383 includes/class-wmd-render.php:1431 assets/renderer.js:632
+msgid "Total:"
+msgstr "Kokku:"
+
+#: includes/helpers.php:663
+msgid "Totals (own table)"
+msgstr "Kokkuvõte (oma tabel)"
+
+#: includes/helpers.php:787
+msgid "Tracking code"
+msgstr "Jälgimiskood"
+
+#: assets/admin.js:1743
+msgid "Try again"
+msgstr "Proovi uuesti"
+
+#: includes/helpers.php:386 includes/helpers.php:756
+msgid "Two columns"
+msgstr "Kaks veergu"
+
+#: includes/helpers.php:197
+msgid "Type"
+msgstr "Kiri"
+
+#: includes/helpers.php:489
+msgid "Underline the name"
+msgstr "Nimi allajoonitud"
+
+#: includes/helpers.php:823
+msgid "Unit price"
+msgstr "Ühiku hind"
+
+#: assets/admin.js:1866
+msgid "Unsaved changes"
+msgstr "Salvestamata muudatused"
+
+#: assets/admin.js:1797
+msgid "Unticked = always show. Tick the payment methods for which the block goes into the email — that way bank transfer instructions can go only to bank transfer orders."
+msgstr "Märkimata = näita alati. Märgi need makseviisid, mille puhul plokk kirja läheb — nii saab nt pangaülekande juhised panna ainult ülekandega tellimustele."
+
+#: assets/admin.js:611 assets/admin.js:635 assets/admin.js:847
+msgid "Up"
+msgstr "Üles"
+
+#: assets/admin.js:1759
+msgid "Update "
+msgstr "Uuendus "
+
+#: assets/admin.js:1562
+msgid "Update now to version "
+msgstr "Uuenda kohe versioonile "
+
+#: assets/admin.js:1534
+msgid "Update source"
+msgstr "Uuenduste allikas"
+
+#: includes/helpers.php:792
+msgid "Use {{value}} where the field value goes."
+msgstr "Kasuta {{value}} välja väärtuse kohal."
+
+#: includes/class-wmd-tags.php:103
+msgid "User email"
+msgstr "Kasutaja e-post"
+
+#: includes/class-wmd-tags.php:102
+msgid "Username"
+msgstr "Kasutajanimi"
+
+#: includes/class-wmd-tags.php:55 includes/helpers.php:842
+msgid "VAT"
+msgstr "Käibemaks"
+
+#: assets/admin.js:640
+msgid "Value or {{variable}}"
+msgstr "Väärtus või {{muutuja}}"
+
+#: assets/admin.js:1823
+msgid "Variables"
+msgstr "Muutujad"
+
+#: includes/helpers.php:821
+msgid "Variations and extra fields"
+msgstr "Variandid ja lisaväljad"
+
+#: includes/helpers.php:300 includes/helpers.php:1180
+msgid "View order"
+msgstr "Vaata tellimust"
+
+#: assets/admin.js:1795
+msgid "Visibility"
+msgstr "Nähtavus"
+
+#: includes/helpers.php:271
+msgid "We have received your order and are getting it ready."
+msgstr "Saime su tellimuse kätte ja asume seda kohe komplekteerima."
+
+#: includes/helpers.php:569
+msgid "What to show"
+msgstr "Mida näidata"
+
+#: assets/admin.js:1868
+msgid "What to show in the preview"
+msgstr "Mida eelvaates näidata"
+
+#: assets/admin.js:2703
+msgid "Where should the test email go?"
+msgstr "Kuhu testmeil saata?"
+
+#: assets/admin.js:1875
+msgid "Whether the design applies to real emails"
+msgstr "Kas kujundus rakendub päris meilidele"
+
+#: assets/admin.js:1855
+msgid "Which order to fill the preview with"
+msgstr "Millise tellimuse andmetega eelvaadet täita"
+
+#: includes/helpers.php:348
+msgid "Width (px)"
+msgstr "Laius (px)"
+
+#: wonom-meilidisainer.php:69
+msgid "Wonom Email Designer needs WooCommerce to work. You can still use the designer, but emails are left untouched."
+msgstr "Wonom Meilidisainer vajab töötamiseks WooCommerce'i. Kujundajat saab kasutada, aga meilid jäävad muutmata."
+
+#: assets/admin.js:948
+msgid "WooCommerce additional content at the end"
+msgstr "WooCommerce'i lisatekst kirja lõpus"
+
+#: assets/admin.js:1252
+msgid "WooCommerce content could not be loaded"
+msgstr "WooCommerce'i sisu ei õnnestunud laadida"
+
+#: includes/class-wmd-ajax.php:361
+msgid "WooCommerce content could not be rendered."
+msgstr "WooCommerce'i sisu ei õnnestunud renderdada."
+
+#: assets/admin.js:1287
+msgid "WooCommerce content could not be turned into blocks"
+msgstr "WooCommerce'i sisu ei õnnestunud plokkideks võtta"
+
+#: assets/renderer.js:937
+msgid "WooCommerce content — you cannot edit this here"
+msgstr "WooCommerce'i enda sisu — seda siit muuta ei saa"
+
+#: includes/class-wmd-ajax.php:309
+msgid "WooCommerce is not active."
+msgstr "WooCommerce ei ole aktiivne."
+
+#: includes/class-wmd-render.php:1379 includes/class-wmd-render.php:1409 assets/renderer.js:622 assets/renderer.js:909
+msgid "Wool scarf"
+msgstr "Villane sall"
+
+#: assets/admin.js:1427
+msgid "Write the instructions for each payment method here once. The block "
+msgstr "Kirjuta iga makseviisi juhised üks kord siia. Kirja toob need plokk "
+
+#: includes/helpers.php:1141
+msgid "You are getting this email because you placed an order in our shop."
+msgstr "Said selle kirja, sest tegid meie poes tellimuse."
+
+#: assets/admin.js:650
+msgid "You can pick the value under the { } button — the real fields of this order are there too, such as the tracking code."
+msgstr "Väärtuse saab valida { } nupu alt — seal on ka selle tellimuse päris väljad, nagu jälgimiskood."
+
+#: includes/class-wmd-updater.php:446
+msgid "You do not have permission to update plugins."
+msgstr "Puuduvad õigused pluginate uuendamiseks."
+
+#: includes/class-wmd-ajax.php:40 includes/class-wmd-ajax.php:64 includes/class-wmd-ajax.php:84 includes/class-wmd-ajax.php:97
+msgid "You do not have permission."
+msgstr "Puuduvad õigused."
+
+#: assets/admin.js:1718
+msgid "You have unsaved changes. Updating reloads the page and they will be lost. Continue?"
+msgstr "Sul on salvestamata muudatusi. Uuendamine laadib lehe uuesti ja need lähevad kaotsi. Jätkan?"
+
+#: assets/admin.js:949
+msgid "You will find this text under WooCommerce → Settings → Emails. It cannot be emptied there — an empty field is replaced by the default text (\"Thanks for shopping with us.\"). Here you can switch it off for good."
+msgstr "Selle teksti leiad WooCommerce → Seaded → Meilid alt. Seal ei saa seda tühjendada — tühi väli asendatakse vaiketekstiga („Thanks for shopping with us.\"). Siit saab selle päriselt välja lülitada."
+
+#: includes/helpers.php:608
+msgid "Your note to the order"
+msgstr "Sinu märkus tellimusele"
+
+#: includes/class-wmd-ajax.php:771
+msgid "[TEST] %s"
+msgstr "[TEST] %s"
+
+#: assets/admin.js:1321
+msgid "blocks loaded — the WooCommerce text no longer goes into the email"
+msgstr "plokki laaditud — WooCommerce'i oma tekst enam kirja ei lähe"
+
+#: assets/admin.js:1273
+msgid "blocks. Replace them with the current WooCommerce content?"
+msgstr "plokki. Asendan need WooCommerce'i praeguse sisuga?"
+
+#: assets/admin.js:964
+msgid "button, upsell"
+msgstr "nupp, lisamüük"
+
+#: assets/admin.js:894
+msgid "every"
+msgstr "kõigile"
+
+#: assets/admin.js:963
+msgid "greeting, info"
+msgstr "tervitus, info"
+
+#: assets/admin.js:1759
+msgid "is available"
+msgstr "on saadaval"
+
+#: assets/admin.js:885
+msgid "no image"
+msgstr "pilt puudub"
+
+#: includes/helpers.php:939
+msgid "no payment method"
+msgstr "makseviis puudub"
+
+#: assets/admin.js:1547
+msgid "only for a private repository"
+msgstr "ainult privaatse hoidla puhul"
+
+#: assets/admin.js:360
+msgid "sample content"
+msgstr "näidissisu"
+
+#: assets/admin.js:961
+msgid "the whole body"
+msgstr "terve keha"
+
+#: assets/admin.js:1543
+msgid "user/repository"
+msgstr "kasutaja/hoidla"
+
+#: assets/admin.js:1498
+msgid "…or paste JSON here"
+msgstr "…või kleebi JSON siia"
+

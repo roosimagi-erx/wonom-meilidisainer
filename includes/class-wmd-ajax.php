@@ -37,7 +37,7 @@ class WMD_Ajax {
 		self::guard();
 
 		if ( ! current_user_can( 'update_plugins' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Puuduvad õigused.', 'wonom-meilidisainer' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'You do not have permission.', 'wonom-meilidisainer' ) ), 403 );
 		}
 
 		$result = WMD_Updater::update_now();
@@ -61,7 +61,7 @@ class WMD_Ajax {
 		self::guard();
 
 		if ( ! current_user_can( 'update_plugins' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Puuduvad õigused.', 'wonom-meilidisainer' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'You do not have permission.', 'wonom-meilidisainer' ) ), 403 );
 		}
 
 		$input = array(
@@ -81,7 +81,7 @@ class WMD_Ajax {
 		self::guard();
 
 		if ( ! current_user_can( 'update_plugins' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Puuduvad õigused.', 'wonom-meilidisainer' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'You do not have permission.', 'wonom-meilidisainer' ) ), 403 );
 		}
 
 		wp_send_json_success( WMD_Updater::check_now() );
@@ -94,7 +94,7 @@ class WMD_Ajax {
 		$cap = wmd_woo_active() ? 'manage_woocommerce' : 'manage_options';
 
 		if ( ! current_user_can( $cap ) ) {
-			wp_send_json_error( array( 'message' => __( 'Puuduvad õigused.', 'wonom-meilidisainer' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'You do not have permission.', 'wonom-meilidisainer' ) ), 403 );
 		}
 
 		check_ajax_referer( 'wmd_ajax', 'nonce' );
@@ -306,7 +306,7 @@ class WMD_Ajax {
 				array(
 					'html' => '',
 					'css'  => '',
-					'why'  => __( 'WooCommerce ei ole aktiivne.', 'wonom-meilidisainer' ),
+					'why'  => __( 'WooCommerce is not active.', 'wonom-meilidisainer' ),
 				)
 			);
 		}
@@ -358,7 +358,7 @@ class WMD_Ajax {
 				'ctx'    => array_filter( $ctx, 'is_scalar' ),
 				'parts'  => $parts,
 				'addr'   => $order ? WMD_Render::address_data( $order ) : null,
-				'why'    => ( $needs_html && '' === $html ) ? __( 'WooCommerce\'i sisu ei õnnestunud renderdada.', 'wonom-meilidisainer' ) : '',
+				'why'    => ( $needs_html && '' === $html ) ? __( 'WooCommerce content could not be rendered.', 'wonom-meilidisainer' ) : '',
 			)
 		);
 	}
@@ -732,7 +732,7 @@ class WMD_Ajax {
 		$list     = wmd_email_list();
 
 		if ( ! is_email( $to ) ) {
-			wp_send_json_error( array( 'message' => __( 'Vigane e-posti aadress.', 'wonom-meilidisainer' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid email address.', 'wonom-meilidisainer' ) ) );
 		}
 
 		if ( ! isset( $list[ $email_id ] ) ) {
@@ -777,7 +777,7 @@ class WMD_Ajax {
 		}
 
 		if ( ! $sent ) {
-			wp_send_json_error( array( 'message' => __( 'Meili saatmine ebaõnnestus. Kontrolli poe meiliseadeid.', 'wonom-meilidisainer' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Sending the email failed. Check the shop\'s email settings.', 'wonom-meilidisainer' ) ) );
 		}
 
 		wp_send_json_success(

@@ -39,8 +39,8 @@ class WMD_Admin {
 		if ( $parent ) {
 			self::$hook = add_submenu_page(
 				$parent,
-				__( 'Meilidisainer', 'wonom-meilidisainer' ),
-				__( 'Meilidisainer', 'wonom-meilidisainer' ),
+				__( 'Email Designer', 'wonom-meilidisainer' ),
+				__( 'Email Designer', 'wonom-meilidisainer' ),
 				'manage_woocommerce',
 				'wonom-meilidisainer',
 				array( __CLASS__, 'page' )
@@ -50,8 +50,8 @@ class WMD_Admin {
 		}
 
 		self::$hook = add_menu_page(
-			__( 'Meilidisainer', 'wonom-meilidisainer' ),
-			__( 'Meilidisainer', 'wonom-meilidisainer' ),
+			__( 'Email Designer', 'wonom-meilidisainer' ),
+			__( 'Email Designer', 'wonom-meilidisainer' ),
 			'manage_options',
 			'wonom-meilidisainer',
 			array( __CLASS__, 'page' ),
@@ -71,7 +71,7 @@ class WMD_Admin {
 
 		array_unshift(
 			$links,
-			'<a href="' . esc_url( $url ) . '">' . esc_html__( 'Kujunda meilid', 'wonom-meilidisainer' ) . '</a>'
+			'<a href="' . esc_url( $url ) . '">' . esc_html__( 'Design emails', 'wonom-meilidisainer' ) . '</a>'
 		);
 
 		return $links;
@@ -90,8 +90,13 @@ class WMD_Admin {
 		wp_enqueue_media();
 
 		wp_enqueue_style( 'wmd-admin', WMD_URL . 'assets/admin.css', array(), WMD_VERSION );
-		wp_enqueue_script( 'wmd-renderer', WMD_URL . 'assets/renderer.js', array(), WMD_VERSION, true );
-		wp_enqueue_script( 'wmd-admin', WMD_URL . 'assets/admin.js', array( 'wmd-renderer' ), WMD_VERSION, true );
+		wp_enqueue_script( 'wmd-renderer', WMD_URL . 'assets/renderer.js', array( 'wp-i18n' ), WMD_VERSION, true );
+		wp_enqueue_script( 'wmd-admin', WMD_URL . 'assets/admin.js', array( 'wmd-renderer', 'wp-i18n' ), WMD_VERSION, true );
+
+		// Mõlema skripti tekstid on lähtekoodis inglise keeles; tõlked tulevad
+		// languages/ kaustast JSON-failidena (wp i18n make-json).
+		wp_set_script_translations( 'wmd-renderer', 'wonom-meilidisainer', WMD_DIR . 'languages' );
+		wp_set_script_translations( 'wmd-admin', 'wonom-meilidisainer', WMD_DIR . 'languages' );
 
 		wp_localize_script(
 			'wmd-admin',
@@ -117,21 +122,9 @@ class WMD_Admin {
 				'canUpdate'   => current_user_can( 'update_plugins' ) ? 1 : 0,
 				'updates'     => WMD_Updater::settings(),
 				'pluginsUrl'  => admin_url( 'plugins.php' ),
+				// Tekstid ei käi enam siit läbi: skriptid kasutavad wp.i18n,
+				// nii on kõik tõlgitav ühest kohast ja üht teed pidi.
 				'assetsUrl'   => WMD_URL . 'assets/',
-				'i18n'        => array(
-					'saved'        => __( 'Salvestatud', 'wonom-meilidisainer' ),
-					'saveFailed'   => __( 'Salvestamine ebaõnnestus', 'wonom-meilidisainer' ),
-					'confirmReset' => __( 'Kas lähtestada kogu kujundus vaikeväärtustele? Seda ei saa tagasi võtta.', 'wonom-meilidisainer' ),
-					'confirmDelete' => __( 'Kustutan selle ploki?', 'wonom-meilidisainer' ),
-					'sending'      => __( 'Saadan…', 'wonom-meilidisainer' ),
-					'sent'         => __( 'Testmeil saadetud', 'wonom-meilidisainer' ),
-					'unsaved'      => __( 'Salvestamata muudatused', 'wonom-meilidisainer' ),
-					'noBlocks'     => __( 'Siin pole veel ühtegi plokki. Lisa allpool.', 'wonom-meilidisainer' ),
-					'inherit'      => __( 'Brändist', 'wonom-meilidisainer' ),
-					'pickImage'    => __( 'Vali pilt', 'wonom-meilidisainer' ),
-					'change'       => __( 'Vaheta', 'wonom-meilidisainer' ),
-					'remove'       => __( 'Eemalda', 'wonom-meilidisainer' ),
-				),
 			)
 		);
 	}
@@ -183,10 +176,10 @@ class WMD_Admin {
 		?>
 		<div class="wrap wmd-wrap">
 			<div id="wmd-app" class="wmd-app">
-				<div class="wmd-boot"><?php esc_html_e( 'Laen kujundajat…', 'wonom-meilidisainer' ); ?></div>
+				<div class="wmd-boot"><?php esc_html_e( 'Loading the designer…', 'wonom-meilidisainer' ); ?></div>
 			</div>
 			<noscript>
-				<p><?php esc_html_e( 'Kujundaja vajab JavaScripti.', 'wonom-meilidisainer' ); ?></p>
+				<p><?php esc_html_e( 'The designer needs JavaScript.', 'wonom-meilidisainer' ); ?></p>
 			</noscript>
 		</div>
 		<?php

@@ -1,156 +1,101 @@
-# Wonom Meilidisainer
+# Wonom Email Designer
 
-WooCommerce'i tellimusmeilide visuaalne kujundaja. Bränd seadistatakse üks kord
-ja rakendub kõigile meilidele — plokke lisad ainult sinna, kus neid päriselt vaja on.
+A visual designer for WooCommerce order emails. Set the brand once and it applies
+to every email — you add blocks only where you actually need them.
 
-**Olek:** testversioon 0.23.0 · **Nõuab:** WordPress 6.0+, PHP 7.4+, WooCommerce 6.0+
+**Status:** test version 0.24.0 · **Needs:** WordPress 6.0+, PHP 7.4+, WooCommerce 6.0+
+· **Languages:** English, Estonian ([eestikeelne README](README.et.md))
 
 ---
 
-## Miks
+## Why
 
-Enamik meiliehitajaid paneb sind iga transaktsioonimeili eraldi kokku panema —
-neliteist meili, neliteist korda sama tööd. Siin on kaks taset:
+Most email builders make you assemble every transactional email separately —
+fourteen emails, fourteen times the same work. Here there are two levels:
 
-**1. Bränd.** Logo, värvipalett, kirjatüüp, nupustiil, meili laius, päis ja jalus.
-Seadistad üks kord, rakendub automaatselt kõigile meilidele. Enamikul poodidest
-lõpeb töö siin.
+**1. Brand.** Logo, colour palette, font, button style, email width, header and
+footer. Set once, applied to every email automatically. For most shops the work
+ends here.
 
-**2. Meilid.** Ainult siis, kui mõni konkreetne meil vajab midagi lisaks: oma
-pealkiri postkastis, oma suur pealkiri, plokid enne või pärast tellimuse tabelit.
+**2. Emails.** Only when one particular email needs something extra: its own
+subject line, its own large heading, blocks before or after the order table.
 
-Tellimuse tabeli, aadressid ja kliendi andmed renderdab endiselt WooCommerce ise.
-Plugin annab neile ainult brändi värvid ja kirja. Nii ei lähe midagi katki, kui
-WooCommerce oma malle uuendab.
+The order table, the addresses and the totals are still rendered by WooCommerce,
+so nothing breaks when WooCommerce updates its templates. If you want full
+control, "Build the whole email" takes the WooCommerce content apart into blocks
+you can edit.
 
-## Mida saab teha
+## What is in the box
 
-- **Kaks režiimi meili kohta** — kas plokid WooCommerce'i sisu ümber, või
-  „terve meil ise", kus kogu kiri pannakse kokku plokkidest ja WooCommerce'i
-  sisumalli ei kasutata.
-- **Plokid** — pealkiri, tekstilõik, nupp, pilt, joon, tühi ruum, kaks veergu,
-  sotsiaalmeedia, oma HTML. Lohistamisega järjestatavad.
-- **Oma tooteplokk** — „Tooted (oma tabel)" ja „Kokkuvõte (oma tabel)": sina
-  valid veerud ja read, nende järjekorra ja sildid. Andmed tulevad päris
-  tellimuselt, kujundus on sinu.
-- **WooCommerce'i plokid** — tellimuse tabel, aadressid, kliendi märkus ja
-  makseviisi juhised. Neid renderdab WooCommerce ise, seega maksuread,
-  allahindlused ja makselahenduste lisandused jäävad alles. Kasuta neid siis,
-  kui tahad WooCommerce'i vaikevälimust, ja oma plokke siis, kui tahad kontrolli.
-- **Makseviiside juhised** — eraldi vahekaart, kus iga makseviisi juurde saab
-  kirjutada oma teksti (nt pangaülekande rekvisiidid). Plokk „Makseviisi
-  juhised (oma tekst)" toob kirja alati selle tellimuse makseviisi teksti.
-- **Tellimuse väli** — toob meili suvalise tellimuse välja, näiteks paki
-  jälgimiskoodi, koos sildi ja valikulise lingiga (`{{value}}` asendub
-  väärtusega). Tühja välja saab automaatselt peita.
-- **Elav eelvaade, mis ei valeta** — muudatus on ekraanil kohe, arvuti- ja
-  mobiilivaade, klõps valib ploki. WooCommerce'i enda sisu tuuakse serverist
-  päris kujul, seega dubleeriv tekst on kohe näha. WooCommerce'i ala on
-  märgistatud ja selle küljes on nupp „Võta üle".
-- **Muutujad** — `{{customer_first_name}}`, `{{order_number}}`, `{{order_total}}`,
-  `{{order_url}}` jt, valikuna nupu alt. Lisaks `{{meta:võti}}`, millega saab
-  igasse teksti tuua suvalise tellimuse välja.
-- **Eelvaate tellimus** — vali ülaribalt, millise päris tellimuse andmetega
-  kirja näidatakse. Nii saab kontrollida, kuidas meil eri makseviiside puhul
-  välja näeb. Sama valik kehtib testmeili saatmisel.
-- **Makseviisipõhine nähtavus** — igale plokile saab öelda, milliste
-  makseviiside puhul see kirja läheb. Nii saab pangaülekande juhised panna
-  ainult ülekandega tellimustele.
-- **Serveri eelvaade** — renderdab sama koodiga, mis päris saatmine, valitud
-  tellimuse andmetega. Režiim jääb sisse ja järgneb meili- ning
-  tellimusevalikule, nii näed kohe, kas brauseri eelvaade ja päris meil kattuvad.
-- **Testmeil** — saadab päris WooCommerce'i meili, aga suunab saaja
-  testaadressile. Klient ei saa midagi.
-- **Eksport ja import** — kogu kujundus ühes JSON-failis. Seadista ühes poes,
-  impordi teise ja oled kohe sama seadistusega.
-- **Automaatsed uuendused** GitHubi väljalasetest, ilma WordPress.org-ita.
-  Uue versiooni saab paigaldada otse kujundajast, Pluginad-lehele minemata.
-
-## Kaetud meilid
-
-| Rühm | Meilid |
+| | |
 |---|---|
-| Kliendi tellimusmeilid | töösse võetud, täidetud, ootel, tagastatud, arve/makseootel, märkus kliendile |
-| Konto meilid | parooli lähtestamine, uus konto |
-| Poe sisemised | uus tellimus, tühistatud tellimus, ebaõnnestunud tellimus |
+| **Brand** | logo, colours, font and size, button style, email width, corner radius, inner padding, extra CSS |
+| **Header and footer** | shared by every email, built from blocks |
+| **Per-email content** | subject line, large heading, blocks before or after the order table |
+| **Blocks** | heading, paragraph, button, image, divider, spacer, two columns, images side by side, social media, custom HTML |
+| **WooCommerce blocks** | order table, addresses, totals, customer note, order field, payment instructions |
+| **Variables** | 58 tags such as `{{customer_first_name}}`, `{{order_number}}`, plus `{{meta:any_order_field}}` |
+| **Live preview** | desktop and mobile, filled with a real order you pick |
+| **Test email** | sends the real WooCommerce email to a test address |
+| **Export / import** | the whole design in one file, to move it to another shop |
+| **Updates** | straight from your GitHub releases |
 
-Nimekirja saab laiendada filtriga `wmd_email_list`.
+## Emails covered
 
-## Paigaldus
+Order processing · completed · on hold · refunded · invoice / pending payment ·
+note to customer · password reset · new account · new order to the shop ·
+cancelled order · failed order.
 
-1. Laadi alla viimane `wonom-meilidisainer.zip` [väljalasete lehelt](../../releases).
-2. WordPressis: **Pluginad → Lisa uus → Laadi plugin üles**.
-3. Ava **WooCommerce → Meilidisainer**.
+## Installation
 
-Automaatsete uuenduste jaoks: vahekaart **Uuendused** → allikas *GitHubi väljalase*,
-hoidla `kasutaja/wonom-meilidisainer`. Privaatse hoidla puhul lisa fine-grained
-token õigusega *Contents: Read-only*.
+1. Upload the folder `wonom-meilidisainer` to `/wp-content/plugins/`.
+2. Activate the plugin.
+3. Open **WooCommerce → Email Designer**.
 
-## Kuidas see töötab
+## Translating
 
-Plugin asendab WooCommerce'i mallid `emails/email-header.php` ja
-`emails/email-footer.php` ning lisab brändi CSS-i filtriga
-`woocommerce_email_styles`. Kui teema on need mallid ise üle kirjutanud, jätab
-plugin teema oma alles ega sekku.
+The source language is English. Estonian is bundled in `languages/`.
+
+To add a language, take `languages/wonom-meilidisainer.pot`, translate it with
+Poedit or any `.po` editor, and save it as `wonom-meilidisainer-<locale>.po`
+plus the compiled `.mo`. For the designer's JavaScript you also need the JSON
+files that `wp i18n make-json` produces.
+
+In this repository both are built by `tests/i18n-build.php`, which takes the
+translations from `tests/i18n-map.php` (PHP strings) and `tests/i18n-js-et.php`
+(JavaScript strings):
 
 ```
-includes/
-  helpers.php             brändi skeem, plokitüübid, meilide nimekiri
-  class-wmd-design.php    kujunduse hoidla ja puhastus (üks option)
-  class-wmd-tags.php      muutujad ja nende asendamine
-  class-wmd-render.php    plokid -> meilikõlblik HTML (tabelid + inline CSS)
-  class-wmd-emails.php    WooCommerce'i mallide ülevõtmine
-  class-wmd-admin.php     halduslehe kest
-  class-wmd-ajax.php      salvestus, eelvaade, testmeil, uuendused
-  class-wmd-updater.php   uuendused GitHubi väljalasetest
-templates/emails/         email-header.php, email-footer.php
-assets/
-  renderer.js             sama renderdusloogika brauseris (elav eelvaade)
-  admin.js                kujundaja liides
-  admin.css               kujundaja stiil
+php tests/i18n-build.php wonom-meilidisainer
 ```
 
-Renderdajaid on kaks: PHP oma teeb päris meilid, JS oma teeb kujundaja eelvaate.
-Uue plokitüübi lisamisel tuleb see panna mõlemasse — `class-wmd-render.php` ja
-`renderer.js` on teadlikult ühesuguse ülesehitusega. Nupp „Serveri eelvaade"
-ongi selleks, et kontrollida, kas need kaks on sünkroonis.
+## Development
 
-Kogu kujundus elab ühes optionis (`wmd_design`) JSON-struktuurina. Kõik väljad
-käivad salvestamisel läbi tüübipõhise puhastuse; oma HTML ja lisa-CSS kaotavad
-skriptid ja `on*`-atribuudid.
+There is no PHP or Node on the development machine, so the checks bring their
+own portable PHP:
 
-## Ohutusklapid
-
-- **„Kujundus sees" lüliti** ülaribal lülitab kogu ülevõtmise korraga välja —
-  meilid lähevad tagasi WooCommerce'i vaikekujundusele, kujundus jääb alles.
-- **Teema mallid võidavad** — juba olemasolevat kohandust ei kirjutata üle.
-- **Testmeil suunab saaja ümber** filtriga `woocommerce_email_recipient_*`.
-
-## Laienduskohad
-
-| Filter | Mida teeb |
-|---|---|
-| `wmd_email_list` | lisab või eemaldab meile |
-| `wmd_tags` | lisab oma muutujaid |
-
-## Väljalase
-
-```powershell
-.\build-release.ps1 -Version 0.9.1 -Tag
+```
+.\tests\run.ps1
 ```
 
-Tõstab versiooni plugina failis ja `readme.txt`-s, ehitab ZIP-i, teeb commiti ja
-sildi ning saadab GitHubi. Seejärel **Releases → Draft a new release**, vali silt,
-lisa ZIP, avalda. Versiooninumber failis ja sildil peavad kattuma, muidu WordPress
-uuendust ei näe.
+That runs `php -l` over every file and then `tests/smoke.php`, which imitates
+enough of WordPress to execute the plugin's own logic under `E_ALL` — a warning
+counts as a failure.
 
-## Teadaolevad piirangud
+`demo/wonom-meilidisainer-demo.html` loads the real `admin.js`, `renderer.js`
+and `admin.css` with stubbed AJAX, so the designer can be driven without a
+WordPress install.
 
-- Üks kujundus kõigile keeltele — WPML/Polylangi tuge veel ei ole.
-- Tumeda režiimi käitumine postkastides on testimata.
-- Kujunduse eksport/import JSON-ina on tegemata, kuigi struktuur seda toetab.
-- Valmiskujundusi („templates") ei ole, on üks vaikekujundus.
+## Releases
 
-## Litsents
+```
+.\build-release.ps1 -Version X.Y.Z -Tag
+```
 
-GPL-2.0-or-later
+This bumps the version in three places, builds the ZIP, commits, tags and
+pushes. Publishing the GitHub release and attaching `wonom-meilidisainer.zip`
+is a manual step — without the ZIP the updater cannot see the release.
+
+## Licence
+
+GPL-2.0-or-later.

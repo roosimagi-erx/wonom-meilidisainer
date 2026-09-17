@@ -13,7 +13,12 @@
 		return;
 	}
 
-	var i18n = cfg.i18n || {};
+	// Tõlked tulevad WordPressilt (wp_set_script_translations). Kui wp.i18n
+	// puudub — nt eraldiseisvas demos —, jääb alles lähtetekst inglise keeles.
+	var __ = ( window.wp && window.wp.i18n && window.wp.i18n.__ ) || function ( text ) {
+		return text;
+	};
+
 	var emailIds = Object.keys( cfg.emails || {} );
 
 	/**
@@ -352,7 +357,7 @@
 			return '';
 		}
 
-		return '<div class="wmd-server-note is-warn">Kanvasel on WooCommerce\'i osas <strong>näidissisu</strong>, mitte päris tekst' +
+		return '<div class="wmd-server-note is-warn">' + __( 'The WooCommerce part of the canvas shows ', 'wonom-meilidisainer' ) + '<strong>' + __( 'sample content', 'wonom-meilidisainer' ) + '</strong>' + __( ', not the real text', 'wonom-meilidisainer' ) + '' +
 			( wc.why ? ' — ' + esc( wc.why ) : '' ) + '</div>';
 	}
 
@@ -393,7 +398,7 @@
 				render();
 			}
 		} ).catch( function () {
-			wcCache[ key ] = { pending: false, html: '', css: '', items: [], totals: [], fields: [], ctx: {}, parts: {}, addr: null, why: 'Ei saanud WooCommerce\'i sisu kätte.' };
+			wcCache[ key ] = { pending: false, html: '', css: '', items: [], totals: [], fields: [], ctx: {}, parts: {}, addr: null, why: __( 'Could not fetch the WooCommerce content.', 'wonom-meilidisainer' ) };
 		} );
 	}
 
@@ -569,9 +574,9 @@
 		} );
 
 		if ( fields.length ) {
-			html += '<div class="wmd-tags-head">Selle tellimuse väljad</div>';
+			html += '<div class="wmd-tags-head">' + __( 'Fields on this order', 'wonom-meilidisainer' ) + '</div>';
 			fields.forEach( function ( f ) {
-				html += rowFn( 'meta:' + f.key, 'Tellimuse väli', f.sample );
+				html += rowFn( 'meta:' + f.key, __( 'Order field', 'wonom-meilidisainer' ), f.sample );
 			} );
 		}
 
@@ -586,7 +591,7 @@
 		}, '' );
 
 		return '<div class="wmd-tags" data-for="' + esc( target ) + '">' +
-			'<button type="button" class="wmd-tags-toggle" title="Lisa muutuja">{ }</button>' +
+			'<button type="button" class="wmd-tags-toggle" title="' + __( 'Insert a variable', 'wonom-meilidisainer' ) + '">{ }</button>' +
 			'<div class="wmd-tags-menu" hidden>' + items + '</div></div>';
 	}
 
@@ -603,14 +608,14 @@
 				'<input type="text" class="wmd-input wmd-collabel" data-col-label="' + index + '" value="' + esc( col.label ) + '" ' +
 				'placeholder="' + esc( options[ col.key ] || col.key ) + '" />' +
 				'<span class="wmd-colmove">' +
-				'<button type="button" data-col-up="' + index + '" title="Üles"' + ( index === 0 ? ' disabled' : '' ) + '>↑</button>' +
-				'<button type="button" data-col-down="' + index + '" title="Alla"' + ( index === cols.length - 1 ? ' disabled' : '' ) + '>↓</button>' +
+				'<button type="button" data-col-up="' + index + '" title="' + __( 'Up', 'wonom-meilidisainer' ) + '"' + ( index === 0 ? ' disabled' : '' ) + '>↑</button>' +
+				'<button type="button" data-col-down="' + index + '" title="' + __( 'Down', 'wonom-meilidisainer' ) + '"' + ( index === cols.length - 1 ? ' disabled' : '' ) + '>↓</button>' +
 				'</span></li>';
 		} ).join( '' );
 
 		return '<div class="wmd-field"><label class="wmd-label">' + esc( field.label ) + '</label>' +
 			'<ul class="wmd-cols" data-scope="' + esc( scope ) + '" data-key="' + esc( key ) + '">' + rows + '</ul>' +
-			'<p class="wmd-hint">Linnuke näitab, kas veerg läheb kirja. Silti saab ümber kirjutada, nooltega järjekorda muuta.</p></div>';
+			'<p class="wmd-hint">' + __( 'The tick shows whether the column goes into the email. You can rewrite the label and reorder it with the arrows.', 'wonom-meilidisainer' ) + '</p></div>';
 	}
 
 	/**
@@ -625,24 +630,24 @@
 
 			return '<li class="wmd-pair" data-index="' + index + '">' +
 				'<div class="wmd-pair-top">' +
-				'<input type="text" class="wmd-input wmd-pair-label" data-pair-label="' + index + '" value="' + esc( row.label ) + '" placeholder="Silt" />' +
+				'<input type="text" class="wmd-input wmd-pair-label" data-pair-label="' + index + '" value="' + esc( row.label ) + '" placeholder="' + __( 'Label', 'wonom-meilidisainer' ) + '" />' +
 				'<span class="wmd-colmove">' +
-				'<button type="button" data-pair-up="' + index + '" title="Üles"' + ( index === 0 ? ' disabled' : '' ) + '>↑</button>' +
-				'<button type="button" data-pair-down="' + index + '" title="Alla"' + ( index === rows.length - 1 ? ' disabled' : '' ) + '>↓</button>' +
-				'<button type="button" data-pair-del="' + index + '" title="Kustuta rida">✕</button>' +
+				'<button type="button" data-pair-up="' + index + '" title="' + __( 'Up', 'wonom-meilidisainer' ) + '"' + ( index === 0 ? ' disabled' : '' ) + '>↑</button>' +
+				'<button type="button" data-pair-down="' + index + '" title="' + __( 'Down', 'wonom-meilidisainer' ) + '"' + ( index === rows.length - 1 ? ' disabled' : '' ) + '>↓</button>' +
+				'<button type="button" data-pair-del="' + index + '" title="' + __( 'Delete row', 'wonom-meilidisainer' ) + '">✕</button>' +
 				'</span></div>' +
 				'<div class="wmd-inline">' +
-				'<input type="text" class="wmd-input wmd-small" id="' + esc( vid ) + '" data-pair-value="' + index + '" value="' + esc( row.value ) + '" placeholder="Väärtus või {{muutuja}}" />' +
+				'<input type="text" class="wmd-input wmd-small" id="' + esc( vid ) + '" data-pair-value="' + index + '" value="' + esc( row.value ) + '" placeholder="' + __( 'Value or {{variable}}', 'wonom-meilidisainer' ) + '" />' +
 				tagPicker( vid ) +
 				'</div>' +
-				'<input type="text" class="wmd-input wmd-small" data-pair-link="' + index + '" value="' + esc( row.link || '' ) + '" placeholder="Link (valikuline), {{value}} = väärtus" />' +
+				'<input type="text" class="wmd-input wmd-small" data-pair-link="' + index + '" value="' + esc( row.link || '' ) + '" placeholder="' + __( 'Link (optional), {{value}} = the value', 'wonom-meilidisainer' ) + '" />' +
 				'</li>';
 		} ).join( '' );
 
 		return '<div class="wmd-field"><label class="wmd-label">' + esc( field.label ) + '</label>' +
 			'<ul class="wmd-pairs" data-scope="' + esc( scope ) + '" data-key="' + esc( key ) + '">' + items + '</ul>' +
-			'<button type="button" class="wmd-mini wmd-pair-add">+ Lisa rida</button>' +
-			'<p class="wmd-hint">Väärtuse saab valida { } nupu alt — seal on ka selle tellimuse päris väljad, nagu jälgimiskood.</p></div>';
+			'<button type="button" class="wmd-mini wmd-pair-add">' + __( '+ Add row', 'wonom-meilidisainer' ) + '</button>' +
+			'<p class="wmd-hint">' + __( 'You can pick the value under the { } button — the real fields of this order are there too, such as the tracking code.', 'wonom-meilidisainer' ) + '</p></div>';
 	}
 
 	/**
@@ -667,18 +672,18 @@
 
 			return '<li class="wmd-card-row" data-index="' + index + '">' +
 				'<div class="wmd-card-thumb">' + thumb +
-				'<button type="button" class="wmd-mini" data-card-media="' + index + '">' + esc( row.image ? i18n.change : i18n.pickImage ) + '</button>' +
+				'<button type="button" class="wmd-mini" data-card-media="' + index + '">' + esc( row.image ? __( 'Change', 'wonom-meilidisainer' ) : __( 'Choose image', 'wonom-meilidisainer' ) ) + '</button>' +
 				'</div>' +
 				'<div class="wmd-card-fields">' +
 				'<div class="wmd-card-top">' +
-				'<input type="text" class="wmd-input wmd-small" data-card-label="' + index + '" value="' + esc( row.label || '' ) + '" placeholder="Nimi pildi all" />' +
+				'<input type="text" class="wmd-input wmd-small" data-card-label="' + index + '" value="' + esc( row.label || '' ) + '" placeholder="' + __( 'Name under the image', 'wonom-meilidisainer' ) + '" />' +
 				'<span class="wmd-colmove">' +
-				'<button type="button" data-card-up="' + index + '" title="Vasakule"' + ( index === 0 ? ' disabled' : '' ) + '>↑</button>' +
-				'<button type="button" data-card-down="' + index + '" title="Paremale"' + ( index === rows.length - 1 ? ' disabled' : '' ) + '>↓</button>' +
-				'<button type="button" data-card-del="' + index + '" title="Kustuta">✕</button>' +
+				'<button type="button" data-card-up="' + index + '" title="' + __( 'Left', 'wonom-meilidisainer' ) + '"' + ( index === 0 ? ' disabled' : '' ) + '>↑</button>' +
+				'<button type="button" data-card-down="' + index + '" title="' + __( 'Right', 'wonom-meilidisainer' ) + '"' + ( index === rows.length - 1 ? ' disabled' : '' ) + '>↓</button>' +
+				'<button type="button" data-card-del="' + index + '" title="' + __( 'Delete', 'wonom-meilidisainer' ) + '">✕</button>' +
 				'</span></div>' +
-				'<input type="text" class="wmd-input wmd-small" data-card-link="' + index + '" value="' + esc( row.link || '' ) + '" placeholder="Link, nt kategooria aadress" />' +
-				'<input type="text" class="wmd-input wmd-small" data-card-image="' + index + '" value="' + esc( row.image || '' ) + '" placeholder="Pildi aadress https://…" />' +
+				'<input type="text" class="wmd-input wmd-small" data-card-link="' + index + '" value="' + esc( row.link || '' ) + '" placeholder="' + __( 'Link, for example the category address', 'wonom-meilidisainer' ) + '" />' +
+				'<input type="text" class="wmd-input wmd-small" data-card-image="' + index + '" value="' + esc( row.image || '' ) + '" placeholder="' + __( 'Image address https://…', 'wonom-meilidisainer' ) + '" />' +
 				'</div></li>';
 		} ).join( '' );
 
@@ -688,23 +693,23 @@
 
 		if ( state.catsOpen && state.cats ) {
 			cats = state.cats.length
-				? '<p class="wmd-hint">Klõps lisab kategooria järgmisse tühja kohta.</p>' +
+				? '<p class="wmd-hint">' + __( 'A click adds the category to the next empty slot.', 'wonom-meilidisainer' ) + '</p>' +
 					state.cats.map( function ( c, i ) {
 						return '<button type="button" class="wmd-cat" data-cat="' + i + '">' +
 							( c.image ? '<img src="' + esc( c.image ) + '" alt="" />' : '<span class="wmd-image-empty">—</span>' ) +
 							'<em>' + esc( c.name ) + '</em></button>';
 					} ).join( '' )
-				: '<p class="wmd-hint">Tootekategooriaid ei leitud.</p>';
+				: '<p class="wmd-hint">' + __( 'No product categories were found.', 'wonom-meilidisainer' ) + '</p>';
 		}
 
 		return '<div class="wmd-field"><label class="wmd-label">' + esc( field.label ) + '</label>' +
 			'<ul class="wmd-cards-edit" data-scope="' + esc( scope ) + '" data-key="' + esc( key ) + '">' + items + '</ul>' +
 			'<div class="wmd-card-tools">' +
-			'<button type="button" class="wmd-mini wmd-card-add">+ Lisa pilt</button>' +
-			'<button type="button" class="wmd-mini wmd-card-cats">' + ( state.catsOpen ? 'Peida kategooriad' : 'Lae tootekategooriad' ) + '</button>' +
+			'<button type="button" class="wmd-mini wmd-card-add">' + __( '+ Add image', 'wonom-meilidisainer' ) + '</button>' +
+			'<button type="button" class="wmd-mini wmd-card-cats">' + ( state.catsOpen ? '' + __( 'Hide categories', 'wonom-meilidisainer' ) + '' : __( 'Load product categories', 'wonom-meilidisainer' ) ) + '</button>' +
 			'</div>' +
 			'<div class="wmd-card-catlist"' + ( cats ? '' : ' hidden' ) + '>' + cats + '</div>' +
-			'<p class="wmd-hint">Tühjaks jäänud kohti päris kirja ei panda — kujundajas on need näha ainult selleks, et paigutust näeksid.</p></div>';
+			'<p class="wmd-hint">' + __( 'Slots left empty are not put into the real email — they are shown in the designer only so you can see the layout.', 'wonom-meilidisainer' ) + '</p></div>';
 	}
 
 	function fieldHtml( scope, key, field, value ) {
@@ -752,10 +757,10 @@
 			case 'richtext':
 				body = '<div class="wmd-rich">' +
 					'<div class="wmd-rich-bar">' +
-					'<button type="button" data-wrap="strong" title="Rasvane"><b>B</b></button>' +
-					'<button type="button" data-wrap="em" title="Kaldkiri"><i>I</i></button>' +
-					'<button type="button" data-wrap="br" title="Reavahetus">↵</button>' +
-					'<button type="button" data-wrap="a" title="Link">🔗</button>' +
+					'<button type="button" data-wrap="strong" title="' + __( 'Bold', 'wonom-meilidisainer' ) + '"><b>B</b></button>' +
+					'<button type="button" data-wrap="em" title="' + __( 'Italic', 'wonom-meilidisainer' ) + '"><i>I</i></button>' +
+					'<button type="button" data-wrap="br" title="' + __( 'Line break', 'wonom-meilidisainer' ) + '">↵</button>' +
+					'<button type="button" data-wrap="a" title="' + __( 'Link', 'wonom-meilidisainer' ) + '">🔗</button>' +
 					( field.tags ? tagPicker( id ) : '' ) +
 					'</div>' +
 					'<textarea class="wmd-input wmd-textarea" rows="4" ' + attrs + '>' + esc( value ) + '</textarea>' +
@@ -782,8 +787,8 @@
 				var shown = value || ( field.inherit ? state.design.brand[ field.inherit ] : '#000000' );
 				body = '<div class="wmd-color">' +
 					'<input type="color" class="wmd-swatch" ' + attrs + ' value="' + esc( shown ) + '" />' +
-					'<input type="text" class="wmd-input wmd-hex" data-scope="' + esc( scope ) + '" data-key="' + esc( key ) + '" value="' + esc( value ) + '" placeholder="' + esc( inherited && field.inherit ? i18n.inherit : shown ) + '" />' +
-					( field.inherit ? '<button type="button" class="wmd-mini" data-clear="' + esc( scope ) + '|' + esc( key ) + '">' + esc( i18n.inherit ) + '</button>' : '' ) +
+					'<input type="text" class="wmd-input wmd-hex" data-scope="' + esc( scope ) + '" data-key="' + esc( key ) + '" value="' + esc( value ) + '" placeholder="' + esc( inherited && field.inherit ? __( 'From brand', 'wonom-meilidisainer' ) : shown ) + '" />' +
+					( field.inherit ? '<button type="button" class="wmd-mini" data-clear="' + esc( scope ) + '|' + esc( key ) + '">' + esc( __( 'From brand', 'wonom-meilidisainer' ) ) + '</button>' : '' ) +
 					'</div>';
 				break;
 
@@ -812,8 +817,8 @@
 				body = '<div class="wmd-image">' +
 					( value ? '<img src="' + esc( value ) + '" alt="" />' : '<div class="wmd-image-empty">—</div>' ) +
 					'<div class="wmd-image-actions">' +
-					'<button type="button" class="wmd-mini" data-media="' + esc( scope ) + '|' + esc( key ) + '">' + esc( value ? i18n.change : i18n.pickImage ) + '</button>' +
-					( value ? '<button type="button" class="wmd-mini" data-clear="' + esc( scope ) + '|' + esc( key ) + '">' + esc( i18n.remove ) + '</button>' : '' ) +
+					'<button type="button" class="wmd-mini" data-media="' + esc( scope ) + '|' + esc( key ) + '">' + esc( value ? __( 'Change', 'wonom-meilidisainer' ) : __( 'Choose image', 'wonom-meilidisainer' ) ) + '</button>' +
+					( value ? '<button type="button" class="wmd-mini" data-clear="' + esc( scope ) + '|' + esc( key ) + '">' + esc( __( 'Remove', 'wonom-meilidisainer' ) ) + '</button>' : '' ) +
 					'</div>' +
 					'<input type="text" class="wmd-input wmd-small" ' + attrs + ' value="' + esc( value ) + '" placeholder="https://…" />' +
 					'</div>';
@@ -839,15 +844,15 @@
 				'<span class="wmd-item-icon">' + esc( def.icon ) + '</span>' +
 				'<span class="wmd-item-label">' + esc( def.label ) + '<em>' + esc( blockSummary( b ) ) + '</em></span>' +
 				'<span class="wmd-item-actions">' +
-				'<button type="button" class="wmd-icon" data-move="' + esc( zone ) + '|' + esc( b.id ) + '|-1" title="Üles"' + ( 0 === index ? ' disabled' : '' ) + '>↑</button>' +
-				'<button type="button" class="wmd-icon" data-move="' + esc( zone ) + '|' + esc( b.id ) + '|1" title="Alla"' + ( index === list.length - 1 ? ' disabled' : '' ) + '>↓</button>' +
-				'<button type="button" class="wmd-icon" data-dup="' + esc( zone ) + '|' + esc( b.id ) + '" title="Kopeeri">⧉</button>' +
-				'<button type="button" class="wmd-icon" data-del="' + esc( zone ) + '|' + esc( b.id ) + '" title="Kustuta">✕</button>' +
+				'<button type="button" class="wmd-icon" data-move="' + esc( zone ) + '|' + esc( b.id ) + '|-1" title="' + __( 'Up', 'wonom-meilidisainer' ) + '"' + ( 0 === index ? ' disabled' : '' ) + '>↑</button>' +
+				'<button type="button" class="wmd-icon" data-move="' + esc( zone ) + '|' + esc( b.id ) + '|1" title="' + __( 'Down', 'wonom-meilidisainer' ) + '"' + ( index === list.length - 1 ? ' disabled' : '' ) + '>↓</button>' +
+				'<button type="button" class="wmd-icon" data-dup="' + esc( zone ) + '|' + esc( b.id ) + '" title="' + __( 'Duplicate', 'wonom-meilidisainer' ) + '">⧉</button>' +
+				'<button type="button" class="wmd-icon" data-del="' + esc( zone ) + '|' + esc( b.id ) + '" title="' + __( 'Delete', 'wonom-meilidisainer' ) + '">✕</button>' +
 				'</span></li>';
 		} ).join( '' );
 
 		if ( ! items ) {
-			items = '<li class="wmd-empty">' + esc( i18n.noBlocks ) + '</li>';
+			items = '<li class="wmd-empty">' + esc( __( 'No blocks here yet. Add one below.', 'wonom-meilidisainer' ) ) + '</li>';
 		}
 
 		// WooCommerce'i osi (tellimuse tabel, aadressid, tellimuse väljad) pakume
@@ -877,7 +882,7 @@
 			text = p.height + ' px';
 		}
 		if ( b.type === 'image' ) {
-			text = p.url ? p.url.split( '/' ).pop() : 'pilt puudub';
+			text = p.url ? p.url.split( '/' ).pop() : __( 'no image', 'wonom-meilidisainer' );
 		}
 		return text.length > 46 ? text.slice( 0, 46 ) + '…' : text;
 	}
@@ -886,7 +891,7 @@
 		var groups = cfg.brandGroups;
 		var schema = cfg.brandSchema;
 
-		var html = '<div class="wmd-intro">Need seaded kehtivad <strong>kõigile</strong> WooCommerce\'i meilidele. Sea üks kord ja oledki valmis.</div>';
+		var html = '<div class="wmd-intro">' + __( 'These settings apply to ', 'wonom-meilidisainer' ) + '<strong>' + __( 'every', 'wonom-meilidisainer' ) + '</strong>' + __( ' WooCommerce email. Set them once and you are done.', 'wonom-meilidisainer' ) + '</div>';
 
 		Object.keys( groups ).forEach( function ( g ) {
 			var fields = Object.keys( schema ).filter( function ( key ) {
@@ -926,37 +931,37 @@
 		var e = emailSettings();
 		var full = e.mode === 'full';
 
-		var html = '<div class="wmd-intro">Vali meil ja täienda seda. Tühjaks jäetud väli tähendab, et kasutatakse WooCommerce\'i vaikeväärtust.</div>';
-		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-email-pick">Meil</label>' +
+		var html = '<div class="wmd-intro">' + __( 'Pick an email and add to it. A field left empty means the WooCommerce default is used.', 'wonom-meilidisainer' ) + '</div>';
+		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-email-pick">' + __( 'Email', 'wonom-meilidisainer' ) + '</label>' +
 			'<select class="wmd-input" id="wmd-email-pick">' + opts + '</select></div>';
 
-		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-f-email-subject">Pealkiri postkastis</label>' +
+		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-f-email-subject">' + __( 'Subject line', 'wonom-meilidisainer' ) + '</label>' +
 			'<div class="wmd-inline"><input type="text" class="wmd-input" id="wmd-f-email-subject" data-scope="email" data-key="subject" value="' + esc( e.subject ) + '" placeholder="' + esc( wcDefault( state.email, 'subject' ) ) + '" />' +
 			tagPicker( 'wmd-f-email-subject' ) + '</div></div>';
 
-		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-f-email-heading">Suur pealkiri meilis</label>' +
+		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-f-email-heading">' + __( 'Large heading in the email', 'wonom-meilidisainer' ) + '</label>' +
 			'<div class="wmd-inline"><input type="text" class="wmd-input" id="wmd-f-email-heading" data-scope="email" data-key="heading" value="' + esc( e.heading ) + '" placeholder="' + esc( wcDefault( state.email, 'heading' ) ) + '" />' +
 			tagPicker( 'wmd-f-email-heading' ) + '</div></div>';
 
 		html += '<div class="wmd-field wmd-field-toggle"><label class="wmd-switch">' +
 			'<input type="checkbox" data-scope="email" data-key="additional"' + ( e.additional ? ' checked' : '' ) + ' />' +
-			'<span></span>WooCommerce\'i lisatekst kirja lõpus</label>' +
-			'<p class="wmd-hint">Selle teksti leiad WooCommerce → Seaded → Meilid alt. Seal ei saa seda tühjendada — tühi väli asendatakse vaiketekstiga („Thanks for shopping with us."). Siit saab selle päriselt välja lülitada.</p></div>';
+			'<span></span>' + __( 'WooCommerce additional content at the end', 'wonom-meilidisainer' ) + '</label>' +
+			'<p class="wmd-hint">' + __( 'You will find this text under WooCommerce → Settings → Emails. It cannot be emptied there — an empty field is replaced by the default text ("Thanks for shopping with us."). Here you can switch it off for good.', 'wonom-meilidisainer' ) + '</p></div>';
 
-		html += '<div class="wmd-field"><label class="wmd-label">Kuidas meil kokku pannakse</label>' +
+		html += '<div class="wmd-field"><label class="wmd-label">' + __( 'How the email is put together', 'wonom-meilidisainer' ) + '</label>' +
 			'<div class="wmd-segs wmd-modes">' +
-			'<button type="button" class="wmd-seg' + ( full ? '' : ' is-active' ) + '" data-mode="wrap">WooCommerce\'i sisu ümber</button>' +
-			'<button type="button" class="wmd-seg' + ( full ? ' is-active' : '' ) + '" data-mode="full">Terve meil ise</button>' +
+			'<button type="button" class="wmd-seg' + ( full ? '' : ' is-active' ) + '" data-mode="wrap">' + __( 'Around WooCommerce content', 'wonom-meilidisainer' ) + '</button>' +
+			'<button type="button" class="wmd-seg' + ( full ? ' is-active' : '' ) + '" data-mode="full">' + __( 'Build the whole email', 'wonom-meilidisainer' ) + '</button>' +
 			'</div></div>';
 
 		if ( full ) {
-			html += '<div class="wmd-intro wmd-warn">Selles režiimis ei kasutata WooCommerce\'i sisumalli. Kõik, mis meilis on, tuleb allolevatest plokkidest — ka tellimuse tabel ja aadressid.</div>';
-			html += '<div class="wmd-updates-actions"><button type="button" class="button wmd-refill">Lae WooCommerce\'i sisu plokkidena</button></div>' +
-				'<p class="wmd-hint">Võtab selle meili praeguse WooCommerce\'i sisu plokkideks lahti ja asendab allolevad plokid. Kasulik, kui tahad alustada uuesti WooCommerce\'i tekstist.</p>';
-			html += blockListHtml( 'body', 'Meili sisu', 'terve keha' );
+			html += '<div class="wmd-intro wmd-warn">' + __( 'This mode does not use the WooCommerce content template. Everything in the email comes from the blocks below — including the order table and the addresses.', 'wonom-meilidisainer' ) + '</div>';
+			html += '<div class="wmd-updates-actions"><button type="button" class="button wmd-refill">' + __( 'Load the WooCommerce content as blocks', 'wonom-meilidisainer' ) + '</button></div>' +
+				'<p class="wmd-hint">' + __( 'Takes this email\'s current WooCommerce content apart into blocks and replaces the blocks below. Useful when you want to start again from the WooCommerce text.', 'wonom-meilidisainer' ) + '</p>';
+			html += blockListHtml( 'body', __( 'Email content', 'wonom-meilidisainer' ), __( 'the whole body', 'wonom-meilidisainer' ) );
 		} else {
-			html += blockListHtml( 'before', 'Sisu enne tellimuse tabelit', 'tervitus, info' );
-			html += blockListHtml( 'after', 'Sisu pärast tellimuse tabelit', 'nupp, lisamüük' );
+			html += blockListHtml( 'before', __( 'Content before the order table', 'wonom-meilidisainer' ), __( 'greeting, info', 'wonom-meilidisainer' ) );
+			html += blockListHtml( 'after', __( 'Content after the order table', 'wonom-meilidisainer' ), __( 'button, upsell', 'wonom-meilidisainer' ) );
 		}
 
 		return html;
@@ -1244,7 +1249,7 @@
 			// väärtused saaks tagasi märgenditeks võtta (vt detokenize).
 			done( blocksFromWcHtml( res.html || '', res.ctx || {} ) );
 		} ).catch( function ( err ) {
-			toast( err || 'WooCommerce\'i sisu ei õnnestunud laadida', 'error' );
+			toast( err || __( 'WooCommerce content could not be loaded', 'wonom-meilidisainer' ), 'error' );
 			done( [] );
 		} );
 	}
@@ -1265,7 +1270,7 @@
 
 		var e = emailSettings();
 
-		if ( e.body.length && ! window.confirm( 'Selles meilis on juba ' + e.body.length + ' plokki. Asendan need WooCommerce\'i praeguse sisuga?' ) ) {
+		if ( e.body.length && ! window.confirm( __( 'This email already has ', 'wonom-meilidisainer' ) + e.body.length + ' ' + __( 'blocks. Replace them with the current WooCommerce content?', 'wonom-meilidisainer' ) ) ) {
 			return;
 		}
 
@@ -1274,12 +1279,12 @@
 
 		if ( btn ) {
 			btn.disabled = true;
-			btn.textContent = 'Laen…';
+			btn.textContent = __( 'Loading…', 'wonom-meilidisainer' );
 		}
 
 		loadWcBlocks( function ( middle ) {
 			if ( ! middle.length && ! opts.fallback ) {
-				toast( 'WooCommerce\'i sisu ei õnnestunud plokkideks võtta', 'error' );
+				toast( __( 'WooCommerce content could not be turned into blocks', 'wonom-meilidisainer' ), 'error' );
 
 				if ( btn ) {
 					btn.disabled = false;
@@ -1293,7 +1298,7 @@
 			// WooCommerce'i sisu ei saanud, alustame vaikeplokkidest.
 			if ( ! middle.length ) {
 				middle = seedBody().slice( 1 );
-				toast( 'WooCommerce\'i sisu ei saanud — alustame vaikeplokkidest', 'error' );
+				toast( __( 'Could not get the WooCommerce content — starting from the default blocks', 'wonom-meilidisainer' ), 'error' );
 			}
 
 			var body = middle;
@@ -1313,7 +1318,7 @@
 			markDirty();
 			render();
 			invalidatePreview();
-			toast( body.length + ' plokki laaditud — WooCommerce\'i oma tekst enam kirja ei lähe', 'ok' );
+			toast( body.length + ' ' + __( 'blocks loaded — the WooCommerce text no longer goes into the email', 'wonom-meilidisainer' ), 'ok' );
 		} );
 	}
 
@@ -1323,15 +1328,15 @@
 		var order = currentOrder();
 
 		var source = order
-			? 'Väärtus on valitud tellimuse pealt (<strong>' + esc( order.label ) + '</strong>).'
+			? '' + __( 'The value comes from the selected order (', 'wonom-meilidisainer' ) + '<strong>' + esc( order.label ) + '</strong>).'
 			: ( usesOrder()
-				? 'Väärtus on valitud tellimuse pealt.'
-				: 'See kiri ei käi tellimuse pealt, seega tellimuse muutujatel siin väärtust ei ole.' );
+				? '' + __( 'The value comes from the selected order.', 'wonom-meilidisainer' ) + ''
+				: '' + __( 'This email does not come from an order, so the order variables have no value here.', 'wonom-meilidisainer' ) + '' );
 
-		var html = '<div class="wmd-intro">Kõik muutujad, mida kirjas kasutada saab. ' + source +
-			' Klõps kopeerib muutuja — saad selle kleepida ükskõik millisesse välja, ka „Oma HTML" plokki või lisa-CSS-i.</div>';
+		var html = '<div class="wmd-intro">' + __( 'Every variable you can use in the email.', 'wonom-meilidisainer' ) + ' ' + source +
+			' ' + __( 'A click copies the variable — you can paste it into any field, including the "Custom HTML" block or the extra CSS.', 'wonom-meilidisainer' ) + '</div>';
 
-		html += '<div class="wmd-field"><input type="text" class="wmd-input wmd-var-search" placeholder="Otsi muutujat…" value="' + esc( state.varQuery ) + '" /></div>';
+		html += '<div class="wmd-field"><input type="text" class="wmd-input wmd-var-search" placeholder="' + __( 'Search for a variable…', 'wonom-meilidisainer' ) + '" value="' + esc( state.varQuery ) + '" /></div>';
 
 		var rows = tagListHtml( function ( key, label, value ) {
 			return '<button type="button" class="wmd-var" data-copy="{{' + esc( key ) + '}}">' +
@@ -1340,7 +1345,7 @@
 				'<span>' + esc( value || '—' ) + '</span></button>';
 		}, state.varQuery );
 
-		html += '<div class="wmd-vars">' + ( rows || '<p class="wmd-hint">Midagi ei leitud.</p>' ) + '</div>';
+		html += '<div class="wmd-vars">' + ( rows || '<p class="wmd-hint">' + __( 'Nothing found.', 'wonom-meilidisainer' ) + '</p>' ) + '</div>';
 
 		return html;
 	}
@@ -1359,7 +1364,7 @@
 					list.innerHTML = tagListHtml( function ( key, label, value ) {
 						return '<button type="button" class="wmd-var" data-copy="{{' + esc( key ) + '}}">' +
 							'<code>{{' + esc( key ) + '}}</code><em>' + esc( label ) + '</em><span>' + esc( value || '—' ) + '</span></button>';
-					}, state.varQuery ) || '<p class="wmd-hint">Midagi ei leitud.</p>';
+					}, state.varQuery ) || '<p class="wmd-hint">' + __( 'Nothing found.', 'wonom-meilidisainer' ) + '</p>';
 					bindVarCopy();
 				}
 			} );
@@ -1378,7 +1383,7 @@
 					setTimeout( function () {
 						btn.classList.remove( 'is-copied' );
 					}, 1200 );
-					toast( 'Kopeeritud: ' + text, 'ok' );
+					toast( __( 'Copied: ', 'wonom-meilidisainer' ) + text, 'ok' );
 				}
 
 				if ( navigator.clipboard && navigator.clipboard.writeText ) {
@@ -1397,7 +1402,7 @@
 						document.execCommand( 'copy' );
 						done();
 					} catch ( e ) {
-						toast( 'Kopeerimine ei õnnestunud', 'error' );
+						toast( __( 'Copying failed', 'wonom-meilidisainer' ), 'error' );
 					}
 					document.body.removeChild( tmp );
 				}
@@ -1412,14 +1417,14 @@
 		var keys = Object.keys( gateways );
 
 		if ( ! keys.length ) {
-			return '<div class="wmd-intro">Poes ei leitud ühtegi makseviisi.</div>';
+			return '<div class="wmd-intro">' + __( 'No payment methods were found in the shop.', 'wonom-meilidisainer' ) + '</div>';
 		}
 
 		if ( ! state.design.payments ) {
 			state.design.payments = {};
 		}
 
-		var html = '<div class="wmd-intro">Kirjuta iga makseviisi juhised üks kord siia. Kirja toob need plokk <strong>„Makseviisi juhised (oma tekst)"</strong> — see näitab alati selle tellimuse makseviisi teksti. Tühjaks jäetud makseviisi puhul plokk lihtsalt ei ilmu.</div>';
+		var html = '<div class="wmd-intro">' + __( 'Write the instructions for each payment method here once. The block ', 'wonom-meilidisainer' ) + '<strong>' + __( '"Payment instructions (own text)"', 'wonom-meilidisainer' ) + '</strong>' + __( ' brings them into the email — it always shows the text for that order\'s payment method. For a payment method left empty the block simply does not appear.', 'wonom-meilidisainer' ) + '</div>';
 
 		keys.forEach( function ( id ) {
 			var value = state.design.payments[ id ] || '';
@@ -1429,14 +1434,14 @@
 				'<label class="wmd-label" for="' + esc( fid ) + '">' + esc( gateways[ id ] ) + ' <code>' + esc( id ) + '</code></label>' +
 				'<div class="wmd-rich">' +
 				'<div class="wmd-rich-bar">' +
-				'<button type="button" data-wrap="strong" title="Rasvane"><b>B</b></button>' +
-				'<button type="button" data-wrap="em" title="Kaldkiri"><i>I</i></button>' +
-				'<button type="button" data-wrap="br" title="Reavahetus">↵</button>' +
-				'<button type="button" data-wrap="a" title="Link">🔗</button>' +
+				'<button type="button" data-wrap="strong" title="' + __( 'Bold', 'wonom-meilidisainer' ) + '"><b>B</b></button>' +
+				'<button type="button" data-wrap="em" title="' + __( 'Italic', 'wonom-meilidisainer' ) + '"><i>I</i></button>' +
+				'<button type="button" data-wrap="br" title="' + __( 'Line break', 'wonom-meilidisainer' ) + '">↵</button>' +
+				'<button type="button" data-wrap="a" title="' + __( 'Link', 'wonom-meilidisainer' ) + '">🔗</button>' +
 				tagPicker( fid ) +
 				'</div>' +
 				'<textarea class="wmd-input wmd-textarea" rows="5" id="' + esc( fid ) + '" data-scope="payment" data-key="' + esc( id ) + '" ' +
-				'placeholder="Nt: Palun tee ülekanne oma pangast otse meie kontole…">' + esc( value ) + '</textarea>' +
+				'placeholder="' + __( 'For example: please transfer the amount from your bank straight to our account…', 'wonom-meilidisainer' ) + '">' + esc( value ) + '</textarea>' +
 				'</div></div>';
 		} );
 
@@ -1472,36 +1477,36 @@
 	function backupPanelHtml() {
 		var json = JSON.stringify( exportPayload(), null, 2 );
 
-		return '<details class="wmd-group" open><summary>Kujunduse eksport ja import</summary><div class="wmd-group-body">' +
-			'<p class="wmd-hint">Kogu kujundus — bränd, päis, jalus, kõik meilid ja makseviiside juhised — ühes failis. Teises poes impordid selle ja oled kohe sama seadistusega.</p>' +
+		return '<details class="wmd-group" open><summary>' + __( 'Export and import the design', 'wonom-meilidisainer' ) + '</summary><div class="wmd-group-body">' +
+			'<p class="wmd-hint">' + __( 'The whole design — brand, header, footer, every email and the payment instructions — in one file. In another shop you import it and have the same setup at once.', 'wonom-meilidisainer' ) + '</p>' +
 
 			'<div class="wmd-updates-actions">' +
-			'<button type="button" class="button button-primary wmd-export">Laadi kujundus alla</button>' +
+			'<button type="button" class="button button-primary wmd-export">' + __( 'Download the design', 'wonom-meilidisainer' ) + '</button>' +
 			'</div>' +
 
-			'<details class="wmd-group"><summary>Näita JSON-i</summary><div class="wmd-group-body">' +
+			'<details class="wmd-group"><summary>' + __( 'Show the JSON', 'wonom-meilidisainer' ) + '</summary><div class="wmd-group-body">' +
 			'<textarea class="wmd-input wmd-textarea wmd-mono wmd-export-json" rows="8" readonly>' + esc( json ) + '</textarea>' +
 			'</div></details>' +
 
 			'<hr class="wmd-hr" />' +
 
-			'<p class="wmd-hint"><strong>Import kirjutab kogu praeguse kujunduse üle.</strong> Vali fail või kleebi JSON.</p>' +
+			'<p class="wmd-hint"><strong>' + __( 'Importing overwrites the whole current design.', 'wonom-meilidisainer' ) + '</strong>' + __( ' Pick a file or paste JSON.', 'wonom-meilidisainer' ) + '</p>' +
 			'<div class="wmd-updates-actions">' +
-			'<button type="button" class="button wmd-import-pick">Vali fail…</button>' +
+			'<button type="button" class="button wmd-import-pick">' + __( 'Choose a file…', 'wonom-meilidisainer' ) + '</button>' +
 			'<input type="file" class="wmd-import-file" accept="application/json,.json" hidden />' +
 			'</div>' +
-			'<textarea class="wmd-input wmd-textarea wmd-mono wmd-import-json" rows="4" placeholder="…või kleebi JSON siia"></textarea>' +
+			'<textarea class="wmd-input wmd-textarea wmd-mono wmd-import-json" rows="4" placeholder="' + __( '…or paste JSON here', 'wonom-meilidisainer' ) + '"></textarea>' +
 			'<div class="wmd-updates-actions">' +
-			'<button type="button" class="button wmd-import-run">Impordi kleebitud JSON</button>' +
+			'<button type="button" class="button wmd-import-run">' + __( 'Import the pasted JSON', 'wonom-meilidisainer' ) + '</button>' +
 			'</div>' +
 
-			'<p class="wmd-hint">Logo viitab endiselt lähtepoe meediateegile — teises poes tasub see uuesti üles laadida. Makseviiside juhised kanduvad üle nende tunnuse järgi; kui sihtpoes on teised makselahendused, jäävad need read lihtsalt kasutamata.</p>' +
+			'<p class="wmd-hint">' + __( 'The logo still points at the source shop\'s media library — in another shop it is worth uploading it again. Payment instructions carry over by their ID; if the target shop has other payment gateways, those rows are simply left unused.', 'wonom-meilidisainer' ) + '</p>' +
 			'</div></details>';
 	}
 
 	function updatesPanelHtml() {
 		if ( ! cfg.canUpdate ) {
-			return backupPanelHtml() + '<div class="wmd-intro">Uuenduste seadistamiseks on vaja õigust pluginaid uuendada.</div>';
+			return backupPanelHtml() + '<div class="wmd-intro">' + __( 'Setting up updates needs permission to update plugins.', 'wonom-meilidisainer' ) + '</div>';
 		}
 
 		var u = state.updates;
@@ -1510,53 +1515,53 @@
 
 		var status;
 		if ( u.source === 'off' ) {
-			status = '<span class="wmd-status">Automaatsed uuendused on välja lülitatud.</span>';
+			status = '<span class="wmd-status">' + __( 'Automatic updates are switched off.', 'wonom-meilidisainer' ) + '</span>';
 		} else if ( ! u.remote ) {
-			status = '<span class="wmd-status is-warn">Allikast ei saanud versiooni kätte. Kontrolli hoidla nime, väljalaset ja võtit.</span>';
+			status = '<span class="wmd-status is-warn">' + __( 'Could not get a version from the source. Check the repository name, the release and the token.', 'wonom-meilidisainer' ) + '</span>';
 		} else if ( u.remote === u.current ) {
-			status = '<span class="wmd-status is-ok">Kõik on värske — paigaldatud ' + esc( u.current ) + ', allikas ' + esc( u.remote ) + '.</span>';
+			status = '<span class="wmd-status is-ok">' + __( 'Everything is up to date — installed ', 'wonom-meilidisainer' ) + '' + esc( u.current ) + '' + __( ', source ', 'wonom-meilidisainer' ) + '' + esc( u.remote ) + '.</span>';
 		} else {
-			status = '<span class="wmd-status is-new">Saadaval on <strong>' + esc( u.remote ) + '</strong> (paigaldatud ' + esc( u.current ) + ').</span>';
+			status = '<span class="wmd-status is-new">' + __( 'Available: ', 'wonom-meilidisainer' ) + '<strong>' + esc( u.remote ) + '</strong>' + __( ' (installed ', 'wonom-meilidisainer' ) + '' + esc( u.current ) + ').</span>';
 		}
 
 		var canInstall = u.remote && u.remote !== u.current;
 
 		var html = backupPanelHtml();
 
-		html += '<details class="wmd-group" open><summary>Automaatsed uuendused</summary><div class="wmd-group-body">';
-		html += '<p class="wmd-hint">Plugin ei ole WordPress.org-is, seega uuendused tulevad otse sinu GitHubi väljalasetest. WordPress näitab uuendusteadet ka tavalisel Pluginad-lehel.</p>';
+		html += '<details class="wmd-group" open><summary>' + __( 'Automatic updates', 'wonom-meilidisainer' ) + '</summary><div class="wmd-group-body">';
+		html += '<p class="wmd-hint">' + __( 'The plugin is not on WordPress.org, so updates come straight from your GitHub releases. WordPress shows the update notice on the ordinary Plugins page too.', 'wonom-meilidisainer' ) + '</p>';
 
-		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-u-source">Uuenduste allikas</label>' +
+		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-u-source">' + __( 'Update source', 'wonom-meilidisainer' ) + '</label>' +
 			'<select class="wmd-input" id="wmd-u-source">' +
-			'<option value="off"' + ( u.source === 'off' ? ' selected' : '' ) + '>Väljas</option>' +
-			'<option value="github"' + ( isGithub ? ' selected' : '' ) + '>GitHubi väljalase</option>' +
-			'<option value="json"' + ( isJson ? ' selected' : '' ) + '>Oma JSON-manifest</option>' +
+			'<option value="off"' + ( u.source === 'off' ? ' selected' : '' ) + '>' + __( 'Off', 'wonom-meilidisainer' ) + '</option>' +
+			'<option value="github"' + ( isGithub ? ' selected' : '' ) + '>' + __( 'GitHub release', 'wonom-meilidisainer' ) + '</option>' +
+			'<option value="json"' + ( isJson ? ' selected' : '' ) + '>' + __( 'Own JSON manifest', 'wonom-meilidisainer' ) + '</option>' +
 			'</select></div>';
 
 		html += '<div class="wmd-field" data-when="github"' + ( isGithub ? '' : ' hidden' ) + '>' +
-			'<label class="wmd-label" for="wmd-u-repo">GitHubi hoidla</label>' +
-			'<input type="text" class="wmd-input" id="wmd-u-repo" value="' + esc( u.repo ) + '" placeholder="kasutaja/hoidla" /></div>';
+			'<label class="wmd-label" for="wmd-u-repo">' + __( 'GitHub repository', 'wonom-meilidisainer' ) + '</label>' +
+			'<input type="text" class="wmd-input" id="wmd-u-repo" value="' + esc( u.repo ) + '" placeholder="' + __( 'user/repository', 'wonom-meilidisainer' ) + '" /></div>';
 
 		html += '<div class="wmd-field" data-when="github"' + ( isGithub ? '' : ' hidden' ) + '>' +
-			'<label class="wmd-label" for="wmd-u-token">Juurdepääsuvõti</label>' +
-			'<input type="password" class="wmd-input" id="wmd-u-token" value="' + esc( u.token ) + '" placeholder="ainult privaatse hoidla puhul" autocomplete="off" /></div>';
+			'<label class="wmd-label" for="wmd-u-token">' + __( 'Access token', 'wonom-meilidisainer' ) + '</label>' +
+			'<input type="password" class="wmd-input" id="wmd-u-token" value="' + esc( u.token ) + '" placeholder="' + __( 'only for a private repository', 'wonom-meilidisainer' ) + '" autocomplete="off" /></div>';
 
 		html += '<div class="wmd-field" data-when="json"' + ( isJson ? '' : ' hidden' ) + '>' +
-			'<label class="wmd-label" for="wmd-u-json">Manifesti aadress</label>' +
+			'<label class="wmd-label" for="wmd-u-json">' + __( 'Manifest address', 'wonom-meilidisainer' ) + '</label>' +
 			'<input type="text" class="wmd-input" id="wmd-u-json" value="' + esc( u.json ) + '" placeholder="https://…/update.json" /></div>';
 
 		html += '<div class="wmd-updates-actions">' +
-			'<button type="button" class="button button-primary wmd-u-save">Salvesta allikas</button> ' +
-			'<button type="button" class="button wmd-u-check">Kontrolli kohe</button>' +
+			'<button type="button" class="button button-primary wmd-u-save">' + __( 'Save the source', 'wonom-meilidisainer' ) + '</button> ' +
+			'<button type="button" class="button wmd-u-check">' + __( 'Check now', 'wonom-meilidisainer' ) + '</button>' +
 			'</div>';
 
 		html += '<div class="wmd-update-status">' + status + '</div>';
 
 		if ( canInstall ) {
 			html += '<div class="wmd-updates-actions">' +
-				'<button type="button" class="button button-primary wmd-u-install">Uuenda kohe versioonile ' + esc( u.remote ) + '</button>' +
+				'<button type="button" class="button button-primary wmd-u-install">' + __( 'Update now to version ', 'wonom-meilidisainer' ) + '' + esc( u.remote ) + '</button>' +
 				'</div>' +
-				'<p class="wmd-hint">Paigaldab uue versiooni siinsamas. Leht laaditakse pärast uuesti; salvestamata muudatused salvesta enne ära.</p>';
+				'<p class="wmd-hint">' + __( 'Installs the new version right here. The page reloads afterwards; save any unsaved changes first.', 'wonom-meilidisainer' ) + '</p>';
 		}
 
 		if ( state.updateLog && state.updateLog.length ) {
@@ -1575,7 +1580,7 @@
 		var design = ( data && data.design ) ? data.design : data;
 
 		if ( ! design || typeof design !== 'object' || ! design.brand || ! design.emails ) {
-			throw new Error( 'See ei ole Meilidisaineri kujundusfail.' );
+			throw new Error( __( 'This is not an Email Designer design file.', 'wonom-meilidisainer' ) );
 		}
 
 		return design;
@@ -1587,11 +1592,11 @@
 		try {
 			design = readImport( text );
 		} catch ( e ) {
-			toast( e.message || 'Faili ei õnnestunud lugeda', 'error' );
+			toast( e.message || __( 'The file could not be read', 'wonom-meilidisainer' ), 'error' );
 			return;
 		}
 
-		if ( ! window.confirm( 'Import kirjutab kogu praeguse kujunduse üle — bränd, päis, jalus, kõik meilid ja makseviiside juhised. Jätkan?' ) ) {
+		if ( ! window.confirm( __( 'Importing overwrites the whole current design — brand, header, footer, every email and the payment instructions. Continue?', 'wonom-meilidisainer' ) ) ) {
 			return;
 		}
 
@@ -1602,9 +1607,9 @@
 			state.dirty = false;
 			wcCache = {};
 			render();
-			toast( 'Kujundus imporditud', 'ok' );
+			toast( __( 'Design imported', 'wonom-meilidisainer' ), 'ok' );
 		} ).catch( function ( err ) {
-			toast( err || 'Import ebaõnnestus', 'error' );
+			toast( err || __( 'Import failed', 'wonom-meilidisainer' ), 'error' );
 		} );
 	}
 
@@ -1626,7 +1631,7 @@
 					URL.revokeObjectURL( url );
 				}, 1000 );
 
-				toast( 'Kujundus laaditi alla', 'ok' );
+				toast( __( 'Design downloaded', 'wonom-meilidisainer' ), 'ok' );
 			} );
 		}
 
@@ -1649,7 +1654,7 @@
 					file.value = '';
 				};
 				reader.onerror = function () {
-					toast( 'Faili lugemine ebaõnnestus', 'error' );
+					toast( __( 'Reading the file failed', 'wonom-meilidisainer' ), 'error' );
 				};
 				reader.readAsText( file.files[ 0 ] );
 			} );
@@ -1661,7 +1666,7 @@
 		if ( runBtn && paste ) {
 			runBtn.addEventListener( 'click', function () {
 				if ( ! paste.value.trim() ) {
-					toast( 'Kleebi kõigepealt JSON', 'error' );
+					toast( __( 'Paste the JSON first', 'wonom-meilidisainer' ), 'error' );
 					return;
 				}
 
@@ -1699,7 +1704,7 @@
 			post( 'wmd_save_updates', payload() ).then( function ( res ) {
 				state.updates = res.updates;
 				render();
-				toast( i18n.saved, 'ok' );
+				toast( __( 'Saved', 'wonom-meilidisainer' ), 'ok' );
 			} ).catch( function ( err ) {
 				toast( err, 'error' );
 			} ).then( function () {
@@ -1710,19 +1715,19 @@
 		var install = root.querySelector( '.wmd-u-install' );
 		if ( install ) {
 			install.addEventListener( 'click', function () {
-				if ( state.dirty && ! window.confirm( 'Sul on salvestamata muudatusi. Uuendamine laadib lehe uuesti ja need lähevad kaotsi. Jätkan?' ) ) {
+				if ( state.dirty && ! window.confirm( __( 'You have unsaved changes. Updating reloads the page and they will be lost. Continue?', 'wonom-meilidisainer' ) ) ) {
 					return;
 				}
 
 				install.disabled = true;
-				install.textContent = 'Paigaldan…';
+				install.textContent = __( 'Installing…', 'wonom-meilidisainer' );
 
 				post( 'wmd_update_now', {} ).then( function ( res ) {
 					state.dirty = false;
 					state.updateLog = res.log || [];
 
 					if ( res.updated ) {
-						toast( res.message + ' Laen lehe uuesti…', 'ok' );
+						toast( res.message + ' ' + __( 'Reloading the page…', 'wonom-meilidisainer' ), 'ok' );
 						setTimeout( function () {
 							window.location.reload();
 						}, 1200 );
@@ -1735,7 +1740,7 @@
 					state.updateLog = [];
 					toast( err, 'error' );
 					install.disabled = false;
-					install.textContent = 'Proovi uuesti';
+					install.textContent = __( 'Try again', 'wonom-meilidisainer' );
 				} );
 			} );
 		}
@@ -1743,7 +1748,7 @@
 		var check = root.querySelector( '.wmd-u-check' );
 		check.addEventListener( 'click', function () {
 			check.disabled = true;
-			check.textContent = 'Kontrollin…';
+			check.textContent = __( 'Checking…', 'wonom-meilidisainer' );
 			post( 'wmd_save_updates', payload() ).then( function () {
 				return post( 'wmd_check_update', {} );
 			} ).then( function ( res ) {
@@ -1751,12 +1756,12 @@
 				state.updates.remote = res.remote;
 				state.updates.source = source.value;
 				render();
-				toast( res.remote ? ( res.newer ? 'Uuendus ' + res.remote + ' on saadaval' : 'Kõik on värske' ) : 'Allikast ei saanud vastust', res.remote ? 'ok' : 'error' );
+				toast( res.remote ? ( res.newer ? __( 'Update ', 'wonom-meilidisainer' ) + res.remote + ' ' + __( 'is available', 'wonom-meilidisainer' ) : __( 'Everything is up to date', 'wonom-meilidisainer' ) ) : __( 'The source did not respond', 'wonom-meilidisainer' ), res.remote ? 'ok' : 'error' );
 			} ).catch( function ( err ) {
 				toast( err, 'error' );
 			} ).then( function () {
 				check.disabled = false;
-				check.textContent = 'Kontrolli kohe';
+				check.textContent = __( 'Check now', 'wonom-meilidisainer' );
 			} );
 		} );
 	}
@@ -1768,8 +1773,8 @@
 
 		if ( ! block ) {
 			return '<div class="wmd-inspector-empty">' +
-				'<h3>Midagi pole valitud</h3>' +
-				'<p>Klõpsa eelvaates mõnel plokil või vali see vasakust nimekirjast, et selle seaded siia ilmuksid.</p>' +
+				'<h3>' + __( 'Nothing selected', 'wonom-meilidisainer' ) + '</h3>' +
+				'<p>' + __( 'Click a block in the preview, or pick one from the list on the left, to make its settings appear here.', 'wonom-meilidisainer' ) + '</p>' +
 				'</div>';
 		}
 
@@ -1787,9 +1792,9 @@
 			var chosen = blockCond( block ).pay;
 
 			html += '<details class="wmd-group wmd-cond"' + ( chosen.length ? ' open' : '' ) + '>' +
-				'<summary>Nähtavus' + ( chosen.length ? ' · ' + chosen.length : '' ) + '</summary>' +
+				'<summary>' + __( 'Visibility', 'wonom-meilidisainer' ) + '' + ( chosen.length ? ' · ' + chosen.length : '' ) + '</summary>' +
 				'<div class="wmd-group-body">' +
-				'<p class="wmd-hint">Märkimata = näita alati. Märgi need makseviisid, mille puhul plokk kirja läheb — nii saab nt pangaülekande juhised panna ainult ülekandega tellimustele.</p>' +
+				'<p class="wmd-hint">' + __( 'Unticked = always show. Tick the payment methods for which the block goes into the email — that way bank transfer instructions can go only to bank transfer orders.', 'wonom-meilidisainer' ) + '</p>' +
 				gwKeys.map( function ( id ) {
 					var on = chosen.indexOf( id ) !== -1;
 					return '<label class="wmd-check"><input type="checkbox" data-pay="' + esc( id ) + '"' + ( on ? ' checked' : '' ) + ' /> ' +
@@ -1799,8 +1804,8 @@
 		}
 
 		html += '<div class="wmd-inspector-foot">' +
-			'<button type="button" class="button" data-dup="' + esc( state.selected.zone ) + '|' + esc( block.id ) + '">Kopeeri plokk</button> ' +
-			'<button type="button" class="button button-link-delete" data-del="' + esc( state.selected.zone ) + '|' + esc( block.id ) + '">Kustuta</button>' +
+			'<button type="button" class="button" data-dup="' + esc( state.selected.zone ) + '|' + esc( block.id ) + '">' + __( 'Duplicate block', 'wonom-meilidisainer' ) + '</button> ' +
+			'<button type="button" class="button button-link-delete" data-del="' + esc( state.selected.zone ) + '|' + esc( block.id ) + '">' + __( 'Delete', 'wonom-meilidisainer' ) + '</button>' +
 			'</div>';
 
 		return html;
@@ -1810,13 +1815,13 @@
 
 	function render() {
 		var tabs = [
-			[ 'brand', 'Bränd' ],
-			[ 'header', 'Päis' ],
-			[ 'footer', 'Jalus' ],
-			[ 'emails', 'Meilid' ],
-			[ 'payments', 'Makseviisid' ],
-			[ 'vars', 'Muutujad' ],
-			[ 'updates', 'Seaded' ],
+			[ 'brand', __( 'Brand', 'wonom-meilidisainer' ) ],
+			[ 'header', __( 'Header', 'wonom-meilidisainer' ) ],
+			[ 'footer', __( 'Footer', 'wonom-meilidisainer' ) ],
+			[ 'emails', __( 'Emails', 'wonom-meilidisainer' ) ],
+			[ 'payments', __( 'Payment methods', 'wonom-meilidisainer' ) ],
+			[ 'vars', __( 'Variables', 'wonom-meilidisainer' ) ],
+			[ 'updates', __( 'Settings', 'wonom-meilidisainer' ) ],
 		].map( function ( t ) {
 			return '<button type="button" class="wmd-tab' + ( state.tab === t[ 0 ] ? ' is-active' : '' ) + '" data-tab="' + t[ 0 ] + '">' + t[ 1 ] + '</button>';
 		} ).join( '' );
@@ -1825,9 +1830,9 @@
 		if ( state.tab === 'brand' ) {
 			panel = brandPanelHtml();
 		} else if ( state.tab === 'header' ) {
-			panel = '<div class="wmd-intro">Päis on kõigi meilide ülaosas ühesugune.</div>' + blockListHtml( 'header', '', '' );
+			panel = '<div class="wmd-intro">' + __( 'The header is the same at the top of every email.', 'wonom-meilidisainer' ) + '</div>' + blockListHtml( 'header', '', '' );
 		} else if ( state.tab === 'footer' ) {
-			panel = '<div class="wmd-intro">Jalus on kõigi meilide all ühesugune.</div>' + blockListHtml( 'footer', '', '' );
+			panel = '<div class="wmd-intro">' + __( 'The footer is the same at the bottom of every email.', 'wonom-meilidisainer' ) + '</div>' + blockListHtml( 'footer', '', '' );
 		} else if ( state.tab === 'payments' ) {
 			panel = paymentsPanelHtml();
 		} else if ( state.tab === 'vars' ) {
@@ -1847,8 +1852,8 @@
 		var orderPick = '';
 
 		if ( orders.length ) {
-			orderPick = '<select class="wmd-input wmd-order-pick" title="Millise tellimuse andmetega eelvaadet täita">' +
-				'<option value="0"' + ( state.order ? '' : ' selected' ) + '>Poe viimane tellimus</option>' +
+			orderPick = '<select class="wmd-input wmd-order-pick" title="' + __( 'Which order to fill the preview with', 'wonom-meilidisainer' ) + '">' +
+				'<option value="0"' + ( state.order ? '' : ' selected' ) + '>' + __( 'Latest order in the shop', 'wonom-meilidisainer' ) + '</option>' +
 				orders.map( function ( o ) {
 					return '<option value="' + esc( o.id ) + '"' + ( String( o.id ) === String( state.order ) ? ' selected' : '' ) + '>' + esc( o.label ) + '</option>';
 				} ).join( '' ) +
@@ -1858,25 +1863,25 @@
 		root.innerHTML = '' +
 			'<div class="wmd-bar">' +
 			'<div class="wmd-bar-left"><span class="wmd-logo">Meilidisainer</span>' +
-			'<span class="wmd-dirty" ' + ( state.dirty ? '' : 'hidden' ) + '>' + esc( i18n.unsaved ) + '</span></div>' +
+			'<span class="wmd-dirty" ' + ( state.dirty ? '' : 'hidden' ) + '>' + esc( __( 'Unsaved changes', 'wonom-meilidisainer' ) ) + '</span></div>' +
 			'<div class="wmd-bar-mid">' +
-			'<select class="wmd-input wmd-preview-pick" title="Mida eelvaates näidata">' + previewOpts + '</select>' +
+			'<select class="wmd-input wmd-preview-pick" title="' + __( 'What to show in the preview', 'wonom-meilidisainer' ) + '">' + previewOpts + '</select>' +
 			orderPick +
 			'<div class="wmd-segs wmd-device">' +
-			'<button type="button" class="wmd-seg' + ( state.device === 'desktop' ? ' is-active' : '' ) + '" data-device="desktop">Arvuti</button>' +
-			'<button type="button" class="wmd-seg' + ( state.device === 'mobile' ? ' is-active' : '' ) + '" data-device="mobile">Mobiil</button>' +
+			'<button type="button" class="wmd-seg' + ( state.device === 'desktop' ? ' is-active' : '' ) + '" data-device="desktop">' + __( 'Desktop', 'wonom-meilidisainer' ) + '</button>' +
+			'<button type="button" class="wmd-seg' + ( state.device === 'mobile' ? ' is-active' : '' ) + '" data-device="mobile">' + __( 'Mobile', 'wonom-meilidisainer' ) + '</button>' +
 			'</div></div>' +
 			'<div class="wmd-bar-right">' +
-			'<label class="wmd-switch wmd-switch-inline" title="Kas kujundus rakendub päris meilidele"><input type="checkbox" class="wmd-enabled"' + ( state.enabled ? ' checked' : '' ) + ' /><span></span>Kujundus sees</label>' +
-			'<button type="button" class="button wmd-test">Saada testmeil</button>' +
-			'<button type="button" class="button button-primary wmd-save">Salvesta</button>' +
-			'<button type="button" class="button-link wmd-reset" title="Lähtesta kujundus">Lähtesta</button>' +
+			'<label class="wmd-switch wmd-switch-inline" title="' + __( 'Whether the design applies to real emails', 'wonom-meilidisainer' ) + '"><input type="checkbox" class="wmd-enabled"' + ( state.enabled ? ' checked' : '' ) + ' /><span></span>' + __( 'Design on', 'wonom-meilidisainer' ) + '</label>' +
+			'<button type="button" class="button wmd-test">' + __( 'Send test email', 'wonom-meilidisainer' ) + '</button>' +
+			'<button type="button" class="button button-primary wmd-save">' + __( 'Save', 'wonom-meilidisainer' ) + '</button>' +
+			'<button type="button" class="button-link wmd-reset" title="' + __( 'Reset the design', 'wonom-meilidisainer' ) + '">' + __( 'Reset', 'wonom-meilidisainer' ) + '</button>' +
 			'</div></div>' +
 			'<div class="wmd-body">' +
 			'<aside class="wmd-left"><div class="wmd-tabs">' + tabs + '</div><div class="wmd-panel">' + panel + '</div></aside>' +
 			'<main class="wmd-canvas' + ( state.device === 'mobile' ? ' is-mobile' : '' ) + '">' +
 			wcNoteHtml() +
-			'<div class="wmd-frame-wrap"><iframe class="wmd-frame" title="Meili eelvaade"></iframe></div></main>' +
+			'<div class="wmd-frame-wrap"><iframe class="wmd-frame" title="' + __( 'Email preview', 'wonom-meilidisainer' ) + '"></iframe></div></main>' +
 			'<aside class="wmd-right">' + inspectorHtml() + '</aside>' +
 			'</div>' +
 			'<div class="wmd-toast"></div>';
@@ -2275,7 +2280,7 @@
 					}
 
 					cats.disabled = true;
-					cats.textContent = 'Laen…';
+					cats.textContent = __( 'Loading…', 'wonom-meilidisainer' );
 
 					post( 'wmd_categories', {} ).then( function ( res ) {
 						state.cats = ( res && res.items ) || [];
@@ -2283,7 +2288,7 @@
 						render();
 					} ).catch( function ( err ) {
 						cats.disabled = false;
-						cats.textContent = 'Lae tootekategooriad';
+						cats.textContent = __( 'Load product categories', 'wonom-meilidisainer' );
 						toast( err, 'error' );
 					} );
 				} );
@@ -2468,7 +2473,7 @@
 				ev.stopPropagation();
 				var parts = btn.getAttribute( 'data-del' ).split( '|' );
 				var index = blockIndex( parts[ 0 ], parts[ 1 ] );
-				if ( index === -1 || ! window.confirm( i18n.confirmDelete ) ) {
+				if ( index === -1 || ! window.confirm( __( 'Delete this block?', 'wonom-meilidisainer' ) ) ) {
 					return;
 				}
 				zoneList( parts[ 0 ] ).splice( index, 1 );
@@ -2598,7 +2603,7 @@
 				if ( tag === 'br' ) {
 					insert = '<br>';
 				} else if ( tag === 'a' ) {
-					var url = window.prompt( 'Lingi aadress', 'https://' );
+					var url = window.prompt( __( 'Link address', 'wonom-meilidisainer' ), 'https://' );
 					if ( ! url ) {
 						return;
 					}
@@ -2668,7 +2673,7 @@
 		var reset = root.querySelector( '.wmd-reset' );
 		if ( reset ) {
 			reset.addEventListener( 'click', function () {
-				if ( ! window.confirm( i18n.confirmReset ) ) {
+				if ( ! window.confirm( __( 'Reset the whole design to its defaults? This cannot be undone.', 'wonom-meilidisainer' ) ) ) {
 					return;
 				}
 				post( 'wmd_reset', {} ).then( function ( res ) {
@@ -2677,7 +2682,7 @@
 					state.dirty = false;
 					wcCache = {};
 					render();
-					toast( i18n.saved, 'ok' );
+					toast( __( 'Saved', 'wonom-meilidisainer' ), 'ok' );
 				} );
 			} );
 		}
@@ -2687,7 +2692,7 @@
 			enabled.addEventListener( 'change', function () {
 				state.enabled = enabled.checked;
 				post( 'wmd_toggle', { on: enabled.checked ? 1 : 0 } ).then( function () {
-					toast( enabled.checked ? 'Kujundus rakendub meilidele' : 'Kujundus on välja lülitatud', 'ok' );
+					toast( enabled.checked ? __( 'The design applies to emails', 'wonom-meilidisainer' ) : __( 'The design is switched off', 'wonom-meilidisainer' ), 'ok' );
 				} );
 			} );
 		}
@@ -2695,12 +2700,12 @@
 		var test = root.querySelector( '.wmd-test' );
 		if ( test ) {
 			test.addEventListener( 'click', function () {
-				var to = window.prompt( 'Kuhu testmeil saata?', cfg.testTo || '' );
+				var to = window.prompt( __( 'Where should the test email go?', 'wonom-meilidisainer' ), cfg.testTo || '' );
 				if ( ! to ) {
 					return;
 				}
 				test.disabled = true;
-				test.textContent = i18n.sending;
+				test.textContent = __( 'Sending…', 'wonom-meilidisainer' );
 				post( 'wmd_test_email', {
 					to: to,
 					email: state.email,
@@ -2713,12 +2718,12 @@
 					// jõuaks täpselt see, mida ekraanil näed. Ütleme seda ka.
 					state.dirty = false;
 					render();
-					toast( 'Kujundus salvestati ja testmeil läks aadressile ' + res.to, 'ok' );
+					toast( __( 'The design was saved and the test email went to ', 'wonom-meilidisainer' ) + res.to, 'ok' );
 				} ).catch( function ( err ) {
 					toast( err, 'error' );
 				} ).then( function () {
 					test.disabled = false;
-					test.textContent = 'Saada testmeil';
+					test.textContent = __( 'Send test email', 'wonom-meilidisainer' );
 				} );
 			} );
 		}
@@ -2734,9 +2739,9 @@
 			state.design = normalise( res.design );
 			state.dirty = false;
 			render();
-			toast( i18n.saved, 'ok' );
+			toast( __( 'Saved', 'wonom-meilidisainer' ), 'ok' );
 		} ).catch( function ( err ) {
-			toast( err || i18n.saveFailed, 'error' );
+			toast( err || __( 'Saving failed', 'wonom-meilidisainer' ), 'error' );
 		} ).then( function () {
 			if ( btn ) {
 				btn.disabled = false;
@@ -2751,7 +2756,7 @@
 	 */
 	function openMediaWith( done ) {
 		if ( ! window.wp || ! window.wp.media ) {
-			var url = window.prompt( 'Pildi aadress', '' );
+			var url = window.prompt( __( 'Image address', 'wonom-meilidisainer' ), '' );
 
 			if ( url ) {
 				done( url );
@@ -2761,7 +2766,7 @@
 		}
 
 		var frame = window.wp.media( {
-			title: i18n.pickImage,
+			title: __( 'Choose image', 'wonom-meilidisainer' ),
 			multiple: false,
 			library: { type: 'image' },
 		} );
@@ -2833,12 +2838,12 @@
 				// otse, mitte ei näita kasutajale JSON-i parsimisviga.
 				if ( ! json ) {
 					throw 403 === r.status
-						? 'Serveri tulemüür blokeeris päringu (HTTP 403). Küsi majutajalt, et see aadress lubataks.'
-						: 'Server vastas ootamatult (HTTP ' + r.status + '). Vaata serveri vealogi.';
+						? __( 'The server firewall blocked the request (HTTP 403). Ask your host to allow this address.', 'wonom-meilidisainer' )
+						: __( 'The server replied unexpectedly (HTTP ', 'wonom-meilidisainer' ) + r.status + __( '). Check the server error log.', 'wonom-meilidisainer' );
 				}
 
 				if ( ! json.success ) {
-					throw ( json.data && json.data.message ) || i18n.saveFailed;
+					throw ( json.data && json.data.message ) || __( 'Saving failed', 'wonom-meilidisainer' );
 				}
 
 				return json.data;

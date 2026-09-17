@@ -338,7 +338,7 @@ class WMD_Updater {
 			'download_link' => $info['package'],
 			'sections'      => array(
 				'description' => wpautop( $data['Description'] ),
-				'changelog'   => $info['changelog'] ? wpautop( $info['changelog'] ) : esc_html__( 'Muudatuste nimekirja ei ole antud.', 'wonom-meilidisainer' ),
+				'changelog'   => $info['changelog'] ? wpautop( $info['changelog'] ) : esc_html__( 'No changelog was provided.', 'wonom-meilidisainer' ),
 			),
 		);
 	}
@@ -376,7 +376,7 @@ class WMD_Updater {
 
 		return new WP_Error(
 			'wmd_rename_failed',
-			__( 'Uuenduse kausta ümbernimetamine ebaõnnestus.', 'wonom-meilidisainer' )
+			__( 'Renaming the update folder failed.', 'wonom-meilidisainer' )
 		);
 	}
 
@@ -443,20 +443,20 @@ class WMD_Updater {
 	 */
 	public static function update_now() {
 		if ( ! current_user_can( 'update_plugins' ) ) {
-			return new WP_Error( 'wmd_forbidden', __( 'Puuduvad õigused pluginate uuendamiseks.', 'wonom-meilidisainer' ) );
+			return new WP_Error( 'wmd_forbidden', __( 'You do not have permission to update plugins.', 'wonom-meilidisainer' ) );
 		}
 
 		$info = self::remote( true );
 
 		if ( ! $info ) {
-			return new WP_Error( 'wmd_no_source', __( 'Uuenduste allikast ei saanud vastust.', 'wonom-meilidisainer' ) );
+			return new WP_Error( 'wmd_no_source', __( 'The update source did not respond.', 'wonom-meilidisainer' ) );
 		}
 
 		if ( ! version_compare( $info['version'], WMD_VERSION, '>' ) ) {
 			return array(
 				'updated' => false,
 				'version' => WMD_VERSION,
-				'message' => __( 'Uuemat versiooni ei ole.', 'wonom-meilidisainer' ),
+				'message' => __( 'There is no newer version.', 'wonom-meilidisainer' ),
 			);
 		}
 
@@ -489,7 +489,7 @@ class WMD_Updater {
 		if ( false === $result ) {
 			return new WP_Error(
 				'wmd_upgrade_failed',
-				__( 'Uuendus ei õnnestunud. Vaata failiõigusi või paigalda ZIP käsitsi.', 'wonom-meilidisainer' ),
+				__( 'The update failed. Check file permissions or install the ZIP by hand.', 'wonom-meilidisainer' ),
 				$log
 			);
 		}
@@ -508,7 +508,7 @@ class WMD_Updater {
 			'log'     => array_map( 'wp_strip_all_tags', $log ),
 			'message' => sprintf(
 				/* translators: %s: versiooninumber. */
-				__( 'Paigaldatud versioon %s.', 'wonom-meilidisainer' ),
+				__( 'Installed version %s.', 'wonom-meilidisainer' ),
 				$info['version']
 			),
 		);

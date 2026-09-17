@@ -1,64 +1,76 @@
-=== Wonom Meilidisainer ===
+=== Wonom Email Designer ===
 Contributors: wonomdigital
 Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.23.0
+Stable tag: 0.24.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-WooCommerce'i tellimusmeilide visuaalne kujundaja. Bränd seadistatakse üks kord ja rakendub kõigile meilidele.
+A visual designer for WooCommerce order emails. Set the brand once and it applies to every email.
 
-== Kirjeldus ==
+== Description ==
 
-Wonom Meilidisainer annab WooCommerce'i transaktsioonimeilidele kaubamärgi näo, ilma et peaks malle kopeerima või koodi kirjutama.
+Wonom Email Designer gives WooCommerce transactional emails your brand look, without copying templates or writing code.
 
-**Põhimõte, mis eristab teistest meiliehitajatest:** sa ei ehita 14 meili eraldi kokku. Sa seadistad ühe korra brändi — logo, värvid, kiri, nupustiil, päis ja jalus — ja see rakendub automaatselt kõigile meilidele. Ainult siis, kui mõni konkreetne meil vajab midagi lisaks (tervitus, nupp, tarneinfo), lisad sinna plokke.
+**What sets it apart from other email builders:** you do not build fourteen emails one by one. You set the brand once — logo, colours, type, button style, header and footer — and it applies to every email automatically. Only when one particular email needs something extra (a greeting, a button, delivery info) do you add blocks to it.
 
-= Mida saab teha =
+= What you can do =
 
-* **Bränd** — logo, värvipalett, kirjatüüp ja -suurus, nupustiil, meili laius, nurkade ümarus, sisemine veeris, lisa-CSS.
-* **Päis ja jalus** — kõigile meilidele ühine, ehitatakse plokkidest.
-* **Meilipõhine sisu** — igale meilile eraldi pealkiri postkastis, suur pealkiri ja plokid enne või pärast tellimuse tabelit.
-* **Plokid** — pealkiri, tekstilõik, nupp, pilt, joon, tühi ruum, kaks veergu, sotsiaalmeedia, oma HTML.
-* **Muutujad** — `{{customer_first_name}}`, `{{order_number}}`, `{{order_total}}`, `{{order_url}}` jt, valikuna nupu alt.
-* **Elav eelvaade** — muudatus on ekraanil kohe, arvuti- ja mobiilivaade.
-* **Serveri eelvaade** — renderdab meili sama koodiga, mis päris saatmisel, viimase tellimuse andmetega.
-* **Testmeil** — saadab päris WooCommerce'i meili, aga suunab selle testaadressile.
-* **Üks lüliti** — „Kujundus sees" lülitab kogu ülevõtmise korraga välja, WooCommerce'i vaikemallid tulevad tagasi.
+* **Brand** — logo, colour palette, font and size, button style, email width, corner radius, inner padding, extra CSS.
+* **Header and footer** — shared by every email, built from blocks.
+* **Per-email content** — its own subject line, large heading, and blocks before or after the order table.
+* **Blocks** — heading, paragraph, button, image, divider, spacer, two columns, images side by side, social media, custom HTML, and WooCommerce's own order table, addresses and totals.
+* **Variables** — `{{customer_first_name}}`, `{{order_number}}`, `{{order_total}}`, `{{order_url}}` and more, from a picker that shows the real values of the selected order.
+* **Live preview** — every change is on screen at once, in desktop and mobile view.
+* **Test email** — sends the real WooCommerce email, but to a test address.
+* **Export and import** — the whole design in one file, to move it to another shop.
+* **One switch** — "Design on" turns the whole takeover off at once and the WooCommerce default templates come back.
 
-= Kaetud meilid =
+= Languages =
 
-Tellimus töösse võetud, täidetud, ootel, tagastatud, arve/makseootel, märkus kliendile, parooli lähtestamine, uus konto, uus tellimus poele, tühistatud tellimus, ebaõnnestunud tellimus.
+The interface is in English and Estonian. The source language is English; Estonian comes from the bundled translation. Another language needs only a `.po` file — the `.pot` template is in `languages/`.
 
-= Kuidas see töötab =
+= Emails covered =
 
-Plugin asendab WooCommerce'i mallid `emails/email-header.php` ja `emails/email-footer.php` ning lisab brändi CSS-i filtriga `woocommerce_email_styles`. Tellimuse tabeli ja aadressid renderdab endiselt WooCommerce ise — nii ei lähe midagi kaotsi, kui WooCommerce neid malle uuendab.
+Order processing, completed, on hold, refunded, invoice / pending payment, note to customer, password reset, new account, new order to the shop, cancelled order, failed order.
 
-Kui teema on need mallid ise üle kirjutanud, jätab plugin teema oma alles ega sekku.
+= How it works =
 
-== Paigaldus ==
+The plugin replaces the WooCommerce templates `emails/email-header.php` and `emails/email-footer.php` and adds the brand CSS through the `woocommerce_email_styles` filter. The order table and the addresses are still rendered by WooCommerce itself — so nothing is lost when WooCommerce updates those templates.
 
-1. Laadi kaust `wonom-meilidisainer` üles kausta `/wp-content/plugins/`.
-2. Aktiveeri plugin WordPressi pluginate lehel.
-3. Ava **WooCommerce → Meilidisainer**.
+If your theme has overridden those templates, the plugin leaves the theme's version alone.
 
-== Korduma kippuvad küsimused ==
+== Installation ==
 
-= Kas olemasolevad WooCommerce'i meiliseaded jäävad alles? =
+1. Upload the folder `wonom-meilidisainer` to `/wp-content/plugins/`.
+2. Activate the plugin on the WordPress plugins page.
+3. Open **WooCommerce → Email Designer**.
 
-Jah. Meilide sisse-/väljalülitamine, saajad ja vaiketeemad jäävad WooCommerce'i seadetesse. Meilidisainer kirjutab teema üle ainult siis, kui oled selle välja täitnud.
+== Frequently Asked Questions ==
 
-= Kas plugin muudab tellimuse tabelit? =
+= Do my existing WooCommerce email settings stay? =
 
-Ei, tabeli renderdab WooCommerce. Meilidisainer annab sellele ainult brändi värvid ja kirja.
+Yes. Enabling and disabling emails, recipients and the default subjects stay in the WooCommerce settings. The Email Designer overrides the subject only when you have filled that field in.
 
-= Mis juhtub, kui plugin välja lülitada? =
+= Does the plugin change the order table? =
 
-Meilid lähevad tagasi WooCommerce'i vaikekujundusele. Kujundus jääb andmebaasi alles.
+No, WooCommerce renders the table. The Email Designer only gives it the brand colours and type.
 
-== Muudatused ==
+= What happens if I switch the plugin off? =
+
+Emails go back to the WooCommerce default design. Your design stays in the database.
+
+== Changelog ==
+
+Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 0.24.0 =
+* The plugin is now bilingual. The source language is English and Estonian comes from a bundled translation, so the designer follows the language of the WordPress user: English admin, English interface; Estonian admin, Estonian interface.
+* All 407 texts go through the standard WordPress translation system — 236 in PHP, 193 in JavaScript. Another language needs only a `.po` file; the `.pot` template is in `languages/`.
+* The JavaScript texts used to travel through a `wp_localize_script` array and were partly hardcoded. They now use `wp.i18n` like the rest of WordPress, so there is one way to translate instead of two.
+* Nothing changed in how emails are put together, and no saved design is affected. The text you have written into blocks yourself stays exactly as it is — that is content, not interface, and it is not translated.
 
 = 0.23.0 =
 * **Oluline parandus:** „Võta üle" jättis kirja sisse selle tellimuse päris andmed — kliendi nime, tellimuse numbri ja kuupäeva. Nii oleks iga järgmine kiri läinud kõigile klientidele ühe konkreetse tellimuse nimega. Nüüd võetakse need ülevõtmisel tagasi muutujateks ({{customer_name}}, #{{order_number}}, {{order_date}}).

@@ -5,6 +5,12 @@
 ( function ( global ) {
 	'use strict';
 
+	// Tõlked tulevad WordPressilt. Kui wp.i18n mingil põhjusel puudub (nt demo),
+	// jääb alles lähtetekst — see on inglise keeles ja loetav.
+	var __ = ( global.wp && global.wp.i18n && global.wp.i18n.__ ) || function ( text ) {
+		return text;
+	};
+
 	// Makseviiside juhised. Plokk vajab neid, aga plokini kujundust ei anta,
 	// seega hoiame neid siin ja full() värskendab iga renderdusega.
 	var design_payments = {};
@@ -187,7 +193,7 @@
 					} ) ) + '">' + esc( card.label ) + '</div>';
 				} else if ( placeholder ) {
 					inside += '<div style="font-family:' + escAttr( font ) + ';font-size:' + size + 'px;padding-top:8px;color:' +
-						escAttr( brand.muted_color ) + ';">Nimi</div>';
+						escAttr( brand.muted_color ) + ';">' + __( 'Name', 'wonom-meilidisainer' ) + '</div>';
 				}
 
 				if ( card.link ) {
@@ -503,7 +509,7 @@
 						color: brand.muted_color,
 						border: '1px dashed ' + brand.border_color,
 						padding: '10px 14px',
-					} ) ) + '">Makselahenduse juhised (nt pangaülekande rekvisiidid) ilmuvad siia päris meilis, kui makselahendus neid saadab.</div>';
+					} ) ) + '">' + __( 'Payment instructions (for example bank transfer details) appear here in the real email, if the payment method sends them.', 'wonom-meilidisainer' ) + '</div>';
 				}
 				break;
 
@@ -514,11 +520,11 @@
 					if ( p.hide_empty ) {
 						return '';
 					}
-					noteText = '(märkust ei ole)';
+					noteText = __( '(no note)', 'wonom-meilidisainer' );
 				}
 
 				if ( noteText === null ) {
-					noteText = 'Palun jätke pakk pakiautomaati.';
+					noteText = __( 'Please leave it in the parcel locker.', 'wonom-meilidisainer' );
 				}
 
 				body = '<div style="' + escAttr( style( {
@@ -612,18 +618,18 @@
 
 	function sampleItems() {
 		return [
-			{ image: '', name: 'Puuvillane T-särk', url: '', sku: 'TS-100', meta: 'Suurus: M', qty: '2', unit: '19,90 €', total: '39,80 €' },
-			{ image: '', name: 'Villane sall', url: '', sku: 'SL-042', meta: 'Värv: hall', qty: '1', unit: '42,60 €', total: '42,60 €' },
+			{ image: '', name: __( 'Cotton T-shirt', 'wonom-meilidisainer' ), url: '', sku: 'TS-100', meta: __( 'Size: M', 'wonom-meilidisainer' ), qty: '2', unit: '19,90 €', total: '39,80 €' },
+			{ image: '', name: __( 'Wool scarf', 'wonom-meilidisainer' ), url: '', sku: 'SL-042', meta: __( 'Colour: grey', 'wonom-meilidisainer' ), qty: '1', unit: '42,60 €', total: '42,60 €' },
 		];
 	}
 
 	function sampleTotals() {
 		return [
-			{ key: 'cart_subtotal', label: 'Vahesumma:', value: '82,40 €' },
-			{ key: 'discount', label: 'Allahindlus:', value: '-8,00 €' },
-			{ key: 'shipping', label: 'Tarne:', value: '5,00 €' },
-			{ key: 'payment_method', label: 'Makseviis:', value: 'Panga ülekanne' },
-			{ key: 'order_total', label: 'Kokku:', value: '79,40 €' },
+			{ key: 'cart_subtotal', label: __( 'Subtotal:', 'wonom-meilidisainer' ), value: '82,40 €' },
+			{ key: 'discount', label: __( 'Discount:', 'wonom-meilidisainer' ), value: '-8,00 €' },
+			{ key: 'shipping', label: __( 'Shipping:', 'wonom-meilidisainer' ), value: '5,00 €' },
+			{ key: 'payment_method', label: __( 'Payment method:', 'wonom-meilidisainer' ), value: __( 'Bank transfer', 'wonom-meilidisainer' ) },
+			{ key: 'order_total', label: __( 'Total:', 'wonom-meilidisainer' ), value: '79,40 €' },
 		];
 	}
 
@@ -809,10 +815,10 @@
 
 	function sampleAddressData() {
 		return {
-			billing: 'Mari Tamm<br/>Pikk 12-4<br/>10123 Tallinn<br/>Eesti',
-			shipping: 'Mari Tamm<br/>Tallinna Balti Jaama Turg<br/>10411 Tallinn',
-			phone: '5551234',
-			email: 'mari.tamm@naide.ee',
+			billing: __( 'Mary Smith<br/>12 High Street<br/>10123 London<br/>United Kingdom', 'wonom-meilidisainer' ),
+			shipping: __( 'Mary Smith<br/>Market Square parcel locker<br/>10411 London', 'wonom-meilidisainer' ),
+			phone: '+44 7700 900123',
+			email: 'mary.smith@example.com',
 		};
 	}
 
@@ -869,8 +875,8 @@
 
 	function sampleAddresses( brand ) {
 		var h2 = Math.max( 17, Math.round( num( brand.heading_size, 26 ) * 0.72 ) );
-		return '<h2 style="font-family:' + brand.font_family + ';color:' + brand.heading_color + ';font-size:' + h2 + 'px;margin:22px 0 10px 0;line-height:1.3;">Arveaadress</h2>' +
-			'<p style="font-family:' + brand.font_family + ';font-size:' + num( brand.base_size, 15 ) + 'px;color:' + brand.text_color + ';line-height:1.6;margin:0;">Mari Tamm<br>Pikk 12-4<br>10123 Tallinn<br>Eesti</p>';
+		return '<h2 style="font-family:' + brand.font_family + ';color:' + brand.heading_color + ';font-size:' + h2 + 'px;margin:22px 0 10px 0;line-height:1.3;">' + __( 'Billing address', 'wonom-meilidisainer' ) + '</h2>' +
+			'<p style="font-family:' + brand.font_family + ';font-size:' + num( brand.base_size, 15 ) + 'px;color:' + brand.text_color + ';line-height:1.6;margin:0;">' + __( 'Mary Smith<br>12 High Street<br>10123 London<br>United Kingdom', 'wonom-meilidisainer' ) + '</p>';
 	}
 
 	function sampleOrderTable( brand ) {
@@ -893,14 +899,14 @@
 				'<td colspan="2" style="' + cellCss + 'color:' + t + ';">' + value + '</td></tr>';
 		}
 
-		var out = '<h2 style="font-family:' + f + ';color:' + h + ';font-size:' + h2 + 'px;margin:22px 0 10px 0;line-height:1.3;">Tellimus #1042</h2>';
+		var out = '<h2 style="font-family:' + f + ';color:' + h + ';font-size:' + h2 + 'px;margin:22px 0 10px 0;line-height:1.3;">' + __( 'Order #1042', 'wonom-meilidisainer' ) + '</h2>';
 		out += '<table cellspacing="0" cellpadding="6" border="1" style="width:100%;border-collapse:collapse;border-color:' + b + ';margin-bottom:16px;"><thead><tr>' +
 			'<th style="' + cellCss + 'color:' + h + ';">Toode</th>' +
 			'<th style="' + cellCss + 'color:' + h + ';">Kogus</th>' +
 			'<th style="' + cellCss + 'color:' + h + ';">Hind</th>' +
 			'</tr></thead><tbody>';
-		out += row( 'Puuvillane T-särk, M', 2, '39,80 €' );
-		out += row( 'Villane sall', 1, '42,60 €' );
+		out += row( __( 'Cotton T-shirt, M', 'wonom-meilidisainer' ), 2, '39,80 €' );
+		out += row( __( 'Wool scarf', 'wonom-meilidisainer' ), 1, '42,60 €' );
 		out += '</tbody><tfoot>';
 		out += foot( 'Vahesumma:', '82,40 €' );
 		out += foot( 'Tarne:', '5,00 €' );
@@ -928,9 +934,9 @@
 		return '<div style="position:relative;margin:6px 0;padding:26px 10px 10px 10px;border:1px dashed #c2a561;border-radius:6px;background:#fffdf6;">' +
 			'<div style="position:absolute;top:0;left:0;right:0;display:flex;gap:8px;align-items:center;justify-content:space-between;' +
 			'padding:3px 8px;background:#f4e9cf;border-radius:5px 5px 0 0;font:600 11px/1.4 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#6b5216;">' +
-			'<span>WooCommerce\'i enda sisu — seda siit muuta ei saa</span>' +
+			'<span>' + esc( __( 'WooCommerce content — you cannot edit this here', 'wonom-meilidisainer' ) ) + '</span>' +
 			'<button type="button" data-wmd-action="takeover" style="border:0;border-radius:4px;background:#6b5216;color:#fff;' +
-			'font:600 11px/1 -apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:4px 8px;cursor:pointer;">Võta üle</button>' +
+			'font:600 11px/1 -apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:4px 8px;cursor:pointer;">' + esc( __( 'Take over', 'wonom-meilidisainer' ) ) + '</button>' +
 			'</div>' + inner + '</div>';
 	}
 

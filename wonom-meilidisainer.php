@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name:       Wonom Meilidisainer
- * Description:       WooCommerce'i tellimusmeilide visuaalne kujundaja. Bränd seadistatakse üks kord ja rakendub kõigile meilidele; iga meili saab soovi korral eraldi täiendada plokkidega. Elav eelvaade, testmeil, ühtegi rida koodi.
- * Version:           0.23.0
+ * Plugin Name:       Wonom Email Designer
+ * Description:       A visual designer for WooCommerce order emails. Set the brand once and it applies to every email; add blocks to individual emails only where you need them. Live preview, test email, not a line of code.
+ * Version:           0.24.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * WC requires at least: 6.0
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WMD_VERSION', '0.23.0' );
+define( 'WMD_VERSION', '0.24.0' );
 define( 'WMD_FILE', __FILE__ );
 define( 'WMD_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WMD_URL', plugin_dir_url( __FILE__ ) );
@@ -66,6 +66,6 @@ register_activation_hook(
  */
 function wmd_notice_no_woo() {
 	echo '<div class="notice notice-warning"><p>';
-	esc_html_e( 'Wonom Meilidisainer vajab töötamiseks WooCommerce\'i. Kujundajat saab kasutada, aga meilid jäävad muutmata.', 'wonom-meilidisainer' );
+	esc_html_e( 'Wonom Email Designer needs WooCommerce to work. You can still use the designer, but emails are left untouched.', 'wonom-meilidisainer' );
 	echo '</p></div>';
 }

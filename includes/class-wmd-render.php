@@ -579,7 +579,7 @@ class WMD_Render {
 					if ( ! empty( $p['hide_empty'] ) ) {
 						return '';
 					}
-					$note = __( '(märkust ei ole)', 'wonom-meilidisainer' );
+					$note = __( '(no note)', 'wonom-meilidisainer' );
 				}
 
 				$body = '<div ' . self::attr(
@@ -1250,7 +1250,7 @@ class WMD_Render {
 					) . '>' . esc_html( $card['label'] ) . '</div>';
 				} elseif ( $placeholder ) {
 					$inside .= '<div style="font-family:' . esc_attr( $font ) . ';font-size:' . $size . 'px;padding-top:8px;color:'
-						. esc_attr( $brand['muted_color'] ) . ';">' . esc_html__( 'Nimi', 'wonom-meilidisainer' ) . '</div>';
+						. esc_attr( $brand['muted_color'] ) . ';">' . esc_html__( 'Name', 'wonom-meilidisainer' ) . '</div>';
 				}
 
 				// Link käib ümber terve kaardi, nii et ka nimi on klõpsatav.
@@ -1368,19 +1368,19 @@ class WMD_Render {
 				. '</tr>';
 		};
 
-		$out  = '<h2 style="font-family:' . $f . ';color:' . $h . ';font-size:' . max( 17, (int) round( $brand['heading_size'] * 0.72 ) ) . 'px;margin:22px 0 10px 0;">' . esc_html__( 'Tellimus #1042', 'wonom-meilidisainer' ) . '</h2>';
+		$out  = '<h2 style="font-family:' . $f . ';color:' . $h . ';font-size:' . max( 17, (int) round( $brand['heading_size'] * 0.72 ) ) . 'px;margin:22px 0 10px 0;">' . esc_html__( 'Order #1042', 'wonom-meilidisainer' ) . '</h2>';
 		$out .= '<table cellspacing="0" cellpadding="6" border="1" style="width:100%;border-collapse:collapse;border-color:' . $b . ';margin-bottom:16px;">';
 		$out .= '<thead><tr>'
-			. '<th style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $h . ';">' . esc_html__( 'Toode', 'wonom-meilidisainer' ) . '</th>'
-			. '<th style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $h . ';">' . esc_html__( 'Kogus', 'wonom-meilidisainer' ) . '</th>'
-			. '<th style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $h . ';">' . esc_html__( 'Hind', 'wonom-meilidisainer' ) . '</th>'
+			. '<th style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $h . ';">' . esc_html__( 'Product', 'wonom-meilidisainer' ) . '</th>'
+			. '<th style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $h . ';">' . esc_html__( 'Quantity', 'wonom-meilidisainer' ) . '</th>'
+			. '<th style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $h . ';">' . esc_html__( 'Price', 'wonom-meilidisainer' ) . '</th>'
 			. '</tr></thead><tbody>';
-		$out .= $row( __( 'Puuvillane T-särk, M', 'wonom-meilidisainer' ), 2, '39,80 €' );
-		$out .= $row( __( 'Villane sall', 'wonom-meilidisainer' ), 1, '42,60 €' );
+		$out .= $row( __( 'Cotton T-shirt, M', 'wonom-meilidisainer' ), 2, '39,80 €' );
+		$out .= $row( __( 'Wool scarf', 'wonom-meilidisainer' ), 1, '42,60 €' );
 		$out .= '</tbody><tfoot>';
-		$out .= '<tr><th style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $h . ';">' . esc_html__( 'Vahesumma:', 'wonom-meilidisainer' ) . '</th><td colspan="2" style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $t . ';">82,40 €</td></tr>';
-		$out .= '<tr><th style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $h . ';">' . esc_html__( 'Tarne:', 'wonom-meilidisainer' ) . '</th><td colspan="2" style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $t . ';">5,00 €</td></tr>';
-		$out .= '<tr><th style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $h . ';">' . esc_html__( 'Kokku:', 'wonom-meilidisainer' ) . '</th><td colspan="2" style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $t . ';"><strong>87,40 €</strong></td></tr>';
+		$out .= '<tr><th style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $h . ';">' . esc_html__( 'Subtotal:', 'wonom-meilidisainer' ) . '</th><td colspan="2" style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $t . ';">82,40 €</td></tr>';
+		$out .= '<tr><th style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $h . ';">' . esc_html__( 'Shipping:', 'wonom-meilidisainer' ) . '</th><td colspan="2" style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $t . ';">5,00 €</td></tr>';
+		$out .= '<tr><th style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $h . ';">' . esc_html__( 'Total:', 'wonom-meilidisainer' ) . '</th><td colspan="2" style="text-align:left;border:1px solid ' . $b . ';padding:10px;font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $t . ';"><strong>87,40 €</strong></td></tr>';
 		$out .= '</tfoot></table>';
 
 		return $out;
@@ -1396,20 +1396,20 @@ class WMD_Render {
 		return array(
 			array(
 				'image' => '',
-				'name'  => __( 'Puuvillane T-särk', 'wonom-meilidisainer' ),
+				'name'  => __( 'Cotton T-shirt', 'wonom-meilidisainer' ),
 				'url'   => '',
 				'sku'   => 'TS-100',
-				'meta'  => __( 'Suurus: M', 'wonom-meilidisainer' ),
+				'meta'  => __( 'Size: M', 'wonom-meilidisainer' ),
 				'qty'   => '2',
 				'unit'  => '19,90 €',
 				'total' => '39,80 €',
 			),
 			array(
 				'image' => '',
-				'name'  => __( 'Villane sall', 'wonom-meilidisainer' ),
+				'name'  => __( 'Wool scarf', 'wonom-meilidisainer' ),
 				'url'   => '',
 				'sku'   => 'SL-042',
-				'meta'  => __( 'Värv: hall', 'wonom-meilidisainer' ),
+				'meta'  => __( 'Colour: grey', 'wonom-meilidisainer' ),
 				'qty'   => '1',
 				'unit'  => '42,60 €',
 				'total' => '42,60 €',
@@ -1424,11 +1424,11 @@ class WMD_Render {
 	 */
 	public static function sample_totals() {
 		return array(
-			array( 'key' => 'cart_subtotal', 'label' => __( 'Vahesumma:', 'wonom-meilidisainer' ), 'value' => '82,40 €' ),
-			array( 'key' => 'discount', 'label' => __( 'Allahindlus:', 'wonom-meilidisainer' ), 'value' => '-8,00 €' ),
-			array( 'key' => 'shipping', 'label' => __( 'Tarne:', 'wonom-meilidisainer' ), 'value' => '5,00 €' ),
-			array( 'key' => 'payment_method', 'label' => __( 'Makseviis:', 'wonom-meilidisainer' ), 'value' => __( 'Panga ülekanne', 'wonom-meilidisainer' ) ),
-			array( 'key' => 'order_total', 'label' => __( 'Kokku:', 'wonom-meilidisainer' ), 'value' => '79,40 €' ),
+			array( 'key' => 'cart_subtotal', 'label' => __( 'Subtotal:', 'wonom-meilidisainer' ), 'value' => '82,40 €' ),
+			array( 'key' => 'discount', 'label' => __( 'Discount:', 'wonom-meilidisainer' ), 'value' => '-8,00 €' ),
+			array( 'key' => 'shipping', 'label' => __( 'Shipping:', 'wonom-meilidisainer' ), 'value' => '5,00 €' ),
+			array( 'key' => 'payment_method', 'label' => __( 'Payment method:', 'wonom-meilidisainer' ), 'value' => __( 'Bank transfer', 'wonom-meilidisainer' ) ),
+			array( 'key' => 'order_total', 'label' => __( 'Total:', 'wonom-meilidisainer' ), 'value' => '79,40 €' ),
 		);
 	}
 
@@ -1445,7 +1445,7 @@ class WMD_Render {
 		$fs = (int) $brand['base_size'];
 		$h2 = max( 17, (int) round( $brand['heading_size'] * 0.72 ) );
 
-		$out  = '<h2 style="font-family:' . $f . ';color:' . $h . ';font-size:' . $h2 . 'px;margin:22px 0 10px 0;line-height:1.3;">' . esc_html__( 'Arveaadress', 'wonom-meilidisainer' ) . '</h2>';
+		$out  = '<h2 style="font-family:' . $f . ';color:' . $h . ';font-size:' . $h2 . 'px;margin:22px 0 10px 0;line-height:1.3;">' . esc_html__( 'Billing address', 'wonom-meilidisainer' ) . '</h2>';
 		$out .= '<p style="font-family:' . $f . ';font-size:' . $fs . 'px;color:' . $t . ';line-height:1.6;margin:0;">Mari Tamm<br>Pikk 12-4<br>10123 Tallinn<br>Eesti</p>';
 
 		return $out;
