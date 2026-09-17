@@ -61,6 +61,8 @@ class WMD_Emails {
 			return $content;
 		}
 
+		self::use_email_language( $email );
+
 		$settings = WMD_Design::email( $email->id );
 
 		return empty( $settings['additional'] ) ? '' : $content;
@@ -78,12 +80,28 @@ class WMD_Emails {
 	public static function capture( $first = null, $second = null ) {
 		if ( is_a( $second, 'WC_Email' ) ) {
 			self::$current = $second;
-			return;
-		}
-
-		if ( is_a( $first, 'WC_Email' ) ) {
+		} elseif ( is_a( $first, 'WC_Email' ) ) {
 			self::$current = $first;
 		}
+
+		if ( self::$current ) {
+			self::use_email_language( self::$current );
+		}
+	}
+
+	/**
+	 * Lülitab kujunduse selle kirja keelde.
+	 *
+	 * Mitmekeelses poes saadab WooCommerce Multilingual tellimusmeili tellimuse
+	 * keeles. Kujunduse sisu — pealkirjad, plokid, makseviiside juhised — on
+	 * meie oma ja WCML seda ei tea, seega valime keelekihi siin ise.
+	 *
+	 * @param WC_Email $email Meil.
+	 */
+	protected static function use_email_language( $email ) {
+		$order = ( isset( $email->object ) && is_a( $email->object, 'WC_Order' ) ) ? $email->object : null;
+
+		WMD_Design::set_lang( wmd_email_language( $order ) );
 	}
 
 	/**
@@ -91,6 +109,8 @@ class WMD_Emails {
 	 */
 	public static function release() {
 		self::$current = null;
+
+		WMD_Design::set_lang( '' );
 	}
 
 	/**
@@ -215,6 +235,10 @@ class WMD_Emails {
 		if ( ! self::enabled() || ! $email || empty( $email->id ) ) {
 			return $subject;
 		}
+
+		// Teema renderdatakse enne kirja sisu, seega keel tuleb siin ise valida
+		// — capture() ei ole veel jõudnud käia.
+		self::use_email_language( $email );
 
 		$settings = WMD_Design::email( $email->id );
 		$custom   = trim( (string) $settings['subject'] );

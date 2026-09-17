@@ -233,6 +233,8 @@ class WMD_Ajax {
 			$email_id = key( $list );
 		}
 
+		$was = self::switch_lang( self::posted_lang() );
+
 		$design = self::posted_design();
 		if ( ! empty( $design ) ) {
 			WMD_Design::set_cache( WMD_Design::sanitize( $design ) );
@@ -264,6 +266,8 @@ class WMD_Ajax {
 			$html = WMD_Render::full( $email_id, self::design_context( $email_id, $order ), $body );
 		}
 
+		self::restore_lang( $was );
+
 		wp_send_json_success(
 			array(
 				'html'    => $html,
@@ -292,6 +296,9 @@ class WMD_Ajax {
 			$email_id = key( $list );
 		}
 
+		// Keel enne kujundust: set_cache ehitab kihid valitud keele järgi.
+		$was = self::switch_lang( self::posted_lang() );
+
 		$design = self::posted_design();
 		if ( ! empty( $design ) ) {
 			WMD_Design::set_cache( WMD_Design::sanitize( $design ) );
@@ -302,6 +309,8 @@ class WMD_Ajax {
 		// Kontomeilidel (uus konto, parooli lähtestamine) ei olegi tellimust,
 		// aga WooCommerce'i sisu on neil ikka olemas — seega renderdame edasi.
 		if ( ! wmd_woo_active() ) {
+			self::restore_lang( $was );
+
 			wp_send_json_success(
 				array(
 					'html' => '',
@@ -346,6 +355,8 @@ class WMD_Ajax {
 				$parts = array();
 			}
 		}
+
+		self::restore_lang( $was );
 
 		wp_send_json_success(
 			array(
@@ -710,6 +721,60 @@ class WMD_Ajax {
 	}
 
 	/**
+	 * Päringus soovitud keel.
+	 *
+	 * @return string Tühi string, kui keelt ei antud või see pole poes olemas.
+	 */
+	protected static function posted_lang() {
+		$lang = isset( $_POST['lang'] ) ? sanitize_key( wp_unslash( $_POST['lang'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce kontrollitakse guard() sees.
+
+		return isset( wmd_languages()[ $lang ] ) ? $lang : '';
+	}
+
+	/**
+	 * Lülitab nii kujunduse kui poe enda keele.
+	 *
+	 * Poe keel on vaja vahetada selleks, et WooCommerce'i enda sisu (tellimuse
+	 * tabel, aadressid, malli tekstid) tuleks samas keeles, mida kujundajas
+	 * vaatad. Ilma selleta näeksid eestikeelset tabelit ingliskeelse teksti all.
+	 *
+	 * @param string $lang Keel või tühi.
+	 * @return array Eelmine olek, mille restore_lang() tagasi paneb.
+	 */
+	protected static function switch_lang( $lang ) {
+		$was = array(
+			'design' => WMD_Design::set_lang( $lang ),
+			'site'   => null,
+		);
+
+		if ( '' === $lang ) {
+			return $was;
+		}
+
+		$current = apply_filters( 'wpml_current_language', null );
+
+		if ( is_string( $current ) && $current !== $lang ) {
+			$was['site'] = $current;
+			do_action( 'wpml_switch_language', $lang );
+		}
+
+		return $was;
+	}
+
+	/**
+	 * Paneb keeled tagasi nii, nagu nad enne olid.
+	 *
+	 * @param array $was switch_lang() tagastus.
+	 */
+	protected static function restore_lang( $was ) {
+		WMD_Design::set_lang( $was['design'] );
+
+		if ( null !== $was['site'] ) {
+			do_action( 'wpml_switch_language', $was['site'] );
+		}
+	}
+
+	/**
 	 * Päringus soovitud tellimuse id.
 	 *
 	 * @return int
@@ -745,6 +810,8 @@ class WMD_Ajax {
 			WMD_Design::save( $design );
 		}
 
+		// Testmeil läheb selles keeles, mida kujundajas parasjagu vaatad.
+		$was   = self::switch_lang( self::posted_lang() );
 		$order = self::preview_order( self::posted_order_id(), $email_id );
 		$sent  = false;
 		$mode  = 'design';
@@ -775,6 +842,8 @@ class WMD_Ajax {
 			$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 			$sent    = wp_mail( $to, $subject, $html, $headers );
 		}
+
+		self::restore_lang( $was );
 
 		if ( ! $sent ) {
 			wp_send_json_error( array( 'message' => __( 'Sending the email failed. Check the shop\'s email settings.', 'wonom-meilidisainer' ) ) );

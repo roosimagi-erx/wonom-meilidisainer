@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.24.0
+Stable tag: 0.25.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,8 @@ Wonom Email Designer gives WooCommerce transactional emails your brand look, wit
 = Languages =
 
 The interface is in English and Estonian. The source language is English; Estonian comes from the bundled translation. Another language needs only a `.po` file — the `.pot` template is in `languages/`.
+
+The emails themselves follow the customer. In a multilingual shop (WPML / WooCommerce Multilingual or Polylang) each language can have its own subject lines, headings, blocks and payment instructions; anything you leave untranslated comes from the default language.
 
 = Emails covered =
 
@@ -65,6 +67,14 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 0.25.0 =
+* Emails now go out in the customer's language. In a multilingual shop (WPML / WooCommerce Multilingual or Polylang) the designer gets a language picker, and each language can have its own subject lines, headings, blocks and payment instructions.
+* The default language's content stays where it has always been, so nothing needs migrating and a single-language shop sees no change at all — the language picker only appears when the shop has more than one language.
+* A part that has not been translated yet shows the default language's blocks, greyed out, with a "Translate this part" button. Pressing it copies them into that language, where you can edit them freely. Until then that language simply uses the default content, so no email ever goes out empty.
+* The brand — logo, colours, type, layout — is shared by every language. So is how an email is put together, since that is structure rather than content.
+* Untranslated payment instructions fall back to the default language one gateway at a time, so a customer never gets an email with the payment details missing.
+* The order's own language is used, taken from the order itself, not from whichever language the site happened to be in when the email was sent.
 
 = 0.24.0 =
 * The plugin is now bilingual. The source language is English and Estonian comes from a bundled translation, so the designer follows the language of the WordPress user: English admin, English interface; Estonian admin, Estonian interface.

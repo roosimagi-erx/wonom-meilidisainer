@@ -15,20 +15,64 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WMD_Design {
 
 	/**
-	 * Vahemälu päringu ajaks.
+	 * Vahemälu päringu ajaks, keele kaupa.
 	 *
-	 * @var array|null
+	 * @var array<string,array>
 	 */
-	protected static $cache = null;
+	protected static $cache = array();
 
 	/**
-	 * Terve kujundus, vaikeväärtustega täidetud.
+	 * Keel, mille kujundust praegu küsitakse. Tühi string = vaikekeel.
+	 *
+	 * Kirja saatmisel paneb selle paika WMD_Emails::capture() tellimuse keele
+	 * järgi; kujundajas tuleb see päringuga kaasa.
+	 *
+	 * @var string
+	 */
+	protected static $lang = '';
+
+	/**
+	 * Unustab vahemälu.
+	 *
+	 * Vaja siis, kui salvestatud kujundus muutub keset päringut — nt import
+	 * või mõne teise plugina tehtud update_option.
+	 */
+	public static function flush() {
+		self::$cache = array();
+	}
+
+	/**
+	 * Seab keele ja annab eelmise tagasi, et selle saaks pärast taastada.
+	 *
+	 * @param string $lang Keele kood või tühi.
+	 * @return string Eelmine keel.
+	 */
+	public static function set_lang( $lang ) {
+		$was       = self::$lang;
+		self::$lang = is_string( $lang ) ? $lang : '';
+
+		return $was;
+	}
+
+	/**
+	 * Praegu valitud keel.
+	 *
+	 * @return string
+	 */
+	public static function lang() {
+		return self::$lang;
+	}
+
+	/**
+	 * Terve kujundus, vaikeväärtustega täidetud ja keelekihiga kaetud.
 	 *
 	 * @return array
 	 */
 	public static function get() {
-		if ( null !== self::$cache ) {
-			return self::$cache;
+		$lang = self::$lang;
+
+		if ( isset( self::$cache[ $lang ] ) ) {
+			return self::$cache[ $lang ];
 		}
 
 		$stored = get_option( WMD_OPTION, array() );
@@ -36,9 +80,78 @@ class WMD_Design {
 			$stored = array();
 		}
 
-		self::$cache = self::fill( $stored );
+		self::$cache[ $lang ] = self::merge_lang( self::fill( $stored ), $lang );
 
-		return self::$cache;
+		return self::$cache[ $lang ];
+	}
+
+	/**
+	 * Paneb keelekihi vaikekeele kujunduse peale.
+	 *
+	 * Reegel: kihis olev väärtus võidab, kui see on olemas ja mittetühi. Plokid
+	 * asendatakse tervikuna, mitte ploki kaupa — nii on ennustatav, et „inglise
+	 * keeles on jaluses need plokid", mitte segu kahest keelest.
+	 *
+	 * Bränd ei ole keelepõhine: värvid, logo ja paigutus on kõigis keeltes
+	 * samad. Ka režiim ja WooCommerce'i lisateksti lüliti jäävad ühiseks, sest
+	 * need on kirja ehitus, mitte sisu.
+	 *
+	 * @param array  $design Vaikekeele kujundus.
+	 * @param string $lang   Keel või tühi.
+	 * @return array
+	 */
+	protected static function merge_lang( $design, $lang ) {
+		if ( '' === $lang || $lang === wmd_default_language() ) {
+			return $design;
+		}
+
+		$layer = isset( $design['i18n'][ $lang ] ) && is_array( $design['i18n'][ $lang ] )
+			? $design['i18n'][ $lang ]
+			: array();
+
+		if ( ! $layer ) {
+			return $design;
+		}
+
+		foreach ( array( 'header', 'footer' ) as $section ) {
+			if ( ! empty( $layer[ $section ] ) && is_array( $layer[ $section ] ) ) {
+				$design[ $section ] = $layer[ $section ];
+			}
+		}
+
+		// Makseviisid ühekaupa: tõlkimata jäänud juhis tuleb vaikekeelest, et
+		// klient ei saaks kirja, kus makse juhised on lihtsalt puudu.
+		if ( ! empty( $layer['payments'] ) && is_array( $layer['payments'] ) ) {
+			foreach ( $layer['payments'] as $gateway => $note ) {
+				if ( '' !== trim( wp_strip_all_tags( (string) $note ) ) ) {
+					$design['payments'][ $gateway ] = $note;
+				}
+			}
+		}
+
+		if ( empty( $layer['emails'] ) || ! is_array( $layer['emails'] ) ) {
+			return $design;
+		}
+
+		foreach ( $layer['emails'] as $id => $over ) {
+			if ( ! isset( $design['emails'][ $id ] ) || ! is_array( $over ) ) {
+				continue;
+			}
+
+			foreach ( array( 'subject', 'heading' ) as $key ) {
+				if ( isset( $over[ $key ] ) && '' !== trim( (string) $over[ $key ] ) ) {
+					$design['emails'][ $id ][ $key ] = $over[ $key ];
+				}
+			}
+
+			foreach ( array( 'before', 'after', 'body' ) as $key ) {
+				if ( ! empty( $over[ $key ] ) && is_array( $over[ $key ] ) ) {
+					$design['emails'][ $id ][ $key ] = $over[ $key ];
+				}
+			}
+		}
+
+		return $design;
 	}
 
 	/**
@@ -82,10 +195,24 @@ class WMD_Design {
 	 * @param string $email_id WC_Email id.
 	 * @return bool
 	 */
-	public static function is_full( $email_id ) {
+	public static function mode( $email_id ) {
 		$settings = self::email( $email_id );
 
-		return 'full' === $settings['mode'] && ! empty( $settings['body'] );
+		// Täisrežiim kehtib ainult siis, kui selles keeles on ka sisu. Režiim on
+		// keelte vahel jagatud, aga keha mitte — nii võib juhtuda, et üks keel
+		// on täisrežiimis kokku pandud ja teine veel mitte. Sel juhul on parem
+		// anda WooCommerce'i oma sisu kui saata tühi kiri.
+		return ( 'full' === $settings['mode'] && ! empty( $settings['body'] ) ) ? 'full' : 'wrap';
+	}
+
+	/**
+	 * Kas see meil pannakse tervikuna ise kokku.
+	 *
+	 * @param string $email_id WC_Email id.
+	 * @return bool
+	 */
+	public static function is_full( $email_id ) {
+		return 'full' === self::mode( $email_id );
 	}
 
 	/**
@@ -98,7 +225,9 @@ class WMD_Design {
 		$clean = self::sanitize( $design );
 
 		update_option( WMD_OPTION, $clean, false );
-		self::$cache = $clean;
+
+		// Kogu vahemälu läheb tühjaks: iga keele kiht võis muutuda.
+		self::$cache = array();
 
 		return $clean;
 	}
@@ -112,7 +241,7 @@ class WMD_Design {
 		$default = wmd_default_design();
 
 		update_option( WMD_OPTION, $default, false );
-		self::$cache = $default;
+		self::$cache = array();
 
 		return $default;
 	}
@@ -123,7 +252,17 @@ class WMD_Design {
 	 * @param array $design Puhastatud kujundus.
 	 */
 	public static function set_cache( $design ) {
-		self::$cache = self::fill( $design );
+		$filled = self::fill( $design );
+
+		// Sama kujundus kõigile keeltele, aga igaüks oma kihiga kaetud — nii
+		// näeb kujundaja salvestamata muudatusi ka teises keeles.
+		self::$cache = array();
+
+		foreach ( array_keys( wmd_languages() ) as $lang ) {
+			self::$cache[ $lang ] = self::merge_lang( $filled, $lang );
+		}
+
+		self::$cache[ self::$lang ] = self::merge_lang( $filled, self::$lang );
 	}
 
 	/**
@@ -168,6 +307,10 @@ class WMD_Design {
 
 		$out['payments'] = isset( $design['payments'] ) && is_array( $design['payments'] ) ? $design['payments'] : array();
 
+		// Keelekihid lähevad läbi muutmata: neid ei täideta vaikeväärtustega,
+		// sest tühi väli kihis tähendabki „võta vaikekeelest".
+		$out['i18n'] = isset( $design['i18n'] ) && is_array( $design['i18n'] ) ? $design['i18n'] : array();
+
 		return $out;
 	}
 
@@ -187,6 +330,20 @@ class WMD_Design {
 		}
 
 		$design['payments'] = (object) ( isset( $design['payments'] ) ? $design['payments'] : array() );
+
+		$i18n = isset( $design['i18n'] ) && is_array( $design['i18n'] ) ? $design['i18n'] : array();
+
+		foreach ( $i18n as $lang => $layer ) {
+			if ( isset( $layer['payments'] ) ) {
+				$i18n[ $lang ]['payments'] = (object) $layer['payments'];
+			}
+
+			if ( isset( $layer['emails'] ) ) {
+				$i18n[ $lang ]['emails'] = (object) $layer['emails'];
+			}
+		}
+
+		$design['i18n'] = (object) $i18n;
 
 		return $design;
 	}
@@ -221,7 +378,12 @@ class WMD_Design {
 			'footer'   => array(),
 			'emails'   => array(),
 			'payments' => array(),
+			'i18n'     => array(),
 		);
+
+		if ( isset( $design['i18n'] ) ) {
+			$out['i18n'] = self::sanitize_i18n( $design['i18n'] );
+		}
 
 		if ( isset( $design['payments'] ) && is_array( $design['payments'] ) ) {
 			foreach ( $design['payments'] as $gateway => $note ) {
@@ -257,6 +419,108 @@ class WMD_Design {
 				'body'    => self::sanitize_blocks( isset( $stored['body'] ) ? $stored['body'] : array() ),
 				'additional' => empty( $stored['additional'] ) ? 0 : 1,
 			);
+		}
+
+		return $out;
+	}
+
+	/**
+	 * Keelekihtide puhastus.
+	 *
+	 * Kiht käib läbi sama puhastuse mis vaikekeel, aga tühjaks jäetud väljad
+	 * jäävad kihist välja — need tähendavad „võta vaikekeelest". Keeli, mida
+	 * siin poes praegu ei ole, ei visata ära: teisest poest imporditud kujundus
+	 * võib neid sisaldada ja hiljem võib see keel lisanduda.
+	 *
+	 * @param mixed $i18n Toored kihid.
+	 * @return array
+	 */
+	protected static function sanitize_i18n( $i18n ) {
+		$out = array();
+
+		if ( ! is_array( $i18n ) && ! is_object( $i18n ) ) {
+			return $out;
+		}
+
+		$emails = array_keys( wmd_email_list() );
+
+		foreach ( (array) $i18n as $lang => $layer ) {
+			$lang = sanitize_key( $lang );
+
+			if ( '' === $lang || ( ! is_array( $layer ) && ! is_object( $layer ) ) ) {
+				continue;
+			}
+
+			$layer = (array) $layer;
+			$clean = array();
+
+			foreach ( array( 'header', 'footer' ) as $section ) {
+				if ( ! empty( $layer[ $section ] ) ) {
+					$blocks = self::sanitize_blocks( $layer[ $section ] );
+
+					if ( $blocks ) {
+						$clean[ $section ] = $blocks;
+					}
+				}
+			}
+
+			if ( ! empty( $layer['payments'] ) ) {
+				$pay = array();
+
+				foreach ( (array) $layer['payments'] as $gateway => $note ) {
+					$gateway = sanitize_key( $gateway );
+					$note    = wp_kses( (string) $note, wmd_allowed_html() );
+
+					if ( '' !== $gateway && '' !== trim( wp_strip_all_tags( $note ) ) ) {
+						$pay[ $gateway ] = $note;
+					}
+				}
+
+				if ( $pay ) {
+					$clean['payments'] = $pay;
+				}
+			}
+
+			if ( ! empty( $layer['emails'] ) ) {
+				$mails = array();
+
+				foreach ( (array) $layer['emails'] as $id => $over ) {
+					if ( ! in_array( $id, $emails, true ) || ( ! is_array( $over ) && ! is_object( $over ) ) ) {
+						continue;
+					}
+
+					$over = (array) $over;
+					$one  = array();
+
+					foreach ( array( 'subject', 'heading' ) as $key ) {
+						if ( isset( $over[ $key ] ) && '' !== trim( (string) $over[ $key ] ) ) {
+							$one[ $key ] = sanitize_text_field( $over[ $key ] );
+						}
+					}
+
+					foreach ( array( 'before', 'after', 'body' ) as $key ) {
+						if ( ! empty( $over[ $key ] ) ) {
+							$blocks = self::sanitize_blocks( $over[ $key ] );
+
+							if ( $blocks ) {
+								$one[ $key ] = $blocks;
+							}
+						}
+					}
+
+					if ( $one ) {
+						$mails[ $id ] = $one;
+					}
+				}
+
+				if ( $mails ) {
+					$clean['emails'] = $mails;
+				}
+			}
+
+			if ( $clean ) {
+				$out[ $lang ] = $clean;
+			}
 		}
 
 		return $out;

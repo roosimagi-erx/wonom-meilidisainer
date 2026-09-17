@@ -57,6 +57,8 @@
 		updateLog: [],
 		// Eelvaate tellimus: 0 = poe viimane.
 		order: 0,
+		// Keel, mille sisu praegu muudetakse. Ühekeelses poes ainus võimalik.
+		lang: cfg.defaultLang || '',
 		varQuery: '',
 		// Tootekategooriad pildiploki jaoks: laetakse ühe korra ja jäävad
 		// nimekirja lahti ka pärast valikut, et neli pilti saaks järjest valida.
@@ -89,20 +91,185 @@
 		return d.firstElementChild;
 	}
 
-	function zoneList( zone ) {
+	/* ------------------------------------------------------------- keeled */
+
+	/**
+	 * Kas praegu on lahti poe vaikekeel.
+	 *
+	 * Vaikekeele sisu elab kujunduses tipptasemel, teiste keelte oma kihina
+	 * selle peal. Nii ei vaja olemasolev kujundus mitmekeelseks minnes midagi.
+	 *
+	 * @return {boolean}
+	 */
+	function isBaseLang() {
+		return ! state.lang || state.lang === cfg.defaultLang;
+	}
+
+	/**
+	 * Praeguse keele kiht.
+	 *
+	 * @param {boolean} create Kas luua, kui puudub.
+	 * @return {Object|null}
+	 */
+	function langLayer( create ) {
+		if ( isBaseLang() ) {
+			return null;
+		}
+
+		if ( ! state.design.i18n || Array.isArray( state.design.i18n ) ) {
+			state.design.i18n = {};
+		}
+
+		if ( ! state.design.i18n[ state.lang ] ) {
+			if ( ! create ) {
+				return null;
+			}
+
+			state.design.i18n[ state.lang ] = {};
+		}
+
+		return state.design.i18n[ state.lang ];
+	}
+
+	/**
+	 * Selle meili kirje keelekihis.
+	 *
+	 * @param {boolean} create Kas luua, kui puudub.
+	 * @return {Object|null}
+	 */
+	function langEmail( create ) {
+		var layer = langLayer( create );
+
+		if ( ! layer ) {
+			return null;
+		}
+
+		if ( ! layer.emails ) {
+			if ( ! create ) {
+				return null;
+			}
+
+			layer.emails = {};
+		}
+
+		if ( ! layer.emails[ state.email ] ) {
+			if ( ! create ) {
+				return null;
+			}
+
+			layer.emails[ state.email ] = {};
+		}
+
+		return layer.emails[ state.email ];
+	}
+
+	/**
+	 * Selle ala plokid keelekihis.
+	 *
+	 * Loomisel kopeeritakse vaikekeele nimekiri, et tõlkimist saaks alustada
+	 * olemasolevast, mitte tühjalt lehelt. Plokid saavad uued id-d, et kahe
+	 * keele plokid omavahel segi ei läheks.
+	 *
+	 * @param {string}  zone   Ala.
+	 * @param {boolean} create Kas luua, kui puudub.
+	 * @return {Array|null}
+	 */
+	function zoneOverride( zone, create ) {
+		if ( isBaseLang() ) {
+			return null;
+		}
+
+		var holder = ( zone === 'header' || zone === 'footer' ) ? langLayer( create ) : langEmail( create );
+
+		if ( ! holder ) {
+			return null;
+		}
+
+		if ( ! holder[ zone ] ) {
+			if ( ! create ) {
+				return null;
+			}
+
+			var copy = JSON.parse( JSON.stringify( baseZone( zone ) ) );
+
+			copy.forEach( function ( b ) {
+				b.id = newId();
+			} );
+
+			holder[ zone ] = copy;
+		}
+
+		return holder[ zone ];
+	}
+
+	/**
+	 * Kas see ala on selles keeles üle kirjutatud.
+	 *
+	 * @param {string} zone Ala.
+	 * @return {boolean}
+	 */
+	function zoneTranslated( zone ) {
+		return ! isBaseLang() && !! zoneOverride( zone, false );
+	}
+
+	/**
+	 * Vaikekeele plokid.
+	 *
+	 * @param {string} zone Ala.
+	 * @return {Array}
+	 */
+	function baseZone( zone ) {
 		if ( zone === 'header' || zone === 'footer' ) {
-			return state.design[ zone ];
+			return state.design[ zone ] || [];
 		}
-		var e = state.design.emails[ state.email ];
-		if ( ! e ) {
-			return [];
-		}
+
+		var e = emailSettings();
+
 		if ( ! e[ zone ] ) {
 			e[ zone ] = [];
 		}
+
 		return e[ zone ];
 	}
 
+	/**
+	 * Plokid, mida praegu näidatakse ja muudetakse.
+	 */
+	function zoneList( zone ) {
+		return zoneOverride( zone, false ) || baseZone( zone );
+	}
+
+	/**
+	 * Kirjutab ala plokid ümber — selles keeles, mis praegu lahti on.
+	 *
+	 * Ilma selleta läheks nt „Võta üle" tulemus alati vaikekeelde, ka siis, kui
+	 * vaatad inglise keelt.
+	 *
+	 * @param {string} zone   Ala.
+	 * @param {Array}  blocks Uued plokid.
+	 */
+	function setZone( zone, blocks ) {
+		if ( ! isBaseLang() ) {
+			var holder = ( zone === 'header' || zone === 'footer' ) ? langLayer( true ) : langEmail( true );
+
+			holder[ zone ] = blocks;
+			return;
+		}
+
+		if ( zone === 'header' || zone === 'footer' ) {
+			state.design[ zone ] = blocks;
+			return;
+		}
+
+		emailSettings()[ zone ] = blocks;
+	}
+
+	/**
+	 * Meili jagatud seaded — need on kõigis keeltes samad.
+	 *
+	 * Režiim ja WooCommerce'i lisateksti lüliti on kirja ehitus, mitte sisu,
+	 * seega neid keelte kaupa ei hoita.
+	 */
 	function emailSettings() {
 		var e = state.design.emails[ state.email ];
 		if ( ! e ) {
@@ -116,6 +283,115 @@
 			e.body = [];
 		}
 		return e;
+	}
+
+	/**
+	 * Teema või pealkiri selles keeles.
+	 *
+	 * @param {string} key 'subject' või 'heading'.
+	 * @return {string} Kihis olev väärtus või tühi, kui seda pole.
+	 */
+	function emailText( key ) {
+		var own = langEmail( false );
+
+		if ( own && typeof own[ key ] === 'string' ) {
+			return own[ key ];
+		}
+
+		return isBaseLang() ? ( emailSettings()[ key ] || '' ) : '';
+	}
+
+	/**
+	 * Kohatäitja teema ja pealkirja väljal.
+	 *
+	 * Teises keeles näitab see vaikekeele teksti — nii on näha, mis kirja
+	 * läheb, kui sa seda välja ei täida. Vaikekeeles tuleb WooCommerce'i oma.
+	 *
+	 * @param {string} key 'subject' või 'heading'.
+	 * @return {string}
+	 */
+	function textPlaceholder( key ) {
+		if ( ! isBaseLang() ) {
+			var base = emailSettings()[ key ];
+
+			if ( base && String( base ).trim() ) {
+				return base;
+			}
+		}
+
+		return wcDefault( state.email, key );
+	}
+
+	/**
+	 * Makseviisi juhis selles keeles.
+	 *
+	 * @param {string} id Makselahenduse tunnus.
+	 * @return {string}
+	 */
+	function paymentText( id ) {
+		var layer = langLayer( false );
+
+		if ( layer && layer.payments && typeof layer.payments[ id ] === 'string' ) {
+			return layer.payments[ id ];
+		}
+
+		return isBaseLang() ? ( ( state.design.payments || {} )[ id ] || '' ) : '';
+	}
+
+	/**
+	 * Kujundus eelvaate jaoks: keelekiht vaikekeele peale pandud.
+	 *
+	 * Sama reegel mis PHP-poolel WMD_Design::merge_lang — nii näitab kanvas
+	 * sedasama, mis kirja läheb.
+	 *
+	 * @return {Object}
+	 */
+	function designForPreview() {
+		if ( isBaseLang() ) {
+			return state.design;
+		}
+
+		var layer = langLayer( false );
+
+		if ( ! layer ) {
+			return state.design;
+		}
+
+		var out = JSON.parse( JSON.stringify( state.design ) );
+
+		[ 'header', 'footer' ].forEach( function ( section ) {
+			if ( layer[ section ] && layer[ section ].length ) {
+				out[ section ] = layer[ section ];
+			}
+		} );
+
+		Object.keys( layer.payments || {} ).forEach( function ( gw ) {
+			if ( String( layer.payments[ gw ] ).replace( /<[^>]*>/g, '' ).trim() ) {
+				out.payments[ gw ] = layer.payments[ gw ];
+			}
+		} );
+
+		Object.keys( layer.emails || {} ).forEach( function ( id ) {
+			if ( ! out.emails[ id ] ) {
+				return;
+			}
+
+			var over = layer.emails[ id ];
+
+			[ 'subject', 'heading' ].forEach( function ( key ) {
+				if ( typeof over[ key ] === 'string' && over[ key ].trim() ) {
+					out.emails[ id ][ key ] = over[ key ];
+				}
+			} );
+
+			[ 'before', 'after', 'body' ].forEach( function ( key ) {
+				if ( over[ key ] && over[ key ].length ) {
+					out.emails[ id ][ key ] = over[ key ];
+				}
+			} );
+		} );
+
+		return out;
 	}
 
 	function findBlock( sel ) {
@@ -333,7 +609,7 @@
 	 * juhtuda, et seade muutub, aga kanvasele jääb vana vastus.
 	 */
 	function wcKeyFor( mode, additional ) {
-		return [ state.email, orderParam(), mode, additional ? 1 : 0 ].join( '|' );
+		return [ state.email, orderParam(), mode, additional ? 1 : 0, state.lang ].join( '|' );
 	}
 
 	function wcKey() {
@@ -379,6 +655,7 @@
 		post( 'wmd_wc_part', {
 			email: state.email,
 			order: orderParam(),
+			lang: state.lang,
 			design: JSON.stringify( state.design ),
 		} ).then( function ( res ) {
 			wcCache[ key ] = {
@@ -424,7 +701,7 @@
 		var full = emailSettings().mode === 'full';
 
 		var html = window.WMDRender.full(
-			state.design,
+			designForPreview(),
 			state.email,
 			previewCtx( wc ),
 			wcDefault( state.email, 'heading' ),
@@ -837,6 +1114,28 @@
 
 	function blockListHtml( zone, title, hint ) {
 		var list = zoneList( zone );
+
+		// Teises keeles, kus seda ala pole veel tõlgitud: näitame vaikekeele
+		// plokke, aga muuta ei lase. Nii on kohe näha, mis kirja läheb, ja
+		// „Tõlgi see osa" teeb selgeks, et nimekiri asendatakse tervikuna.
+		if ( ! isBaseLang() && ! zoneTranslated( zone ) ) {
+			var inherited = list.map( function ( b ) {
+				var def = cfg.blockTypes[ b.type ] || { label: b.type, icon: '?' };
+				return '<li class="wmd-item is-inherited">' +
+					'<span class="wmd-item-icon">' + esc( def.icon ) + '</span>' +
+					'<span class="wmd-item-label">' + esc( def.label ) + '<em>' + esc( blockSummary( b ) ) + '</em></span>' +
+					'</li>';
+			} ).join( '' ) || '<li class="wmd-empty">' + esc( __( 'No blocks here yet. Add one below.', 'wonom-meilidisainer' ) ) + '</li>';
+
+			return '<div class="wmd-section">' +
+				( title ? '<h3 class="wmd-h3">' + esc( title ) + ( hint ? '<em>' + esc( hint ) + '</em>' : '' ) + '</h3>' : '' ) +
+				'<p class="wmd-hint">' + esc( __( 'These blocks come from the default language. Translate this part to give this language its own.', 'wonom-meilidisainer' ) ) + '</p>' +
+				'<ul class="wmd-list wmd-list-inherited">' + inherited + '</ul>' +
+				'<button type="button" class="wmd-mini wmd-translate" data-translate="' + esc( zone ) + '">' +
+				esc( __( 'Translate this part', 'wonom-meilidisainer' ) ) + '</button>' +
+				'</div>';
+		}
+
 		var items = list.map( function ( b, index ) {
 			var def = cfg.blockTypes[ b.type ] || { label: b.type, icon: '?' };
 			var active = state.selected && state.selected.id === b.id ? ' is-active' : '';
@@ -936,11 +1235,11 @@
 			'<select class="wmd-input" id="wmd-email-pick">' + opts + '</select></div>';
 
 		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-f-email-subject">' + __( 'Subject line', 'wonom-meilidisainer' ) + '</label>' +
-			'<div class="wmd-inline"><input type="text" class="wmd-input" id="wmd-f-email-subject" data-scope="email" data-key="subject" value="' + esc( e.subject ) + '" placeholder="' + esc( wcDefault( state.email, 'subject' ) ) + '" />' +
+			'<div class="wmd-inline"><input type="text" class="wmd-input" id="wmd-f-email-subject" data-scope="email" data-key="subject" value="' + esc( emailText( 'subject' ) ) + '" placeholder="' + esc( textPlaceholder( 'subject' ) ) + '" />' +
 			tagPicker( 'wmd-f-email-subject' ) + '</div></div>';
 
 		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-f-email-heading">' + __( 'Large heading in the email', 'wonom-meilidisainer' ) + '</label>' +
-			'<div class="wmd-inline"><input type="text" class="wmd-input" id="wmd-f-email-heading" data-scope="email" data-key="heading" value="' + esc( e.heading ) + '" placeholder="' + esc( wcDefault( state.email, 'heading' ) ) + '" />' +
+			'<div class="wmd-inline"><input type="text" class="wmd-input" id="wmd-f-email-heading" data-scope="email" data-key="heading" value="' + esc( emailText( 'heading' ) ) + '" placeholder="' + esc( textPlaceholder( 'heading' ) ) + '" />' +
 			tagPicker( 'wmd-f-email-heading' ) + '</div></div>';
 
 		html += '<div class="wmd-field wmd-field-toggle"><label class="wmd-switch">' +
@@ -956,6 +1255,14 @@
 
 		if ( full ) {
 			html += '<div class="wmd-intro wmd-warn">' + __( 'This mode does not use the WooCommerce content template. Everything in the email comes from the blocks below — including the order table and the addresses.', 'wonom-meilidisainer' ) + '</div>';
+
+			// Režiim on keelte vahel jagatud, keha mitte. Kui selles keeles ei
+			// ole veel sisu, läheb kiri WooCommerce'i sisuga — ütleme seda.
+			if ( ! zoneList( 'body' ).length ) {
+				html += '<div class="wmd-intro wmd-warn">' +
+					__( 'There is no content in this language yet, so this email goes out with the WooCommerce content. Add blocks below.', 'wonom-meilidisainer' ) +
+					'</div>';
+			}
 			html += '<div class="wmd-updates-actions"><button type="button" class="button wmd-refill">' + __( 'Load the WooCommerce content as blocks', 'wonom-meilidisainer' ) + '</button></div>' +
 				'<p class="wmd-hint">' + __( 'Takes this email\'s current WooCommerce content apart into blocks and replaces the blocks below. Useful when you want to start again from the WooCommerce text.', 'wonom-meilidisainer' ) + '</p>';
 			html += blockListHtml( 'body', __( 'Email content', 'wonom-meilidisainer' ), __( 'the whole body', 'wonom-meilidisainer' ) );
@@ -968,6 +1275,14 @@
 	}
 
 	function hasCustom( id ) {
+		// Teises keeles loeb see, kas *selles keeles* on midagi oma — muidu
+		// oleks täpike iga meili juures ja ei ütleks midagi.
+		if ( ! isBaseLang() ) {
+			var layer = langLayer( false );
+
+			return !! ( layer && layer.emails && layer.emails[ id ] );
+		}
+
 		var e = state.design.emails[ id ];
 		if ( ! e ) {
 			return false;
@@ -1243,6 +1558,7 @@
 		post( 'wmd_wc_part', {
 			email: state.email,
 			order: orderParam(),
+			lang: state.lang,
 			design: JSON.stringify( probe ),
 		} ).then( function ( res ) {
 			// Kontekst on kaasas selleks, et tekstis olevad selle tellimuse
@@ -1270,7 +1586,9 @@
 
 		var e = emailSettings();
 
-		if ( e.body.length && ! window.confirm( __( 'This email already has ', 'wonom-meilidisainer' ) + e.body.length + ' ' + __( 'blocks. Replace them with the current WooCommerce content?', 'wonom-meilidisainer' ) ) ) {
+		var bodyNow = zoneList( 'body' );
+
+		if ( bodyNow.length && ! window.confirm( __( 'This email already has ', 'wonom-meilidisainer' ) + bodyNow.length + ' ' + __( 'blocks. Replace them with the current WooCommerce content?', 'wonom-meilidisainer' ) ) ) {
 			return;
 		}
 
@@ -1304,16 +1622,18 @@
 			var body = middle;
 
 			if ( opts.keepAround ) {
-				body = JSON.parse( JSON.stringify( e.before || [] ) )
-					.concat( middle, JSON.parse( JSON.stringify( e.after || [] ) ) );
+				// Selle keele enne-/pärast-plokid, mitte alati vaikekeele omad.
+				body = JSON.parse( JSON.stringify( zoneList( 'before' ) ) )
+					.concat( middle, JSON.parse( JSON.stringify( zoneList( 'after' ) ) ) );
 			}
 
 			body.forEach( function ( b ) {
 				b.id = newId();
 			} );
 
+			// Režiim on jagatud, keha käib selle keele alla.
 			e.mode = 'full';
-			e.body = body;
+			setZone( 'body', body );
 			state.selected = null;
 			markDirty();
 			render();
@@ -1427,7 +1747,7 @@
 		var html = '<div class="wmd-intro">' + __( 'Write the instructions for each payment method here once. The block ', 'wonom-meilidisainer' ) + '<strong>' + __( '"Payment instructions (own text)"', 'wonom-meilidisainer' ) + '</strong>' + __( ' brings them into the email — it always shows the text for that order\'s payment method. For a payment method left empty the block simply does not appear.', 'wonom-meilidisainer' ) + '</div>';
 
 		keys.forEach( function ( id ) {
-			var value = state.design.payments[ id ] || '';
+			var value = paymentText( id );
 			var fid = 'wmd-pay-' + id;
 
 			html += '<div class="wmd-field">' +
@@ -1847,6 +2167,21 @@
 			return '<option value="' + esc( id ) + '"' + ( id === state.email ? ' selected' : '' ) + '>' + esc( cfg.emails[ id ].label ) + '</option>';
 		} ).join( '' );
 
+		// Keelevalik ilmub ainult mitmekeelses poes — ühe keelega ei ole midagi
+		// valida ja ülariba ei tohi asjata kasvada.
+		var languages = cfg.languages || {};
+		var langPick = '';
+
+		if ( Object.keys( languages ).length > 1 ) {
+			langPick = '<select class="wmd-input wmd-lang-pick" title="' + esc( __( 'Which language\'s content to edit', 'wonom-meilidisainer' ) ) + '">' +
+				Object.keys( languages ).map( function ( code ) {
+					var mark = code === cfg.defaultLang ? ' ★' : '';
+					return '<option value="' + esc( code ) + '"' + ( code === state.lang ? ' selected' : '' ) + '>' +
+						esc( languages[ code ] ) + mark + '</option>';
+				} ).join( '' ) +
+				'</select>';
+		}
+
 		// Tellimuse valik on ainult neil meilidel, mis tellimuse pealt käivadki.
 		var orders = usesOrder() ? ( cfg.orders || [] ) : [];
 		var orderPick = '';
@@ -1866,6 +2201,7 @@
 			'<span class="wmd-dirty" ' + ( state.dirty ? '' : 'hidden' ) + '>' + esc( __( 'Unsaved changes', 'wonom-meilidisainer' ) ) + '</span></div>' +
 			'<div class="wmd-bar-mid">' +
 			'<select class="wmd-input wmd-preview-pick" title="' + __( 'What to show in the preview', 'wonom-meilidisainer' ) + '">' + previewOpts + '</select>' +
+			langPick +
 			orderPick +
 			'<div class="wmd-segs wmd-device">' +
 			'<button type="button" class="wmd-seg' + ( state.device === 'desktop' ? ' is-active' : '' ) + '" data-device="desktop">' + __( 'Desktop', 'wonom-meilidisainer' ) + '</button>' +
@@ -1894,16 +2230,36 @@
 
 	function setValue( scope, key, value ) {
 		if ( scope === 'brand' ) {
+			// Bränd ei ole keelepõhine: värvid ja paigutus on kõigis samad.
 			state.design.brand[ key ] = value;
 		} else if ( scope === 'payment' ) {
-			if ( ! state.design.payments ) {
-				state.design.payments = {};
+			var layer = langLayer( true );
+
+			if ( layer ) {
+				if ( ! layer.payments ) {
+					layer.payments = {};
+				}
+
+				layer.payments[ key ] = value;
+			} else {
+				if ( ! state.design.payments ) {
+					state.design.payments = {};
+				}
+
+				state.design.payments[ key ] = value;
 			}
-			state.design.payments[ key ] = value;
 		} else if ( scope === 'email' ) {
-			// emailSettings() teeb puuduva kirje täiskujul — nii ei sõltu
-			// tulemus sellest, millist välja juhtuti esimesena muutma.
-			emailSettings()[ key ] = value;
+			// Režiim ja lisateksti lüliti on jagatud, teema ja pealkiri mitte.
+			var shared = 'mode' === key || 'additional' === key;
+			var own    = shared ? null : langEmail( true );
+
+			if ( own ) {
+				own[ key ] = value;
+			} else {
+				// emailSettings() teeb puuduva kirje täiskujul — nii ei sõltu
+				// tulemus sellest, millist välja juhtuti esimesena muutma.
+				emailSettings()[ key ] = value;
+			}
 		} else {
 			var block = findBlock( state.selected );
 			if ( block ) {
@@ -1951,6 +2307,17 @@
 		if ( emailPick ) {
 			emailPick.addEventListener( 'change', function () {
 				switchEmail( emailPick.value );
+			} );
+		}
+
+		var langPick = root.querySelector( '.wmd-lang-pick' );
+		if ( langPick ) {
+			langPick.addEventListener( 'change', function () {
+				// Keele vahetus toob serverist selle keele WooCommerce'i sisu ja
+				// näitab vasakul selle keele plokke.
+				state.lang = langPick.value;
+				state.selected = null;
+				render();
 			} );
 		}
 
@@ -2372,7 +2739,7 @@
 				// Täisrežiim algab sellest, mida WooCommerce praegu saadab —
 				// plokkidena, mida saab kohe edasi muuta. Sisu tuuakse serverist
 				// alles nüüd, seega on kaasas ka kõik lingid.
-				if ( mode === 'full' && ! e.body.length ) {
+				if ( mode === 'full' && ! zoneList( 'body' ).length ) {
 					takeOverFromWc( { fallback: true } );
 					return;
 				}
@@ -2484,7 +2851,19 @@
 			} );
 		} );
 
-		root.querySelectorAll( '.wmd-item' ).forEach( function ( item ) {
+		// „Tõlgi see osa": kopeerib vaikekeele plokid sellesse keelde, kust neid
+		// saab edasi muuta. Alles siis hakkab see keel oma teed minema.
+		root.querySelectorAll( '[data-translate]' ).forEach( function ( btn ) {
+			btn.addEventListener( 'click', function () {
+				zoneOverride( btn.getAttribute( 'data-translate' ), true );
+				state.selected = null;
+				markDirty();
+				render();
+				invalidatePreview();
+			} );
+		} );
+
+		root.querySelectorAll( '.wmd-item[data-id]' ).forEach( function ( item ) {
 			item.addEventListener( 'click', function () {
 				selectBlock( item.getAttribute( 'data-zone' ), item.getAttribute( 'data-id' ) );
 			} );
@@ -2712,6 +3091,7 @@
 					// Ilma selleta saatis server viimase tellimuse pealt, mitte
 					// selle, mida ülaribal vaatad.
 					order: orderParam(),
+					lang: state.lang,
 					design: JSON.stringify( state.design ),
 				} ).then( function ( res ) {
 					// Server salvestab kujunduse enne saatmist, et postkasti

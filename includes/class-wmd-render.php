@@ -153,7 +153,7 @@ class WMD_Render {
 		}
 
 		// Täisrežiimis on kogu sisu keha plokkides, seega ümbritsevaid ei renderdata.
-		if ( 'full' !== $settings['mode'] && ! empty( $settings['before'] ) ) {
+		if ( 'full' !== WMD_Design::mode( $email_id ) && ! empty( $settings['before'] ) ) {
 			$out .= self::blocks( $settings['before'], $brand, $ctx );
 		}
 
@@ -183,7 +183,7 @@ class WMD_Render {
 
 		$out = self::$mark_wc ? self::WC_END . '</div>' : '</div>';
 
-		if ( 'full' !== $settings['mode'] && ! empty( $settings['after'] ) ) {
+		if ( 'full' !== WMD_Design::mode( $email_id ) && ! empty( $settings['after'] ) ) {
 			$out .= self::blocks( $settings['after'], $brand, $ctx );
 		}
 

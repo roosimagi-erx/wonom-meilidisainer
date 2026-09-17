@@ -19,6 +19,114 @@ function wmd_woo_active() {
 }
 
 /**
+ * Poe vaikekeel.
+ *
+ * Vaikekeele sisu elab kujunduses tipptasemel; teised keeled on selle peal
+ * kihina (vt WMD_Design::merge_lang). Nii ei vaja olemasolev kujundus
+ * mitmekeelseks minnes mingit ümbertegemist.
+ *
+ * @return string Kahetäheline kood, nt „et".
+ */
+function wmd_default_language() {
+	$lang = apply_filters( 'wpml_default_language', null );
+
+	if ( is_string( $lang ) && '' !== $lang ) {
+		return $lang;
+	}
+
+	if ( function_exists( 'pll_default_language' ) ) {
+		$lang = pll_default_language();
+
+		if ( is_string( $lang ) && '' !== $lang ) {
+			return $lang;
+		}
+	}
+
+	return substr( get_locale(), 0, 2 );
+}
+
+/**
+ * Poe keeled kujundaja valikusse.
+ *
+ * Ilma tõlkepluginata on vastuses üks keel — siis ei näita kujundaja valikut
+ * üldse ja miski ei muutu.
+ *
+ * @return array<string,string> kood => nimi.
+ */
+function wmd_languages() {
+	$out  = array();
+	$wpml = apply_filters( 'wpml_active_languages', null, array( 'skip_missing' => 0 ) );
+
+	if ( is_array( $wpml ) && $wpml ) {
+		foreach ( $wpml as $code => $data ) {
+			$name = '';
+
+			if ( is_array( $data ) ) {
+				$name = ! empty( $data['native_name'] ) ? $data['native_name'] : ( ! empty( $data['translated_name'] ) ? $data['translated_name'] : '' );
+			}
+
+			$out[ (string) $code ] = '' !== $name ? $name : (string) $code;
+		}
+
+		return $out;
+	}
+
+	if ( function_exists( 'pll_languages_list' ) ) {
+		$codes = pll_languages_list( array( 'fields' => 'slug' ) );
+		$names = pll_languages_list( array( 'fields' => 'name' ) );
+
+		if ( is_array( $codes ) ) {
+			foreach ( $codes as $i => $code ) {
+				$out[ $code ] = isset( $names[ $i ] ) ? $names[ $i ] : $code;
+			}
+
+			return $out;
+		}
+	}
+
+	$default         = wmd_default_language();
+	$out[ $default ] = $default;
+
+	return $out;
+}
+
+/**
+ * Mis keeles see kiri välja läheb.
+ *
+ * Tellimuse keel on kirjas tellimusel endal (WooCommerce Multilingual paneb
+ * sinna meta „wpml_language"). See on kõige kindlam allikas, sest see ei sõltu
+ * sellest, mis keel parasjagu saidil sees on.
+ *
+ * @param WC_Order|null $order Tellimus, kui on.
+ * @return string
+ */
+function wmd_email_language( $order = null ) {
+	if ( $order && is_a( $order, 'WC_Order' ) ) {
+		$lang = $order->get_meta( 'wpml_language', true );
+
+		if ( is_string( $lang ) && '' !== $lang ) {
+			return $lang;
+		}
+	}
+
+	$lang = apply_filters( 'wpml_current_language', null );
+
+	if ( is_string( $lang ) && '' !== $lang && 'all' !== $lang ) {
+		return $lang;
+	}
+
+	if ( function_exists( 'pll_current_language' ) ) {
+		$lang = pll_current_language();
+
+		if ( is_string( $lang ) && '' !== $lang ) {
+			return $lang;
+		}
+	}
+
+	return substr( determine_locale(), 0, 2 );
+}
+
+/**
  * Brändi väljade skeem. Sama skeemi järgi ehitab JS parempoolse paneeli.
  *
  * @return array<string,array>
@@ -1190,6 +1298,8 @@ function wmd_default_design() {
 		'footer'   => $footer,
 		'emails'   => $emails,
 		'payments' => array(),
+		// Keelekihid vaikekeele peal. Tühi = kõik kirjad ühes keeles.
+		'i18n'     => array(),
 	);
 }
 

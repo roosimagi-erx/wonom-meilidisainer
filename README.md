@@ -3,8 +3,8 @@
 A visual designer for WooCommerce order emails. Set the brand once and it applies
 to every email — you add blocks only where you actually need them.
 
-**Status:** test version 0.24.0 · **Needs:** WordPress 6.0+, PHP 7.4+, WooCommerce 6.0+
-· **Languages:** English, Estonian ([eestikeelne README](README.et.md))
+**Status:** test version 0.25.0 · **Needs:** WordPress 6.0+, PHP 7.4+, WooCommerce 6.0+
+· **Interface:** English, Estonian · **Emails:** any language via WPML / Polylang ([eestikeelne README](README.et.md))
 
 ---
 

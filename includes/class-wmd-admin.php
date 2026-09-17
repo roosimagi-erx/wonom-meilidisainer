@@ -119,6 +119,9 @@ class WMD_Admin {
 				'wcDefaults'  => self::wc_defaults(),
 				'orders'      => wmd_recent_orders(),
 				'gateways'    => wmd_payment_gateways(),
+				// Keelte valik ilmub ainult siis, kui poes on üle ühe keele.
+				'languages'   => wmd_languages(),
+				'defaultLang' => wmd_default_language(),
 				'canUpdate'   => current_user_can( 'update_plugins' ) ? 1 : 0,
 				'updates'     => WMD_Updater::settings(),
 				'pluginsUrl'  => admin_url( 'plugins.php' ),

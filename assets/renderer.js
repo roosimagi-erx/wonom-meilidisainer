@@ -1019,7 +1019,11 @@
 			} ) ) + '">' + esc( title ) + '</h1>';
 		}
 
-		if ( settings.mode === 'full' ) {
+		// Sama reegel mis PHP-poolel WMD_Design::mode: täisrežiim kehtib ainult
+		// siis, kui selles keeles on ka sisu — muidu jääks kiri tühjaks.
+		var fullMode = 'full' === settings.mode && settings.body && settings.body.length;
+
+		if ( fullMode ) {
 			// Terve meil tuleb plokkidest — WooCommerce'i enda sisu ei renderdata.
 			out += '<div data-wmd-zone="body">' + blocks( settings.body, brand, ctx ) + '</div>';
 

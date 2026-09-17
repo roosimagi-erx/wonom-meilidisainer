@@ -961,6 +961,31 @@
 	margin-top: 0;
 }
 
+/* ------------------------------------------------------------- keeled */
+
+.wmd-lang-pick {
+	max-width: 160px;
+}
+
+/* Vaikekeelest päritud plokid: näha, aga mitte muudetavad. */
+.wmd-list-inherited {
+	opacity: 0.6;
+}
+
+.wmd-item.is-inherited {
+	cursor: default;
+	background: #fafbfc;
+}
+
+.wmd-item.is-inherited:hover {
+	background: #fafbfc;
+	border-color: var(--wmd-line);
+}
+
+.wmd-translate {
+	margin-top: 2px;
+}
+
 /* ------------------------------------------------ pildid kõrvuti (kaardid) */
 
 .wmd-cards-edit {
