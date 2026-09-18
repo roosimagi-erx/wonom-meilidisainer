@@ -467,6 +467,7 @@ class WMD_Render {
 				$nets  = array(
 					'facebook'  => 'Facebook',
 					'instagram' => 'Instagram',
+					'tiktok'    => 'TikTok',
 					'youtube'   => 'YouTube',
 					'linkedin'  => 'LinkedIn',
 				);

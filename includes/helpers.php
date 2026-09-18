@@ -672,6 +672,11 @@ function wmd_block_types() {
 					'label'   => 'Instagram',
 					'default' => '',
 				),
+				'tiktok'    => array(
+					'type'    => 'url',
+					'label'   => 'TikTok',
+					'default' => '',
+				),
 				'youtube'   => array(
 					'type'    => 'url',
 					'label'   => 'YouTube',

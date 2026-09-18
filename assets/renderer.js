@@ -412,7 +412,7 @@
 				break;
 
 			case 'social':
-				var nets = { facebook: 'Facebook', instagram: 'Instagram', youtube: 'YouTube', linkedin: 'LinkedIn' };
+				var nets = { facebook: 'Facebook', instagram: 'Instagram', tiktok: 'TikTok', youtube: 'YouTube', linkedin: 'LinkedIn' };
 				var iconSize = num( p.size, 28 );
 				var gap = num( p.gap, 10 );
 				var cells = '';

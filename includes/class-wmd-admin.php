@@ -101,8 +101,8 @@ class WMD_Admin {
 		if ( $parent ) {
 			self::$hook = add_submenu_page(
 				$parent,
-				__( 'Email Designer', 'wonom-meilidisainer' ),
-				__( 'Email Designer', 'wonom-meilidisainer' ),
+				__( 'Wonom Email Designer', 'wonom-meilidisainer' ),
+				__( 'Wonom Email Designer', 'wonom-meilidisainer' ),
 				'manage_woocommerce',
 				'wonom-meilidisainer',
 				array( __CLASS__, 'page' )
@@ -112,8 +112,8 @@ class WMD_Admin {
 		}
 
 		self::$hook = add_menu_page(
-			__( 'Email Designer', 'wonom-meilidisainer' ),
-			__( 'Email Designer', 'wonom-meilidisainer' ),
+			__( 'Wonom Email Designer', 'wonom-meilidisainer' ),
+			__( 'Wonom Email Designer', 'wonom-meilidisainer' ),
 			'manage_options',
 			'wonom-meilidisainer',
 			array( __CLASS__, 'page' ),

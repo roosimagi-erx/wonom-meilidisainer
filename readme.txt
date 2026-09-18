@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.29.0
+Stable tag: 0.30.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,7 +26,7 @@ Wonom Email Designer gives WooCommerce transactional emails your brand look, wit
 * **Live preview** — every change is on screen at once, in desktop and mobile view.
 * **Test email** — sends the real WooCommerce email, but to a test address.
 * **Export and import** — the whole design in one file, to move it to another shop.
-* **One switch** — "Design on" turns the whole takeover off at once and the WooCommerce default templates come back.
+* **Switches** — each email has its own: switched off, that email goes out exactly as WooCommerce sends it, and everything you built stays saved. The main switch under Settings turns the whole takeover off at once and the WooCommerce default templates come back.
 
 = Languages =
 
@@ -67,6 +67,10 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 0.30.0 =
+* **TikTok in the social media block.** Its own link field and the real TikTok icon, next to Facebook, Instagram, YouTube and LinkedIn. Leave the field empty and the icon does not appear.
+* The menu entry under WooCommerce now reads "Wonom Email Designer", so it is clear whose plugin it is when a shop has several.
 
 = 0.29.0 =
 * **One switch instead of two.** After 0.28.0 there were two identical-looking switches on screen — the main one in the top bar and the per-email one in the panel. The main switch has moved to Settings, where it belongs: it governs the whole plugin, not the email you happen to be looking at. The top bar now has actions only.
