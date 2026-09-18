@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.28.0
+Stable tag: 0.29.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,10 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 0.29.0 =
+* **One switch instead of two.** After 0.28.0 there were two identical-looking switches on screen — the main one in the top bar and the per-email one in the panel. The main switch has moved to Settings, where it belongs: it governs the whole plugin, not the email you happen to be looking at. The top bar now has actions only.
+* **A warning strip above the preview when the design does not reach the customer** — either because the main switch is off or because it is off on this email. Neither switch is on screen all the time any more, so without this you could spend an hour designing an email that never goes out.
 
 = 0.28.0 =
 * **The design can now be switched on and off one email at a time.** Until now it was all emails or none. Each email has its own switch in the designer; switching it off sends that email exactly as WooCommerce sends it, and everything you built stays saved and comes back when you switch it on again. The main switch under Settings still governs the lot.

@@ -685,6 +685,29 @@
 	 * Teade, kui WooCommerce'i sisu ei õnnestunud kätte saada — siis on kanvasel
 	 * näidissisu ja seda peab kasutaja teadma.
 	 */
+	/**
+	 * Hoiatus kanvase kohal, kui kujundus kliendini ei jõua.
+	 *
+	 * Peakraan on Seadete all ja selle kirja lüliti Kirja sisu all — kumbki ei ole
+	 * kogu aeg ekraanil. Ilma selle ribata kujundaks poepidaja tundide kaupa kirja,
+	 * mis välja ei lähe.
+	 */
+	function offNoteHtml() {
+		if ( ! state.enabled ) {
+			return '<div class="wmd-server-note is-warn">' +
+				__( 'The design is switched off on every email. You can switch it back on under Settings.', 'wonom-meilidisainer' ) +
+				'</div>';
+		}
+
+		if ( ! emailOn( state.email ) ) {
+			return '<div class="wmd-server-note is-warn">' +
+				__( 'The design is switched off on this email, so it goes out as WooCommerce sends it.', 'wonom-meilidisainer' ) +
+				'</div>';
+		}
+
+		return '';
+	}
+
 	function wcNoteHtml() {
 		if ( emailSettings().mode === 'full' ) {
 			return '';
@@ -1308,10 +1331,6 @@
 			'<input type="checkbox" class="wmd-email-enabled" data-scope="email" data-key="enabled"' + ( e.enabled ? ' checked' : '' ) + ' />' +
 			'<span></span>' + __( 'Use this design on this email', 'wonom-meilidisainer' ) + '</label>' +
 			'<p class="wmd-hint">' + __( 'Switched off, this email goes out exactly as WooCommerce sends it. Everything set here stays saved and comes back when you switch it on again.', 'wonom-meilidisainer' ) + '</p></div>';
-
-		if ( ! e.enabled ) {
-			html += '<div class="wmd-intro wmd-warn">' + __( 'The design is off on this email, so nothing below reaches the customer.', 'wonom-meilidisainer' ) + '</div>';
-		}
 
 		html += '<div class="wmd-field"><label class="wmd-label" for="wmd-f-email-subject">' + __( 'Subject line', 'wonom-meilidisainer' ) + '</label>' +
 			'<div class="wmd-inline"><input type="text" class="wmd-input" id="wmd-f-email-subject" data-scope="email" data-key="subject" value="' + esc( emailText( 'subject' ) ) + '" placeholder="' + esc( textPlaceholder( 'subject' ) ) + '" />' +
@@ -2137,9 +2156,21 @@
 			'</div></details>';
 	}
 
+	/**
+	 * Peakraan: kas kujundus rakendub üldse. Kirja kaupa lülitid on Kirja sisu all,
+	 * see siin on kogu plugina jaoks — seepärast on ta Seadete all, mitte ribal.
+	 */
+	function masterPanelHtml() {
+		return '<details class="wmd-group" open><summary>' + __( 'Design in use', 'wonom-meilidisainer' ) + '</summary><div class="wmd-group-body">' +
+			'<div class="wmd-field wmd-field-toggle"><label class="wmd-switch">' +
+			'<input type="checkbox" class="wmd-enabled"' + ( state.enabled ? ' checked' : '' ) + ' />' +
+			'<span></span>' + __( 'Use the design on emails', 'wonom-meilidisainer' ) + '</label>' +
+			'<p class="wmd-hint">' + __( 'The main switch for the whole plugin. Switched off, every email goes out as WooCommerce sends it. Whether the design reaches one particular email is decided by the switch on that email under Email content.', 'wonom-meilidisainer' ) + '</p></div></div></details>';
+	}
+
 	function updatesPanelHtml() {
 		if ( ! cfg.canUpdate ) {
-			return backupPanelHtml() + machinePanelHtml() + '<div class="wmd-intro">' + __( 'Setting up updates needs permission to update plugins.', 'wonom-meilidisainer' ) + '</div>';
+			return masterPanelHtml() + backupPanelHtml() + machinePanelHtml() + '<div class="wmd-intro">' + __( 'Setting up updates needs permission to update plugins.', 'wonom-meilidisainer' ) + '</div>';
 		}
 
 		var u = state.updates;
@@ -2159,7 +2190,7 @@
 
 		var canInstall = u.remote && u.remote !== u.current;
 
-		var html = backupPanelHtml() + machinePanelHtml();
+		var html = masterPanelHtml() + backupPanelHtml() + machinePanelHtml();
 
 		html += '<details class="wmd-group" open><summary>' + __( 'Automatic updates', 'wonom-meilidisainer' ) + '</summary><div class="wmd-group-body">';
 		html += '<p class="wmd-hint">' + __( 'The plugin is not on WordPress.org, so updates come straight from your GitHub releases. WordPress shows the update notice on the ordinary Plugins page too.', 'wonom-meilidisainer' ) + '</p>';
@@ -2550,7 +2581,6 @@
 			'<button type="button" class="wmd-seg' + ( state.device === 'mobile' ? ' is-active' : '' ) + '" data-device="mobile">' + __( 'Mobile', 'wonom-meilidisainer' ) + '</button>' +
 			'</div></div>' +
 			'<div class="wmd-bar-right">' +
-			'<label class="wmd-switch wmd-switch-inline" title="' + __( 'Whether the design applies to real emails', 'wonom-meilidisainer' ) + '"><input type="checkbox" class="wmd-enabled"' + ( state.enabled ? ' checked' : '' ) + ' /><span></span>' + __( 'Design on', 'wonom-meilidisainer' ) + '</label>' +
 			'<button type="button" class="button wmd-test">' + __( 'Send test email', 'wonom-meilidisainer' ) + '</button>' +
 			'<button type="button" class="button button-primary wmd-save">' + __( 'Save', 'wonom-meilidisainer' ) + '</button>' +
 			'<button type="button" class="button-link wmd-reset" title="' + __( 'Reset the design', 'wonom-meilidisainer' ) + '">' + __( 'Reset', 'wonom-meilidisainer' ) + '</button>' +
@@ -2558,6 +2588,7 @@
 			'<div class="wmd-body">' +
 			'<aside class="wmd-left"><div class="wmd-tabs">' + tabs + '</div><div class="wmd-panel">' + panel + '</div></aside>' +
 			'<main class="wmd-canvas' + ( state.device === 'mobile' ? ' is-mobile' : '' ) + '">' +
+			offNoteHtml() +
 			wcNoteHtml() +
 			'<div class="wmd-frame-wrap"><iframe class="wmd-frame" title="' + __( 'Email preview', 'wonom-meilidisainer' ) + '"></iframe></div></main>' +
 			'<aside class="wmd-right">' + inspectorHtml() + '</aside>' +
@@ -3429,7 +3460,8 @@
 		if ( enabled ) {
 			enabled.addEventListener( 'change', function () {
 				state.enabled = enabled.checked;
-				post( 'wmd_toggle', { on: enabled.checked ? 1 : 0 } ).then( function () {
+				render();
+				post( 'wmd_toggle', { on: state.enabled ? 1 : 0 } ).then( function () {
 					toast( enabled.checked ? __( 'The design applies to emails', 'wonom-meilidisainer' ) : __( 'The design is switched off', 'wonom-meilidisainer' ), 'ok' );
 				} );
 			} );
