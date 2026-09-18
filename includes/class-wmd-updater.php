@@ -264,6 +264,30 @@ class WMD_Updater {
 	}
 
 	/**
+	 * Uuenduskirje WordPressi jaoks.
+	 *
+	 * @param array $info Kaugallika info.
+	 * @return object
+	 */
+	protected static function item( $info ) {
+		$file = self::basename();
+
+		return (object) array(
+			'id'            => $file,
+			'slug'          => self::slug(),
+			'plugin'        => $file,
+			'new_version'   => $info['version'],
+			'url'           => $info['url'],
+			'package'       => $info['package'],
+			'tested'        => $info['tested'],
+			'requires_php'  => $info['requires_php'],
+			'icons'         => array(),
+			'banners'       => array(),
+			'compatibility' => new stdClass(),
+		);
+	}
+
+	/**
 	 * Paneb uuenduse WordPressi uuenduste nimekirja.
 	 *
 	 * @param mixed $transient Uuenduste transient.
@@ -280,20 +304,7 @@ class WMD_Updater {
 		}
 
 		$file = self::basename();
-
-		$item = (object) array(
-			'id'            => $file,
-			'slug'          => self::slug(),
-			'plugin'        => $file,
-			'new_version'   => $info['version'],
-			'url'           => $info['url'],
-			'package'       => $info['package'],
-			'tested'        => $info['tested'],
-			'requires_php'  => $info['requires_php'],
-			'icons'         => array(),
-			'banners'       => array(),
-			'compatibility' => new stdClass(),
-		);
+		$item = self::item( $info );
 
 		if ( version_compare( $info['version'], WMD_VERSION, '>' ) ) {
 			$transient->response[ $file ] = $item;
@@ -381,13 +392,44 @@ class WMD_Updater {
 	}
 
 	/**
-	 * Privaatse hoidla puhul lisab allalaadimisele autentimise.
+	 * Kas see URL on meie uuenduspakett.
+	 *
+	 * @param string $url URL.
+	 * @return bool
+	 */
+	private static function is_package_url( $url ) {
+		$info = get_transient( self::TRANSIENT );
+
+		if ( is_array( $info ) && ! empty( $info['package'] ) && $url === $info['package'] ) {
+			return true;
+		}
+
+		$repo = trim( (string) get_option( 'wmd_update_repo', '' ), " \t\n\r/" );
+
+		if ( '' === $repo || 'github' !== self::source() ) {
+			return false;
+		}
+
+		return false !== strpos( $url, '/' . $repo . '/releases/download/' )
+			|| false !== strpos( $url, '/repos/' . $repo . '/zipball/' )
+			|| (bool) preg_match( '#/repos/' . preg_quote( $repo, '#' ) . '/releases/assets/\d+#', $url );
+	}
+
+	/**
+	 * Paketi allalaadimise ajapiir ja privaatse hoidla autentimine.
 	 *
 	 * @param array  $args Päringu argumendid.
 	 * @param string $url  URL.
 	 * @return array
 	 */
 	public static function auth_header( $args, $url ) {
+		// WordPressi vaikimisi allalaadimisaeg on 300 sekundit. Cloudflare'i
+		// taga oleval saidil katkeb päring 100 sekundi peal ja kasutaja näeb
+		// 524-lehte, mitte veateadet. Parem kukkuda varem ja öelda, miks.
+		if ( self::is_package_url( $url ) ) {
+			$args['timeout'] = 45;
+		}
+
 		$token = self::token();
 
 		if ( ! $token || 'github' !== self::source() ) {
@@ -465,16 +507,57 @@ class WMD_Updater {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 
-		// Uuendaja loeb paketi asukoha sellest transientist, seega täidame ta ise.
-		delete_site_transient( 'update_plugins' );
-		wp_update_plugins();
+		$file = self::basename();
+		$item = self::item( $info );
 
-		$file    = self::basename();
+		// Uuendaja loeb paketi asukoha „update_plugins" transientist. Varem
+		// kustutasime selle ja kutsusime wp_update_plugins() — see aga paneb
+		// tööle kõigi teiste pluginate uuendajad ja saadab api.wordpress.org-i
+		// terve saidi plugina- ja teemanimekirja. Suures poes läks see nii
+		// pikale, et Cloudflare lõi päringu 100 sekundi peal katki (HTTP 524).
+		// Nüüd anname uuendajale ainult oma kirje ja ainult lugemise ajaks —
+		// midagi ei kirjutata ja kellegi teise uuendaja tööle ei lähe.
+		$stage = static function ( $value ) use ( $file, $item ) {
+			if ( ! is_object( $value ) ) {
+				$value = new stdClass();
+			}
+
+			if ( ! isset( $value->response ) || ! is_array( $value->response ) ) {
+				$value->response = array();
+			}
+
+			if ( ! isset( $value->checked ) || ! is_array( $value->checked ) ) {
+				$value->checked = array();
+			}
+
+			if ( empty( $value->last_checked ) ) {
+				$value->last_checked = time();
+			}
+
+			$value->checked[ $file ]  = WMD_VERSION;
+			$value->response[ $file ] = $item;
+
+			if ( isset( $value->no_update ) && is_array( $value->no_update ) ) {
+				unset( $value->no_update[ $file ] );
+			}
+
+			return $value;
+		};
+
 		$skin    = new Automatic_Upgrader_Skin();
 		$upgrade = new Plugin_Upgrader( $skin );
 
 		$was_active = is_plugin_active( $file );
-		$result     = $upgrade->upgrade( $file );
+
+		add_filter( 'site_transient_update_plugins', $stage, 100 );
+
+		try {
+			$result = $upgrade->upgrade( $file );
+		} finally {
+			// Filter ei tohi jääda rippuma ka siis, kui paigaldus viskab vea —
+			// muidu paistaks uuendus igal järgmisel lehel olemasolevana.
+			remove_filter( 'site_transient_update_plugins', $stage, 100 );
+		}
 
 		$log = array_filter( (array) $skin->get_upgrade_messages() );
 

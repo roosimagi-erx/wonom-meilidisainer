@@ -5,7 +5,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-18 12:35+0000\n"
+"POT-Creation-Date: 2026-09-18 13:01+0000\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: wonom-meilidisainer\n"
 
@@ -669,7 +669,7 @@ msgstr ""
 msgid "Insert a variable"
 msgstr ""
 
-#: includes/class-wmd-updater.php:511
+#: includes/class-wmd-updater.php:594
 msgid "Installed version %s."
 msgstr ""
 
@@ -873,7 +873,7 @@ msgstr ""
 msgid "No blocks here yet. Add one below."
 msgstr ""
 
-#: includes/class-wmd-updater.php:341
+#: includes/class-wmd-updater.php:352
 msgid "No changelog was provided."
 msgstr ""
 
@@ -1129,7 +1129,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: includes/class-wmd-updater.php:379
+#: includes/class-wmd-updater.php:390
 msgid "Renaming the update folder failed."
 msgstr ""
 
@@ -1433,11 +1433,11 @@ msgstr ""
 msgid "The translation service sent back a different number of texts than we asked for."
 msgstr ""
 
-#: includes/class-wmd-updater.php:492
+#: includes/class-wmd-updater.php:575
 msgid "The update failed. Check file permissions or install the ZIP by hand."
 msgstr ""
 
-#: includes/class-wmd-updater.php:452
+#: includes/class-wmd-updater.php:494
 msgid "The update source did not respond."
 msgstr ""
 
@@ -1457,7 +1457,7 @@ msgstr ""
 msgid "There is no content in this language yet, so this email goes out with the WooCommerce content. Add blocks below."
 msgstr ""
 
-#: includes/class-wmd-updater.php:459
+#: includes/class-wmd-updater.php:501
 msgid "There is no newer version."
 msgstr ""
 
@@ -1689,7 +1689,7 @@ msgstr ""
 msgid "You can pick the value under the { } button — the real fields of this order are there too, such as the tracking code."
 msgstr ""
 
-#: includes/class-wmd-updater.php:446
+#: includes/class-wmd-updater.php:488
 msgid "You do not have permission to update plugins."
 msgstr ""
 

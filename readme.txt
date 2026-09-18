@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.30.0
+Stable tag: 0.31.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,10 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 0.31.0 =
+* **Fix: "Install now" in the designer ended in a timeout (HTTP 524).** The update was found, but installing it never finished. Before starting, the plugin forced WordPress to re-check every plugin on the site — which sets every other plugin's own updater going and sends the whole plugin list to wordpress.org. On a shop with many plugins that took longer than the server allows a single request to run. The updater is now handed only this plugin's entry, and only while it reads it: nothing else is set going.
+* Fix: downloading the package could hang for up to five minutes. WordPress's default is 300 seconds, longer than most servers allow, so instead of an error message you got a timeout page. The download now gives up after 45 seconds and says what went wrong.
 
 = 0.30.0 =
 * **TikTok in the social media block.** Its own link field and the real TikTok icon, next to Facebook, Instagram, YouTube and LinkedIn. Leave the field empty and the icon does not appear.
