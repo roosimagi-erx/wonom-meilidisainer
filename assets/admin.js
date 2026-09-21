@@ -998,11 +998,74 @@
 	}
 
 	/**
+	 * Veerunimekiri koos skeemi uute valikutega.
+	 *
+	 * Salvestatud kujundus teab ainult neid veerge, mis olid olemas salvestamise
+	 * hetkel. Kui pluginale lisandub uus rida (nt „Sooduskood"), ei olnud seda
+	 * nimekirjas näha enne järgmist salvestust — rida läks küll kirja, aga seda
+	 * ei saanud ei välja lülitada ega ümber tõsta. Sama tee käib PHP pool
+	 * WMD_Design::sanitize_columns().
+	 *
+	 * @param {Object} options Skeemi valikud: võti => silt.
+	 * @param {Array}  value   Salvestatud veerud.
+	 * @return {Array} Veerud, uued lõpus ja väljas.
+	 */
+	function mergeColumns( options, value ) {
+		var keys = Object.keys( options );
+		var out = [];
+		var seen = {};
+
+		( Array.isArray( value ) ? value : [] ).forEach( function ( col ) {
+			if ( ! col || ! col.key || seen[ col.key ] || ! options[ col.key ] ) {
+				return;
+			}
+
+			seen[ col.key ] = true;
+			out.push( col );
+		} );
+
+		function indexOfKey( k ) {
+			for ( var i = 0; i < out.length; i++ ) {
+				if ( out[ i ].key === k ) {
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
+		// Puuduv rida läheb sinna, kuhu ta skeemis kuulub — eelmise tuttava rea
+		// järele. Nii satub „Sooduskood" kohe „Allahindluse" alla, mitte lõppu,
+		// kust kasutaja peaks teda viie nooleklõpsuga üles tooma.
+		keys.forEach( function ( k, i ) {
+			if ( seen[ k ] ) {
+				return;
+			}
+
+			var at = out.length;
+
+			for ( var j = i - 1; j >= 0; j-- ) {
+				var found = indexOfKey( keys[ j ] );
+
+				if ( -1 !== found ) {
+					at = found + 1;
+					break;
+				}
+			}
+
+			out.splice( at, 0, { key: k, label: options[ k ], on: 0 } );
+			seen[ k ] = true;
+		} );
+
+		return out;
+	}
+
+	/**
 	 * Veergude toimeti: lülita sisse-välja, muuda silti, tõsta järjekorras.
 	 */
 	function columnsHtml( scope, key, field, value ) {
 		var options = field.options || {};
-		var cols = Array.isArray( value ) && value.length ? value : [];
+		var cols = mergeColumns( options, value );
 
 		var rows = cols.map( function ( col, index ) {
 			return '<li class="wmd-colrow" data-index="' + index + '">' +
@@ -2808,8 +2871,24 @@
 			var key = list.getAttribute( 'data-key' );
 
 			function cols() {
-				var block = findBlock( state.selected );
-				return block ? block.props[ key ] : null;
+				// editableBlock(): teises keeles peab muudatus minema selle keele
+				// koopiasse, mitte vaikekeele plokki.
+				var block = editableBlock( state.selected );
+
+				if ( ! block ) {
+					return null;
+				}
+
+				// Sama nimekiri, mida columnsHtml() joonistas — muidu ei klapiks
+				// indeksid, kui skeemis on rida, mida kujunduses veel ei ole.
+				var def = cfg.blockTypes[ block.type ];
+				var field = def && def.fields ? def.fields[ key ] : null;
+
+				if ( field && field.options ) {
+					block.props[ key ] = mergeColumns( field.options, block.props[ key ] );
+				}
+
+				return block.props[ key ];
 			}
 
 			function commit( rerender ) {
@@ -2871,7 +2950,9 @@
 			var key = list.getAttribute( 'data-key' );
 
 			function rows() {
-				var block = findBlock( state.selected );
+				// editableBlock(): teises keeles peab muudatus minema selle keele
+				// koopiasse, mitte vaikekeele plokki.
+				var block = editableBlock( state.selected );
 				return block ? block.props[ key ] : null;
 			}
 
@@ -2950,7 +3031,9 @@
 			var tools = list.parentNode;
 
 			function rows() {
-				var block = findBlock( state.selected );
+				// editableBlock(): teises keeles peab muudatus minema selle keele
+				// koopiasse, mitte vaikekeele plokki.
+				var block = editableBlock( state.selected );
 				return block ? block.props[ key ] : null;
 			}
 

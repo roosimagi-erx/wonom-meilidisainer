@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,11 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.8 =
+* **Fix: "Coupon code" went into the email but was missing from the block's row list.** A saved design only knows the rows that existed when it was saved, so the new row could not be switched off or moved — it just turned up above the grand total. The list now always shows every row the plugin offers.
+* A row the plugin adds later lands where it belongs — "Coupon code" appears right under "Discount", not at the bottom of the list — and it arrives switched off, so no email changes until you tick it.
+* Fix: the row, pair and image-card editors wrote into the default language when you were editing a second one. The same leak as 1.0.4, in the three editors that bypassed the usual path.
 
 = 1.0.7 =
 * **A "Coupon code" row in the "Totals (own table)" block.** Tick it on and the code used on the order appears in the summary, next to the discount amount. WooCommerce does not offer this row itself — its summary only has the amount — so the plugin builds it from the order's coupons. When no code was used the row is not there at all.

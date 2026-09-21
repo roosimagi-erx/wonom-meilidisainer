@@ -657,14 +657,48 @@ class WMD_Design {
 			}
 		}
 
-		foreach ( $options as $key => $label ) {
-			if ( ! isset( $seen[ $key ] ) ) {
-				$out[] = array(
-					'key'   => $key,
-					'label' => $label,
-					'on'    => 0,
-				);
+		// Puuduv rida läheb sinna, kuhu ta skeemis kuulub — eelmise tuttava rea
+		// järele, mitte nimekirja lõppu. Sama reegel on kujundaja poolel
+		// (mergeColumns admin.js-is), et salvestus ja ekraan ei läheks lahku.
+		$keys = array_keys( $options );
+
+		foreach ( $keys as $i => $key ) {
+			if ( isset( $seen[ $key ] ) ) {
+				continue;
 			}
+
+			$at = count( $out );
+
+			for ( $j = $i - 1; $j >= 0; $j-- ) {
+				$found = -1;
+
+				foreach ( $out as $n => $col ) {
+					if ( $col['key'] === $keys[ $j ] ) {
+						$found = $n;
+						break;
+					}
+				}
+
+				if ( -1 !== $found ) {
+					$at = $found + 1;
+					break;
+				}
+			}
+
+			array_splice(
+				$out,
+				$at,
+				0,
+				array(
+					array(
+						'key'   => $key,
+						'label' => $options[ $key ],
+						'on'    => 0,
+					),
+				)
+			);
+
+			$seen[ $key ] = true;
 		}
 
 		return $out;
