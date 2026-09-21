@@ -5,7 +5,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-21 14:24+0000\n"
+"POT-Creation-Date: 2026-09-21 16:36+0000\n"
 "Language: et\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: wonom-meilidisainer\n"
@@ -686,7 +686,7 @@ msgstr "Paigaldab uue versiooni siinsamas. Leht laaditakse pärast uuesti; salve
 msgid "Internal shop emails"
 msgstr "Poe sisemised meilid"
 
-#: includes/class-wmd-ajax.php:868
+#: includes/class-wmd-ajax.php:877
 msgid "Invalid email address."
 msgstr "Vigane e-posti aadress."
 
@@ -1190,7 +1190,7 @@ msgstr "Otsi muutujat…"
 msgid "Send test email"
 msgstr "Saada testmeil"
 
-#: includes/class-wmd-ajax.php:958
+#: includes/class-wmd-ajax.php:967
 msgid "Sending the email failed. Check the shop's email settings."
 msgstr "Meili saatmine ebaõnnestus. Kontrolli poe meiliseadeid."
 
@@ -1710,7 +1710,7 @@ msgstr "Selle teksti leiad WooCommerce → Seaded → Meilid alt. Seal ei saa se
 msgid "Your note to the order"
 msgstr "Sinu märkus tellimusele"
 
-#: includes/class-wmd-ajax.php:947
+#: includes/class-wmd-ajax.php:956
 msgid "[TEST] %s"
 msgstr "[TEST] %s"
 

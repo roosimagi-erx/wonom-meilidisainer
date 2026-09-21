@@ -1473,6 +1473,23 @@ class WMD_Render {
 
 		$html  = self::header_html( $label, $email_id, $ctx );
 		$html .= $body;
+
+		// Poe seadetes olev lisatekst läheb päris kirja lõppu ka täisrežiimis —
+		// seda teeb templates/emails/wmd-body.php. Ilma selleta oleks testmeil
+		// ja eelvaade päris kirjast lühem. Ümbrisrežiimis on ta juba $body sees.
+		if ( WMD_Design::is_full( $email_id ) && ! empty( $ctx['__additional'] ) ) {
+			$html .= '<div class="wmd-additional" style="' . esc_attr(
+				self::style(
+					array(
+						'font-family' => $brand['font_family'],
+						'font-size'   => (int) $brand['base_size'] . 'px',
+						'line-height' => '1.6',
+						'color'       => $brand['text_color'],
+					)
+				)
+			) . '">' . $ctx['__additional'] . '</div>';
+		}
+
 		$html .= self::footer_html( $email_id, $ctx );
 
 		// Eelvaates paneme CSS-i sisse, sest WooCommerce'i inliner siin ei jookse.

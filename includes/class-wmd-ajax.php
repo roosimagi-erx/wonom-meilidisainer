@@ -550,7 +550,15 @@ class WMD_Ajax {
 		}
 
 		$email->object = $order;
-		$text          = trim( (string) $email->get_additional_content() );
+
+		// get_additional_content() käib läbi WMD_Emails::additional_content()
+		// haagi, mis lülititega kirjal jätab WooCommerce'i teksti alles. Kanvas
+		// aga näitab kujundust, seega peab ta näitama ka kujunduse otsust —
+		// muidu ei mõjutaks „lisatekst kirja lõpus" lüliti eelvaates midagi.
+		$was  = WMD_Emails::force( true );
+		$text = trim( (string) $email->get_additional_content() );
+
+		WMD_Emails::force( $was );
 
 		if ( '' === $text ) {
 			return '';
@@ -654,8 +662,9 @@ class WMD_Ajax {
 		if ( $found ) {
 			self::prepare_account_email( $found, $order );
 
-			$ctx            = WMD_Tags::account_context( $found, $ctx );
-			$ctx['__email'] = $found;
+			$ctx                 = WMD_Tags::account_context( $found, $ctx );
+			$ctx['__email']      = $found;
+			$ctx['__additional'] = self::additional_content( $email_id, $order );
 		}
 
 		return $ctx;

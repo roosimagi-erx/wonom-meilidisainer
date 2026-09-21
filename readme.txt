@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.3 =
+* **Fix: "WooCommerce additional content at the end" did nothing in the preview when the design was switched off on that email.** The text stayed on the canvas however the switch was set. Same cause as the 1.0.2 fix, in a second place: the preview asks WooCommerce for that text and the switches were being applied to the answer. The canvas shows the design, so it now shows the design's decision.
+* Fix: in "Build the whole email" mode the test email left out the WooCommerce additional content, while the real email included it. The two now match.
 
 = 1.0.2 =
 * **Fix: the preview showed sample content whenever the design was switched off.** "The WooCommerce content could not be rendered" — because with the design off the plugin's own header and footer are not used, and those are what mark where the WooCommerce part starts and ends. Since 1.0.0 a fresh install starts switched off, so this met you on the very first screen. The preview now always builds with the design, whatever the switches say; they govern real emails, not the canvas.
