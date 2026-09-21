@@ -199,13 +199,11 @@
 				return null;
 			}
 
-			var copy = JSON.parse( JSON.stringify( baseZone( zone ) ) );
-
-			copy.forEach( function ( b ) {
-				b.id = newId();
-			} );
-
-			holder[ zone ] = copy;
+			// Plokkide id-d jäävad samaks, mis vaikekeeles. Tsoon renderdatakse
+			// alati ühest massiivist — kas vaikekeele omast või sellest —, seega
+			// kokkupõrget ei teki, aga valik ja fookus jäävad koopia tekkides
+			// alles. Uute id-dega kaoks kasutajal pooleli olev plokk käest.
+			holder[ zone ] = JSON.parse( JSON.stringify( baseZone( zone ) ) );
 		}
 
 		return holder[ zone ];
@@ -455,6 +453,47 @@
 		} );
 
 		return out;
+	}
+
+	/**
+	 * Tsoon, kuhu tohib kirjutada.
+	 *
+	 * zoneList() annab teises keeles seni, kuni seda osa pole tõlgitud, sama
+	 * massiivi mis vaikekeeles. Sinna kirjutamine muudaks mõlemat keelt korraga
+	 * — inglise keeles kirjutatud tekst ilmus ka eestikeelsesse kirja. Esimesel
+	 * muutmisel teeme sellest tsoonist selle keele oma koopia.
+	 *
+	 * @param {string} zone Tsooni nimi.
+	 * @return {Array} Massiiv, mida tohib muuta.
+	 */
+	function writableZone( zone ) {
+		if ( isBaseLang() ) {
+			return baseZone( zone );
+		}
+
+		return zoneOverride( zone, true ) || baseZone( zone );
+	}
+
+	/**
+	 * Valitud plokk kujul, mida tohib muuta.
+	 *
+	 * @param {Object} sel Valik.
+	 * @return {Object|null}
+	 */
+	function editableBlock( sel ) {
+		if ( ! sel ) {
+			return null;
+		}
+
+		var list = writableZone( sel.zone );
+
+		for ( var i = 0; i < list.length; i++ ) {
+			if ( list[ i ].id === sel.id ) {
+				return list[ i ];
+			}
+		}
+
+		return null;
 	}
 
 	function findBlock( sel ) {
@@ -2634,7 +2673,9 @@
 				emailSettings()[ key ] = value;
 			}
 		} else {
-			var block = findBlock( state.selected );
+			// editableBlock(), mitte findBlock(): teises keeles peab muudatus
+			// minema selle keele koopiasse, mitte vaikekeele plokki.
+			var block = editableBlock( state.selected );
 			if ( block ) {
 				block.props[ key ] = value;
 			}
@@ -3069,7 +3110,7 @@
 		// Ploki nähtavustingimus makseviisi järgi.
 		root.querySelectorAll( '.wmd-cond [data-pay]' ).forEach( function ( box ) {
 			box.addEventListener( 'change', function () {
-				var block = findBlock( state.selected );
+				var block = editableBlock( state.selected );
 				if ( ! block ) {
 					return;
 				}
@@ -3168,7 +3209,7 @@
 			btn.addEventListener( 'click', function () {
 				var parts = btn.getAttribute( 'data-add' ).split( '|' );
 				var block = makeBlock( parts[ 1 ] );
-				zoneList( parts[ 0 ] ).push( block );
+				writableZone( parts[ 0 ] ).push( block );
 				state.selected = { zone: parts[ 0 ], id: block.id };
 				markDirty();
 				render();
@@ -3182,7 +3223,7 @@
 				ev.stopPropagation();
 
 				var parts = btn.getAttribute( 'data-move' ).split( '|' );
-				var list = zoneList( parts[ 0 ] );
+				var list = writableZone( parts[ 0 ] );
 				var index = blockIndex( parts[ 0 ], parts[ 1 ] );
 				var to = index + parseInt( parts[ 2 ], 10 );
 
@@ -3202,7 +3243,7 @@
 			btn.addEventListener( 'click', function ( ev ) {
 				ev.stopPropagation();
 				var parts = btn.getAttribute( 'data-dup' ).split( '|' );
-				var list = zoneList( parts[ 0 ] );
+				var list = writableZone( parts[ 0 ] );
 				var index = blockIndex( parts[ 0 ], parts[ 1 ] );
 				if ( index === -1 ) {
 					return;
@@ -3225,7 +3266,7 @@
 				if ( index === -1 || ! window.confirm( __( 'Delete this block?', 'wonom-meilidisainer' ) ) ) {
 					return;
 				}
-				zoneList( parts[ 0 ] ).splice( index, 1 );
+				writableZone( parts[ 0 ] ).splice( index, 1 );
 				state.selected = null;
 				markDirty();
 				render();
@@ -3283,7 +3324,7 @@
 		 */
 		function commitOrder( list ) {
 			var zone = list.getAttribute( 'data-zone' );
-			var current = zoneList( zone );
+			var current = writableZone( zone );
 			var order = Array.prototype.map.call( list.querySelectorAll( '.wmd-item' ), function ( n ) {
 				return n.getAttribute( 'data-id' );
 			} );

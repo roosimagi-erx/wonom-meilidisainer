@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.4 =
+* **Fix: editing a block while viewing a second language changed the default language too.** Text typed in the English view appeared in the Estonian email, and the other way round. Until a part has been translated, the second language shows the default language's blocks — and the designer was letting you edit those very blocks rather than a copy. The block list on the left was already protected; clicking a block in the preview was not. Now the first edit gives that language its own copy, exactly as the "Translate this part" button does.
+* The same applies to adding, moving, duplicating, deleting and dragging blocks: they stay in the language you are editing.
 
 = 1.0.3 =
 * **Fix: "WooCommerce additional content at the end" did nothing in the preview when the design was switched off on that email.** The text stayed on the canvas however the switch was set. Same cause as the 1.0.2 fix, in a second place: the preview asks WooCommerce for that text and the switches were being applied to the answer. The canvas shows the design, so it now shows the design's decision.
