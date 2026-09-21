@@ -855,32 +855,55 @@
 			shipping: __( 'Kate Brown<br/>Market Square parcel locker<br/>10411 London', 'wonom-meilidisainer' ),
 			phone: '+44 7700 900123',
 			email: 'mary.smith@example.com',
+			bill_name: 'Mary Smith',
+			ship_name: 'Kate Brown',
 			ship_phone: '+44 7700 900456',
 			ship_email: 'kate.brown@example.com',
 		};
 	}
 
 	/**
-	 * Kas tarneaadress erineb arveaadressist. Sama loogika mis PHP pool
-	 * (WMD_Render::address_differs). Vormindatud aadress sisaldab ka nime,
-	 * seega võrdlus katab nii teise isiku kui teise aadressi.
+	 * Kas pakk läheb kellelegi teisele. Sama loogika mis PHP pool
+	 * (WMD_Render::recipient_differs). Võrdleme nime ja telefoni, mitte tervet
+	 * aadressi — pakiautomaat ei tee sama inimesest veel teist saajat.
 	 *
 	 * @param {Object} data Aadressiandmed.
 	 * @return {boolean}
 	 */
-	function addressDiffers( data ) {
-		function flat( html ) {
-			return String( html || '' )
-				.replace( /<br\s*\/?>/gi, ' ' )
-				.replace( /<[^>]*>/g, '' )
-				.replace( /\s+/g, ' ' )
-				.trim()
-				.toLowerCase();
+	function recipientDiffers( data ) {
+		function name( v ) {
+			return String( v || '' ).replace( /\s+/g, ' ' ).trim().toLowerCase();
 		}
 
-		var ship = flat( data.shipping );
+		var sn = name( data.ship_name );
 
-		return '' !== ship && ship !== flat( data.billing );
+		if ( sn && sn !== name( data.bill_name ) ) {
+			return true;
+		}
+
+		var sp = String( data.ship_phone || '' ).trim();
+
+		return !! sp && ! samePhone( sp, data.phone );
+	}
+
+	/**
+	 * Kas kaks numbrit on sama number. Üks võib olla riigikoodiga, teine ilma.
+	 *
+	 * @param {string} a Esimene.
+	 * @param {string} b Teine.
+	 * @return {boolean}
+	 */
+	function samePhone( a, b ) {
+		a = String( a || '' ).replace( /\D+/g, '' );
+		b = String( b || '' ).replace( /\D+/g, '' );
+
+		if ( ! a || ! b ) {
+			return true;
+		}
+
+		var len = Math.min( 7, Math.min( a.length, b.length ) );
+
+		return a.slice( -len ) === b.slice( -len );
 	}
 
 	/**
@@ -913,12 +936,15 @@
 			cols.push( b + '</div>' );
 		}
 
-		if ( show !== 'billing' && plain( data.shipping ).trim() ) {
+		var differs = recipientDiffers( data );
+		var shipOk = ( p.ship_when !== 'diff' ) || differs;
+
+		if ( show !== 'billing' && shipOk && plain( data.shipping ).trim() ) {
 			var sh = '<div style="' + escAttr( title ) + '">' + esc( p.shipping_title ) + '</div><div style="' + escAttr( lines ) + '">' + plain( data.shipping );
 			var mode = p.ship_contacts || 'off';
 
 			// Sama loogika mis PHP pool (WMD_Render::addresses_block).
-			if ( mode === 'always' || ( mode === 'diff' && addressDiffers( data ) ) ) {
+			if ( mode === 'always' || ( mode === 'diff' && differs ) ) {
 				var sphone = data.ship_phone || data.phone;
 				var semail = data.ship_email || data.email;
 

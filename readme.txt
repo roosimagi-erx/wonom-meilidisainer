@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.9
+Stable tag: 1.0.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.10 =
+* **Fix: the contacts were added even when the parcel went to the same person.** The check compared the whole address, and a parcel locker makes the address text different even when the recipient is not. It now compares the name and the phone number, which is what actually says whether somebody else is receiving the parcel. A country code in front of one of the numbers does not count as a difference.
+* **The shipping address block can now be hidden when the recipient is the same person.** A new setting in the Addresses block: always, or only when the recipient differs. Useful when the parcel machine is already named on the delivery row of the summary and the shipping address would just repeat the buyer's own name.
 
 = 1.0.9 =
 * **Phone and email at the shipping address, for when the parcel goes to somebody else.** The Addresses block has a new setting with three states: do not show, show always, or — the useful one — show only when the recipient differs from the person paying. Same person, same address: nothing is added, because those details are already at the billing address.

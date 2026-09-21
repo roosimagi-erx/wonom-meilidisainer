@@ -746,6 +746,18 @@ function wmd_block_types() {
 					'label'   => __( 'Show phone and email', 'wonom-meilidisainer' ),
 					'default' => 1,
 				),
+				// Sama inimene pakiautomaati saates on tarneaadress küll teine
+				// tekst, aga mitte teine saaja — pakiautomaat on niikuinii
+				// kokkuvõtte tarnerea peal kirjas.
+				'ship_when'      => array(
+					'type'    => 'select',
+					'label'   => __( 'When to show the shipping address', 'wonom-meilidisainer' ),
+					'options' => array(
+						'always' => __( 'Always', 'wonom-meilidisainer' ),
+						'diff'   => __( 'Only when the recipient differs', 'wonom-meilidisainer' ),
+					),
+					'default' => 'always',
+				),
 				// Kui klient tellib kauba kellelegi teisele, on saaja kontaktid
 				// tarneaadressi juures. Sama isiku puhul oleksid need kordus,
 				// seepärast on vaikimisi valik „ainult siis, kui erineb".

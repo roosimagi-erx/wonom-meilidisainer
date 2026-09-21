@@ -923,12 +923,14 @@ class WMD_Render {
 	public static function address_data( $order ) {
 		if ( ! $order || ! is_a( $order, 'WC_Order' ) ) {
 			return array(
-				'billing'        => 'Mari Tamm<br/>Pikk 12-4<br/>10123 Tallinn<br/>Eesti',
-				'shipping'       => 'Kati Kask<br/>Tallinna Balti Jaama Turg<br/>10411 Tallinn',
-				'phone'          => '5551234',
-				'email'          => 'mari.tamm@naide.ee',
-				'ship_phone'     => '5559876',
-				'ship_email'     => 'kati.kask@naide.ee',
+				'billing'    => 'Mari Tamm<br/>Pikk 12-4<br/>10123 Tallinn<br/>Eesti',
+				'shipping'   => 'Kati Kask<br/>Tallinna Balti Jaama Turg<br/>10411 Tallinn',
+				'phone'      => '5551234',
+				'email'      => 'mari.tamm@naide.ee',
+				'bill_name'  => 'Mari Tamm',
+				'ship_name'  => 'Kati Kask',
+				'ship_phone' => '5559876',
+				'ship_email' => 'kati.kask@naide.ee',
 			);
 		}
 
@@ -943,36 +945,66 @@ class WMD_Render {
 			'shipping'   => (string) $order->get_formatted_shipping_address(),
 			'phone'      => (string) $order->get_billing_phone(),
 			'email'      => (string) $order->get_billing_email(),
+			// Nimi eraldi, et saaja võrdlus ei sõltuks aadressi tekstist.
+			'bill_name'  => trim( $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() ),
+			'ship_name'  => trim( $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name() ),
 			'ship_phone' => $ship_phone,
 			'ship_email' => $ship_email,
 		);
 	}
 
 	/**
-	 * Kas tarneaadress erineb arveaadressist.
+	 * Kas pakk läheb kellelegi teisele.
 	 *
-	 * Vormindatud aadress sisaldab ka nime, seega see võrdlus katab nii teise
-	 * isiku kui teise aadressi. Tühja tarneaadressi me erinevaks ei loe.
+	 * Võrdleme nime ja telefoni, mitte tervet aadressi. Aadressid erinevad ka
+	 * siis, kui sama inimene laseb paki pakiautomaati — see ei tee saajast veel
+	 * teist inimest. Nimi ja number ütlevad seda, mida vaja.
 	 *
 	 * @param array $data Aadressiandmed.
 	 * @return bool
 	 */
-	protected static function address_differs( $data ) {
-		$flat = static function ( $html ) {
-			$text = str_replace( array( '<br/>', '<br />', '<br>' ), "\n", (string) $html );
-			$text = wp_strip_all_tags( $text );
-			$text = preg_replace( '/\s+/u', ' ', $text );
-
-			return trim( strtolower( (string) $text ) );
+	protected static function recipient_differs( $data ) {
+		$name = static function ( $value ) {
+			return trim( strtolower( preg_replace( '/\s+/u', ' ', (string) $value ) ) );
 		};
 
-		$ship = $flat( isset( $data['shipping'] ) ? $data['shipping'] : '' );
+		$ship_name = $name( isset( $data['ship_name'] ) ? $data['ship_name'] : '' );
+		$bill_name = $name( isset( $data['bill_name'] ) ? $data['bill_name'] : '' );
 
-		if ( '' === $ship ) {
-			return false;
+		if ( '' !== $ship_name && $ship_name !== $bill_name ) {
+			return true;
 		}
 
-		return $ship !== $flat( isset( $data['billing'] ) ? $data['billing'] : '' );
+		$ship_phone = isset( $data['ship_phone'] ) ? $data['ship_phone'] : '';
+
+		return '' !== trim( (string) $ship_phone ) && ! self::same_phone( $ship_phone, isset( $data['phone'] ) ? $data['phone'] : '' );
+	}
+
+	/**
+	 * Kas kaks numbrit on sama number.
+	 *
+	 * Üks võib olla riigikoodiga, teine ilma, vahel on tühikud sees. Võrdleme
+	 * ainult numbreid ja lõpuosa, muidu paistaks sama number erinevana.
+	 *
+	 * @param string $a Esimene.
+	 * @param string $b Teine.
+	 * @return bool
+	 */
+	protected static function same_phone( $a, $b ) {
+		$digits = static function ( $value ) {
+			return preg_replace( '/\D+/', '', (string) $value );
+		};
+
+		$a = $digits( $a );
+		$b = $digits( $b );
+
+		if ( '' === $a || '' === $b ) {
+			return true;
+		}
+
+		$len = min( 7, min( strlen( $a ), strlen( $b ) ) );
+
+		return substr( $a, -$len ) === substr( $b, -$len );
 	}
 
 	/**
@@ -1010,7 +1042,11 @@ class WMD_Render {
 			$cols[] = $inner . '</div>';
 		}
 
-		if ( 'billing' !== $show && '' !== trim( wp_strip_all_tags( $data['shipping'] ) ) ) {
+		$differs = self::recipient_differs( $data );
+		$when    = isset( $p['ship_when'] ) ? $p['ship_when'] : 'always';
+		$ship_ok = ( 'diff' !== $when || $differs );
+
+		if ( 'billing' !== $show && $ship_ok && '' !== trim( wp_strip_all_tags( $data['shipping'] ) ) ) {
 			$inner = '<div style="' . esc_attr( $title ) . '">' . esc_html( $p['shipping_title'] ) . '</div>'
 				. '<div style="' . esc_attr( $lines ) . '">' . wp_kses( $data['shipping'], array( 'br' => array() ) );
 
@@ -1019,7 +1055,7 @@ class WMD_Render {
 			// „diff" on mõeldud selleks, kui klient tellib kauba kellelegi
 			// teisele: sama isiku puhul oleksid kontaktid arveaadressi juures
 			// juba olemas ja korduksid.
-			if ( 'always' === $mode || ( 'diff' === $mode && self::address_differs( $data ) ) ) {
+			if ( 'always' === $mode || ( 'diff' === $mode && $differs ) ) {
 				// Kui saaja enda kontakte ei küsitud, jääb alles tellija oma —
 				// see on ainus number, millega pakiga seotud asju lahendada.
 				$phone = empty( $data['ship_phone'] ) ? $data['phone'] : $data['ship_phone'];
