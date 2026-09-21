@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.1 =
+* **Fix: the desktop/mobile switch disappeared in a narrow window.** The dropdowns in the top bar refused to shrink, so they pushed the switch out of sight behind the buttons. The bar now scales with the window: the dropdowns narrow first, and if there is still no room, the row wraps. Nothing is left hidden.
 
 = 1.0.0 =
 

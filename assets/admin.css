@@ -47,7 +47,8 @@
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	min-width: 200px;
+	flex: 0 1 auto;
+	min-width: 0;
 }
 
 .wmd-logo {
@@ -67,18 +68,37 @@
 	display: flex;
 	align-items: center;
 	gap: 8px;
-	flex: 1 1 auto;
+	flex: 1 1 320px;
+	flex-wrap: wrap;
 	justify-content: center;
+
+	/* Ilma selleta on flex-elemendi min-width „auto" ja rippmenüüd keelduvad
+	   kahanemast. Kitsas aknas lükkasid nad arvuti/mobiili valiku nuppude alla
+	   peitu, selle asemel et ise kitsamaks tõmbuda. */
+	min-width: 0;
+}
+
+/* Rippmenüüd kahanevad akna järgi, aga mitte loetamatuks: umbes 130 px pealt
+   lähevad nad hoopis järgmisele reale. */
+.wmd-bar-mid .wmd-input {
+	flex: 1 1 130px;
+	min-width: 0;
 }
 
 .wmd-preview-pick {
 	max-width: 260px;
 }
 
+/* Arvuti/mobiil ei kahane ega kao: see on lüliti, mitte tekstiväli. */
+.wmd-bar-mid .wmd-device {
+	flex: 0 0 auto;
+}
+
 .wmd-bar-right {
 	display: flex;
 	align-items: center;
 	gap: 8px;
+	flex: 0 0 auto;
 	flex-wrap: wrap;
 	justify-content: flex-end;
 }
