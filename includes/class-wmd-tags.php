@@ -51,6 +51,7 @@ class WMD_Tags {
 			'order_total'          => array( 'order', __( 'Order total', 'wonom-meilidisainer' ), '87,40 €' ),
 			'order_subtotal'       => array( 'order', __( 'Subtotal', 'wonom-meilidisainer' ), '82,40 €' ),
 			'order_discount'       => array( 'order', __( 'Discount', 'wonom-meilidisainer' ), '8,00 €' ),
+			'coupon_codes'         => array( 'order', __( 'Coupon codes used', 'wonom-meilidisainer' ), 'SEPT20' ),
 			'order_shipping_total' => array( 'order', __( 'Shipping total', 'wonom-meilidisainer' ), '5,00 €' ),
 			'order_tax_total'      => array( 'order', __( 'VAT', 'wonom-meilidisainer' ), '14,28 €' ),
 			'order_currency'       => array( 'order', __( 'Currency', 'wonom-meilidisainer' ), 'EUR' ),
@@ -280,6 +281,36 @@ class WMD_Tags {
 	}
 
 	/**
+	 * Tellimusel kasutatud sooduskoodid ühe reana.
+	 *
+	 * Tühi string, kui koodi ei kasutatud — nii kaob „Tellimuse andmed" plokis
+	 * rida ise ära, kui seal on „peida tühjad read" sees.
+	 *
+	 * @param WC_Order $order Tellimus.
+	 * @return string
+	 */
+	protected static function coupon_codes( $order ) {
+		// get_coupon_codes() on WooCommerce 3.7+; vanemal kujul oli get_used_coupons().
+		if ( is_callable( array( $order, 'get_coupon_codes' ) ) ) {
+			$codes = $order->get_coupon_codes();
+		} elseif ( is_callable( array( $order, 'get_used_coupons' ) ) ) {
+			$codes = $order->get_used_coupons();
+		} else {
+			return '';
+		}
+
+		$codes = array_filter( array_map( 'trim', (array) $codes ) );
+
+		if ( ! $codes ) {
+			return '';
+		}
+
+		// Koodid on poes kirjutatud väikeste tähtedega, aga kliendile on nad
+		// tuttavad sellisel kujul, nagu ta kassas sisestas.
+		return implode( ', ', array_map( 'strtoupper', $codes ) );
+	}
+
+	/**
 	 * Kontekst päris tellimusest.
 	 *
 	 * @param WC_Order|null $order Tellimus.
@@ -303,6 +334,7 @@ class WMD_Tags {
 		$ctx['order_total']          = wp_strip_all_tags( $order->get_formatted_order_total() );
 		$ctx['order_subtotal']       = wp_strip_all_tags( wc_price( $order->get_subtotal(), array( 'currency' => $order->get_currency() ) ) );
 		$ctx['order_discount']       = wp_strip_all_tags( wc_price( $order->get_total_discount(), array( 'currency' => $order->get_currency() ) ) );
+		$ctx['coupon_codes']         = self::coupon_codes( $order );
 		$ctx['order_shipping_total'] = wp_strip_all_tags( wc_price( $order->get_shipping_total(), array( 'currency' => $order->get_currency() ) ) );
 		$ctx['order_tax_total']      = wp_strip_all_tags( wc_price( $order->get_total_tax(), array( 'currency' => $order->get_currency() ) ) );
 		$ctx['order_currency']       = $order->get_currency();

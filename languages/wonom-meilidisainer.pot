@@ -5,7 +5,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-21 18:39+0000\n"
+"POT-Creation-Date: 2026-09-21 18:47+0000\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: wonom-meilidisainer\n"
 
@@ -101,11 +101,11 @@ msgstr ""
 msgid "Account emails"
 msgstr ""
 
-#: includes/class-wmd-tags.php:72 includes/class-wmd-tags.php:86
+#: includes/class-wmd-tags.php:73 includes/class-wmd-tags.php:87
 msgid "Address line 1"
 msgstr ""
 
-#: includes/class-wmd-tags.php:73 includes/class-wmd-tags.php:87
+#: includes/class-wmd-tags.php:74 includes/class-wmd-tags.php:88
 msgid "Address line 2"
 msgstr ""
 
@@ -153,7 +153,7 @@ msgstr ""
 msgid "Available: "
 msgstr ""
 
-#: includes/class-wmd-render.php:1431 includes/class-wmd-tags.php:96 assets/renderer.js:631
+#: includes/class-wmd-render.php:1431 includes/class-wmd-tags.php:97 assets/renderer.js:631
 msgid "Bank transfer"
 msgstr ""
 
@@ -233,7 +233,7 @@ msgstr ""
 msgid "Choose image"
 msgstr ""
 
-#: includes/class-wmd-tags.php:74 includes/class-wmd-tags.php:88
+#: includes/class-wmd-tags.php:75 includes/class-wmd-tags.php:89
 msgid "City"
 msgstr ""
 
@@ -257,7 +257,7 @@ msgstr ""
 msgid "Columns"
 msgstr ""
 
-#: includes/class-wmd-tags.php:71 includes/class-wmd-tags.php:85
+#: includes/class-wmd-tags.php:72 includes/class-wmd-tags.php:86
 msgid "Company"
 msgstr ""
 
@@ -301,19 +301,23 @@ msgstr ""
 msgid "Could not get the WooCommerce content — starting from the default blocks"
 msgstr ""
 
-#: includes/class-wmd-tags.php:77 includes/class-wmd-tags.php:91
+#: includes/class-wmd-tags.php:78 includes/class-wmd-tags.php:92
 msgid "Country"
 msgstr ""
 
-#: includes/class-wmd-tags.php:75 includes/class-wmd-tags.php:89
+#: includes/class-wmd-tags.php:76 includes/class-wmd-tags.php:90
 msgid "County"
 msgstr ""
 
-#: includes/class-wmd-tags.php:56
+#: includes/class-wmd-tags.php:54
+msgid "Coupon codes used"
+msgstr ""
+
+#: includes/class-wmd-tags.php:57
 msgid "Currency"
 msgstr ""
 
-#: includes/class-wmd-tags.php:114
+#: includes/class-wmd-tags.php:115
 msgid "Current year"
 msgstr ""
 
@@ -325,7 +329,7 @@ msgstr ""
 msgid "Customer"
 msgstr ""
 
-#: includes/class-wmd-tags.php:58 includes/helpers.php:758
+#: includes/class-wmd-tags.php:59 includes/helpers.php:758
 msgid "Customer note"
 msgstr ""
 
@@ -361,7 +365,7 @@ msgstr ""
 msgid "Delete this block?"
 msgstr ""
 
-#: includes/class-wmd-tags.php:110
+#: includes/class-wmd-tags.php:111
 msgid "Demo Shop"
 msgstr ""
 
@@ -397,7 +401,7 @@ msgstr ""
 msgid "Discount:"
 msgstr ""
 
-#: includes/class-wmd-tags.php:104
+#: includes/class-wmd-tags.php:105
 msgid "Display name"
 msgstr ""
 
@@ -421,7 +425,7 @@ msgstr ""
 msgid "Duplicate block"
 msgstr ""
 
-#: includes/class-wmd-tags.php:66 includes/class-wmd-tags.php:79 assets/admin.js:1366
+#: includes/class-wmd-tags.php:67 includes/class-wmd-tags.php:80 assets/admin.js:1366
 msgid "Email"
 msgstr ""
 
@@ -485,11 +489,11 @@ msgstr ""
 msgid "Fills this language from the default one with a machine translation, which you then correct. Variables and links are left alone."
 msgstr ""
 
-#: includes/class-wmd-tags.php:65
+#: includes/class-wmd-tags.php:66
 msgid "First and last name"
 msgstr ""
 
-#: includes/class-wmd-tags.php:63 includes/class-wmd-tags.php:69 includes/class-wmd-tags.php:83
+#: includes/class-wmd-tags.php:64 includes/class-wmd-tags.php:70 includes/class-wmd-tags.php:84
 msgid "First name"
 msgstr ""
 
@@ -509,7 +513,7 @@ msgstr ""
 msgid "From brand"
 msgstr ""
 
-#: includes/class-wmd-tags.php:80 includes/class-wmd-tags.php:93
+#: includes/class-wmd-tags.php:81 includes/class-wmd-tags.php:94
 msgid "Full address on one line"
 msgstr ""
 
@@ -713,7 +717,7 @@ msgstr ""
 msgid "Large heading in the email"
 msgstr ""
 
-#: includes/class-wmd-tags.php:64 includes/class-wmd-tags.php:70 includes/class-wmd-tags.php:84
+#: includes/class-wmd-tags.php:65 includes/class-wmd-tags.php:71 includes/class-wmd-tags.php:85
 msgid "Last name"
 msgstr ""
 
@@ -789,7 +793,7 @@ msgstr ""
 msgid "Loading…"
 msgstr ""
 
-#: includes/class-wmd-tags.php:107
+#: includes/class-wmd-tags.php:108
 msgid "Log in link"
 msgstr ""
 
@@ -841,7 +845,7 @@ msgstr ""
 msgid "Muted text"
 msgstr ""
 
-#: includes/class-wmd-tags.php:112
+#: includes/class-wmd-tags.php:113
 msgid "My account link"
 msgstr ""
 
@@ -909,7 +913,7 @@ msgstr ""
 msgid "Number of columns"
 msgstr ""
 
-#: includes/class-wmd-tags.php:57
+#: includes/class-wmd-tags.php:58
 msgid "Number of items"
 msgstr ""
 
@@ -981,7 +985,7 @@ msgstr ""
 msgid "Order total"
 msgstr ""
 
-#: includes/class-wmd-tags.php:59
+#: includes/class-wmd-tags.php:60
 msgid "Order view link"
 msgstr ""
 
@@ -1009,7 +1013,7 @@ msgstr ""
 msgid "Paragraph"
 msgstr ""
 
-#: includes/class-wmd-tags.php:98
+#: includes/class-wmd-tags.php:99
 msgid "Parcel locker"
 msgstr ""
 
@@ -1017,7 +1021,7 @@ msgstr ""
 msgid "Password reset"
 msgstr ""
 
-#: includes/class-wmd-tags.php:106
+#: includes/class-wmd-tags.php:107
 msgid "Password reset link"
 msgstr ""
 
@@ -1045,7 +1049,7 @@ msgstr ""
 msgid "Payment instructions (own text)"
 msgstr ""
 
-#: includes/class-wmd-tags.php:60
+#: includes/class-wmd-tags.php:61
 msgid "Payment link"
 msgstr ""
 
@@ -1053,11 +1057,11 @@ msgstr ""
 msgid "Payment method"
 msgstr ""
 
-#: includes/class-wmd-tags.php:97
+#: includes/class-wmd-tags.php:98
 msgid "Payment method ID"
 msgstr ""
 
-#: includes/class-wmd-tags.php:96
+#: includes/class-wmd-tags.php:97
 msgid "Payment method name"
 msgstr ""
 
@@ -1069,7 +1073,7 @@ msgstr ""
 msgid "Payment methods"
 msgstr ""
 
-#: includes/class-wmd-tags.php:78 includes/class-wmd-tags.php:92
+#: includes/class-wmd-tags.php:79 includes/class-wmd-tags.php:93
 msgid "Phone"
 msgstr ""
 
@@ -1081,7 +1085,7 @@ msgstr ""
 msgid "Pick from the list or type your own. The form {{meta:key}} works too."
 msgstr ""
 
-#: includes/class-wmd-tags.php:58 assets/renderer.js:527
+#: includes/class-wmd-tags.php:59 assets/renderer.js:527
 msgid "Please leave it in the parcel locker."
 msgstr ""
 
@@ -1089,7 +1093,7 @@ msgstr ""
 msgid "Portrait (3:4)"
 msgstr ""
 
-#: includes/class-wmd-tags.php:76 includes/class-wmd-tags.php:90
+#: includes/class-wmd-tags.php:77 includes/class-wmd-tags.php:91
 msgid "Postcode"
 msgstr ""
 
@@ -1197,7 +1201,7 @@ msgstr ""
 msgid "Sending…"
 msgstr ""
 
-#: includes/class-wmd-tags.php:105
+#: includes/class-wmd-tags.php:106
 msgid "Set password link (new account)"
 msgstr ""
 
@@ -1225,11 +1229,11 @@ msgstr ""
 msgid "Shipping address only"
 msgstr ""
 
-#: includes/class-wmd-tags.php:98
+#: includes/class-wmd-tags.php:99
 msgid "Shipping method"
 msgstr ""
 
-#: includes/class-wmd-tags.php:54
+#: includes/class-wmd-tags.php:55
 msgid "Shipping total"
 msgstr ""
 
@@ -1241,15 +1245,15 @@ msgstr ""
 msgid "Shop"
 msgstr ""
 
-#: includes/class-wmd-tags.php:111
+#: includes/class-wmd-tags.php:112
 msgid "Shop address"
 msgstr ""
 
-#: includes/class-wmd-tags.php:113
+#: includes/class-wmd-tags.php:114
 msgid "Shop email"
 msgstr ""
 
-#: includes/class-wmd-tags.php:110
+#: includes/class-wmd-tags.php:111
 msgid "Shop name"
 msgstr ""
 
@@ -1577,15 +1581,15 @@ msgstr ""
 msgid "Use {{value}} where the field value goes."
 msgstr ""
 
-#: includes/class-wmd-tags.php:103
+#: includes/class-wmd-tags.php:104
 msgid "User email"
 msgstr ""
 
-#: includes/class-wmd-tags.php:102
+#: includes/class-wmd-tags.php:103
 msgid "Username"
 msgstr ""
 
-#: includes/class-wmd-tags.php:55 includes/helpers.php:1002
+#: includes/class-wmd-tags.php:56 includes/helpers.php:1002
 msgid "VAT"
 msgstr ""
 

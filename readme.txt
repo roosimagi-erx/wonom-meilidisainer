@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.6 =
+* **New variable: `{{coupon_codes}}`** — the coupon codes used on the order, in capitals and comma-separated when there is more than one. It appears in the Variables tab and in every { } picker, under Order.
+* When no coupon was used the variable is empty, so a row in the "Order details (table)" block with "hide empty rows" switched on simply does not appear. That gives you "was a code used, and which one" without an empty line on every other order.
 
 = 1.0.5 =
 * **Fix: the variable picker was unusable on the "Custom HTML" and paragraph blocks.** Pressing { } gave a narrow sliver of a menu on top of the other settings instead of the list of variables. The menu was anchored to the right edge of a button sitting at the left edge of the toolbar, so it ran off the panel and the panel's scrolling cut it down to a strip. It now spans the field and stays inside the panel.
