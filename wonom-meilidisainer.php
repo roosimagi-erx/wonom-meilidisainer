@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Wonom Email Designer
  * Description:       A visual designer for WooCommerce order emails. Set the brand once and it applies to every email; add blocks to individual emails only where you need them. Live preview, test email, not a line of code.
- * Version:           0.31.0
+ * Version:           1.0.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * WC requires at least: 6.0
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WMD_VERSION', '0.31.0' );
+define( 'WMD_VERSION', '1.0.0' );
 define( 'WMD_FILE', __FILE__ );
 define( 'WMD_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WMD_URL', plugin_dir_url( __FILE__ ) );
@@ -56,9 +56,18 @@ add_action(
 register_activation_hook(
 	WMD_FILE,
 	function () {
-		if ( false === get_option( WMD_OPTION, false ) ) {
-			add_option( WMD_OPTION, wmd_default_design(), '', 'no' );
+		// Puuduv kujundus tähendab, et plugin on siia esimest korda tulnud.
+		if ( false !== get_option( WMD_OPTION, false ) ) {
+			return;
 		}
+
+		add_option( WMD_OPTION, wmd_default_design(), '', 'no' );
+
+		// Värskes poes jääb kujundus välja lülitatuks. Muidu vahetaks plugin
+		// aktiveerimise hetkel ära kõigi päris klientide kirjade välimuse —
+		// vaikekujundusega, kus ei ole veel isegi logo. Poepidaja lülitab
+		// selle sisse siis, kui kujundus on valmis või sisse loetud.
+		add_option( 'wmd_enabled', 0 );
 	}
 );
 

@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.31.0
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,9 +48,17 @@ If your theme has overridden those templates, the plugin leaves the theme's vers
 
 1. Upload the folder `wonom-meilidisainer` to `/wp-content/plugins/`.
 2. Activate the plugin on the WordPress plugins page.
-3. Open **WooCommerce → Email Designer**.
+3. Open **WooCommerce → Wonom Email Designer**.
+4. Build the design, or import one from another shop under Settings.
+5. Switch it on under **Settings → Design in use**.
+
+On a fresh install the design is switched off, so activating the plugin does not change a single customer email. You decide when it goes live.
 
 == Frequently Asked Questions ==
+
+= I activated the plugin and the emails look the same. Why? =
+
+On a fresh install the design is switched off on purpose, so that activating the plugin on a live shop cannot change customer emails before you are ready. Switch it on under **Settings → Design in use**. The designer also says so in a strip above the preview.
 
 = Do my existing WooCommerce email settings stay? =
 
@@ -67,6 +75,13 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.0 =
+
+First stable release. Everything from 0.23.0 to 0.31.0 is in, and the plugin is ready for a live shop.
+
+* **A fresh install no longer changes anything by itself.** Activating the plugin used to switch the design on at once, which on a live shop meant the next customer email went out with the default look — no logo yet, no colours. Now a fresh install starts switched off and you turn it on under Settings → Design in use when the design is ready. Shops that already have a design are not touched.
+* Uninstalling now also removes the DeepL key and the translation settings. They used to stay behind in the database.
 
 = 0.31.0 =
 * **Fix: "Install now" in the designer ended in a timeout (HTTP 524).** The update was found, but installing it never finished. Before starting, the plugin forced WordPress to re-check every plugin on the site — which sets every other plugin's own updater going and sends the whole plugin list to wordpress.org. On a shop with many plugins that took longer than the server allows a single request to run. The updater is now handed only this plugin's entry, and only while it reads it: nothing else is set going.

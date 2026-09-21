@@ -5,7 +5,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-18 13:01+0000\n"
+"POT-Creation-Date: 2026-09-21 12:43+0000\n"
 "Language: et\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: wonom-meilidisainer\n"
@@ -1642,7 +1642,7 @@ msgstr "Laius (px)"
 msgid "Wonom Email Designer"
 msgstr "Wonom Meilidisainer"
 
-#: wonom-meilidisainer.php:70
+#: wonom-meilidisainer.php:79
 msgid "Wonom Email Designer needs WooCommerce to work. You can still use the designer, but emails are left untouched."
 msgstr "Wonom Meilidisainer vajab töötamiseks WooCommerce'i. Kujundajat saab kasutada, aga meilid jäävad muutmata."
 

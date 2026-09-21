@@ -15,4 +15,6 @@ delete_option( 'wmd_update_source' );
 delete_option( 'wmd_update_repo' );
 delete_option( 'wmd_update_json' );
 delete_option( 'wmd_update_token' );
+delete_option( 'wmd_mt_provider' );
+delete_option( 'wmd_mt_key' );
 delete_transient( 'wmd_update_info' );
