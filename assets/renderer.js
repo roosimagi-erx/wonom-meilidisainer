@@ -627,6 +627,7 @@
 		return [
 			{ key: 'cart_subtotal', label: __( 'Subtotal:', 'wonom-meilidisainer' ), value: '82,40 €' },
 			{ key: 'discount', label: __( 'Discount:', 'wonom-meilidisainer' ), value: '-8,00 €' },
+			{ key: 'coupon_codes', label: __( 'Coupon code', 'wonom-meilidisainer' ), value: 'SEPT20' },
 			{ key: 'shipping', label: __( 'Shipping:', 'wonom-meilidisainer' ), value: '5,00 €' },
 			{ key: 'payment_method', label: __( 'Payment method:', 'wonom-meilidisainer' ), value: __( 'Bank transfer', 'wonom-meilidisainer' ) },
 			{ key: 'order_total', label: __( 'Total:', 'wonom-meilidisainer' ), value: '79,40 €' },
@@ -720,6 +721,41 @@
 		( p.rows || [] ).forEach( function ( r ) {
 			wanted[ r.key ] = r;
 		} );
+
+		// Sama järjestus mis PHP pool (WMD_Render::order_rows): ploki nooled
+		// peavad kirjas midagi muutma, tundmatud read jäävad alles ja lõppsumma
+		// jääb viimaseks.
+		var byKey = {};
+		rows.forEach( function ( row ) {
+			( byKey[ row.key ] = byKey[ row.key ] || [] ).push( row );
+		} );
+
+		var ordered = [];
+		var taken = {};
+		var last = [];
+
+		( p.rows || [] ).forEach( function ( r ) {
+			if ( ! r.key || ! byKey[ r.key ] || taken[ r.key ] ) {
+				return;
+			}
+
+			taken[ r.key ] = true;
+
+			if ( r.key === 'order_total' ) {
+				last = byKey[ r.key ];
+				return;
+			}
+
+			ordered = ordered.concat( byKey[ r.key ] );
+		} );
+
+		rows.forEach( function ( row ) {
+			if ( ! taken[ row.key ] ) {
+				ordered.push( row );
+			}
+		} );
+
+		rows = ordered.concat( last );
 
 		var f = brand.font_family;
 		var fs = num( brand.base_size, 15 );

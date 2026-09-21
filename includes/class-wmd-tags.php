@@ -289,7 +289,7 @@ class WMD_Tags {
 	 * @param WC_Order $order Tellimus.
 	 * @return string
 	 */
-	protected static function coupon_codes( $order ) {
+	public static function coupon_codes( $order ) {
 		// get_coupon_codes() on WooCommerce 3.7+; vanemal kujul oli get_used_coupons().
 		if ( is_callable( array( $order, 'get_coupon_codes' ) ) ) {
 			$codes = $order->get_coupon_codes();

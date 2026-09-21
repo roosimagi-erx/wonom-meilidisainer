@@ -5,7 +5,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-21 18:47+0000\n"
+"POT-Creation-Date: 2026-09-21 18:54+0000\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: wonom-meilidisainer\n"
 
@@ -97,7 +97,7 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-#: includes/helpers.php:1259
+#: includes/helpers.php:1262
 msgid "Account emails"
 msgstr ""
 
@@ -125,7 +125,7 @@ msgstr ""
 msgid "Anything you have not translated still comes from %s."
 msgstr ""
 
-#: includes/helpers.php:1116 assets/admin.js:1389
+#: includes/helpers.php:1119 assets/admin.js:1389
 msgid "Around WooCommerce content"
 msgstr ""
 
@@ -153,7 +153,7 @@ msgstr ""
 msgid "Available: "
 msgstr ""
 
-#: includes/class-wmd-render.php:1431 includes/class-wmd-tags.php:97 assets/renderer.js:631
+#: includes/class-wmd-render.php:1496 includes/class-wmd-tags.php:97 assets/renderer.js:632
 msgid "Bank transfer"
 msgstr ""
 
@@ -161,7 +161,7 @@ msgstr ""
 msgid "Between rows"
 msgstr ""
 
-#: includes/class-wmd-render.php:1449 includes/class-wmd-tags.php:26 includes/helpers.php:736 assets/renderer.js:878
+#: includes/class-wmd-render.php:1514 includes/class-wmd-tags.php:26 includes/helpers.php:736 assets/renderer.js:914
 msgid "Billing address"
 msgstr ""
 
@@ -185,7 +185,7 @@ msgstr ""
 msgid "Brand"
 msgstr ""
 
-#: includes/helpers.php:1117 assets/admin.js:1390
+#: includes/helpers.php:1120 assets/admin.js:1390
 msgid "Build the whole email"
 msgstr ""
 
@@ -209,7 +209,7 @@ msgstr ""
 msgid "Buttons"
 msgstr ""
 
-#: includes/helpers.php:1219
+#: includes/helpers.php:1222
 msgid "Cancelled order (to shop)"
 msgstr ""
 
@@ -245,7 +245,7 @@ msgstr ""
 msgid "Colour"
 msgstr ""
 
-#: includes/class-wmd-render.php:1413 assets/renderer.js:622
+#: includes/class-wmd-render.php:1477 assets/renderer.js:622
 msgid "Colour: grey"
 msgstr ""
 
@@ -281,11 +281,11 @@ msgstr ""
 msgid "Corner radius (px)"
 msgstr ""
 
-#: includes/class-wmd-render.php:1400 assets/renderer.js:621
+#: includes/class-wmd-render.php:1464 assets/renderer.js:621
 msgid "Cotton T-shirt"
 msgstr ""
 
-#: includes/class-wmd-render.php:1379 assets/renderer.js:908
+#: includes/class-wmd-render.php:1443 assets/renderer.js:944
 msgid "Cotton T-shirt, M"
 msgstr ""
 
@@ -307,6 +307,10 @@ msgstr ""
 
 #: includes/class-wmd-tags.php:76 includes/class-wmd-tags.php:90
 msgid "County"
+msgstr ""
+
+#: includes/class-wmd-render.php:724 includes/class-wmd-render.php:1494 includes/helpers.php:1002 assets/renderer.js:630
+msgid "Coupon code"
 msgstr ""
 
 #: includes/class-wmd-tags.php:54
@@ -333,7 +337,7 @@ msgstr ""
 msgid "Customer note"
 msgstr ""
 
-#: includes/helpers.php:1258
+#: includes/helpers.php:1261
 msgid "Customer order emails"
 msgstr ""
 
@@ -397,7 +401,7 @@ msgstr ""
 msgid "Discount"
 msgstr ""
 
-#: includes/class-wmd-render.php:1429 assets/renderer.js:629
+#: includes/class-wmd-render.php:1493 assets/renderer.js:629
 msgid "Discount:"
 msgstr ""
 
@@ -469,7 +473,7 @@ msgstr ""
 msgid "Extra CSS (advanced)"
 msgstr ""
 
-#: includes/helpers.php:1224
+#: includes/helpers.php:1227
 msgid "Failed order (to shop)"
 msgstr ""
 
@@ -573,11 +577,11 @@ msgstr ""
 msgid "Height (px)"
 msgstr ""
 
-#: includes/helpers.php:1131
+#: includes/helpers.php:1134
 msgid "Hi {{customer_first_name}}! We have received your order <strong>#{{order_number}}</strong> and are getting it ready."
 msgstr ""
 
-#: includes/helpers.php:1334
+#: includes/helpers.php:1337
 msgid "Hi {{customer_first_name}}! We have received your order <strong>#{{order_number}}</strong> and are getting it ready. We will let you know when it ships."
 msgstr ""
 
@@ -685,7 +689,7 @@ msgstr ""
 msgid "Installs the new version right here. The page reloads afterwards; save any unsaved changes first."
 msgstr ""
 
-#: includes/helpers.php:1260
+#: includes/helpers.php:1263
 msgid "Internal shop emails"
 msgstr ""
 
@@ -693,7 +697,7 @@ msgstr ""
 msgid "Invalid email address."
 msgstr ""
 
-#: includes/helpers.php:1190
+#: includes/helpers.php:1193
 msgid "Invoice / pending payment"
 msgstr ""
 
@@ -821,15 +825,15 @@ msgstr ""
 msgid "Manifest address"
 msgstr ""
 
-#: assets/renderer.js:818
+#: assets/renderer.js:854
 msgid "Mary Smith<br/>12 High Street<br/>10123 London<br/>United Kingdom"
 msgstr ""
 
-#: assets/renderer.js:819
+#: assets/renderer.js:855
 msgid "Mary Smith<br/>Market Square parcel locker<br/>10411 London"
 msgstr ""
 
-#: assets/renderer.js:879
+#: assets/renderer.js:915
 msgid "Mary Smith<br>12 High Street<br>10123 London<br>United Kingdom"
 msgstr ""
 
@@ -849,7 +853,7 @@ msgstr ""
 msgid "My account link"
 msgstr ""
 
-#: includes/class-wmd-render.php:1254 assets/renderer.js:196
+#: includes/class-wmd-render.php:1318 assets/renderer.js:196
 msgid "Name"
 msgstr ""
 
@@ -865,11 +869,11 @@ msgstr ""
 msgid "Name under the image"
 msgstr ""
 
-#: includes/helpers.php:1208
+#: includes/helpers.php:1211
 msgid "New account"
 msgstr ""
 
-#: includes/helpers.php:1214
+#: includes/helpers.php:1217
 msgid "New order (to shop)"
 msgstr ""
 
@@ -893,7 +897,7 @@ msgstr ""
 msgid "No product categories were found."
 msgstr ""
 
-#: includes/helpers.php:1195
+#: includes/helpers.php:1198
 msgid "Note to customer"
 msgstr ""
 
@@ -929,7 +933,7 @@ msgstr ""
 msgid "Order"
 msgstr ""
 
-#: includes/class-wmd-render.php:1372 assets/renderer.js:902
+#: includes/class-wmd-render.php:1436 assets/renderer.js:938
 msgid "Order #1042"
 msgstr ""
 
@@ -937,7 +941,7 @@ msgstr ""
 msgid "Order ID in the database"
 msgstr ""
 
-#: includes/helpers.php:1175
+#: includes/helpers.php:1178
 msgid "Order completed"
 msgstr ""
 
@@ -961,15 +965,15 @@ msgstr ""
 msgid "Order number"
 msgstr ""
 
-#: includes/helpers.php:1180
+#: includes/helpers.php:1183
 msgid "Order on hold"
 msgstr ""
 
-#: includes/helpers.php:1170
+#: includes/helpers.php:1173
 msgid "Order processing"
 msgstr ""
 
-#: includes/helpers.php:1185
+#: includes/helpers.php:1188
 msgid "Order refunded"
 msgstr ""
 
@@ -1017,7 +1021,7 @@ msgstr ""
 msgid "Parcel locker"
 msgstr ""
 
-#: includes/helpers.php:1202
+#: includes/helpers.php:1205
 msgid "Password reset"
 msgstr ""
 
@@ -1053,7 +1057,7 @@ msgstr ""
 msgid "Payment link"
 msgstr ""
 
-#: includes/helpers.php:904 includes/helpers.php:1001
+#: includes/helpers.php:904 includes/helpers.php:1004
 msgid "Payment method"
 msgstr ""
 
@@ -1065,7 +1069,7 @@ msgstr ""
 msgid "Payment method name"
 msgstr ""
 
-#: includes/class-wmd-render.php:1431 assets/renderer.js:631
+#: includes/class-wmd-render.php:1496 assets/renderer.js:632
 msgid "Payment method:"
 msgstr ""
 
@@ -1097,7 +1101,7 @@ msgstr ""
 msgid "Postcode"
 msgstr ""
 
-#: includes/class-wmd-render.php:1377
+#: includes/class-wmd-render.php:1441
 msgid "Price"
 msgstr ""
 
@@ -1105,7 +1109,7 @@ msgstr ""
 msgid "Processing"
 msgstr ""
 
-#: includes/class-wmd-render.php:1375 includes/helpers.php:979
+#: includes/class-wmd-render.php:1439 includes/helpers.php:979
 msgid "Product"
 msgstr ""
 
@@ -1117,7 +1121,7 @@ msgstr ""
 msgid "Products (own table)"
 msgstr ""
 
-#: includes/class-wmd-render.php:1376 includes/helpers.php:982
+#: includes/class-wmd-render.php:1440 includes/helpers.php:982
 msgid "Quantity"
 msgstr ""
 
@@ -1213,7 +1217,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: includes/helpers.php:1000
+#: includes/helpers.php:1003
 msgid "Shipping"
 msgstr ""
 
@@ -1237,7 +1241,7 @@ msgstr ""
 msgid "Shipping total"
 msgstr ""
 
-#: includes/class-wmd-render.php:1383 includes/class-wmd-render.php:1430 assets/renderer.js:630
+#: includes/class-wmd-render.php:1447 includes/class-wmd-render.php:1495 assets/renderer.js:631
 msgid "Shipping:"
 msgstr ""
 
@@ -1277,7 +1281,7 @@ msgstr ""
 msgid "Size (px)"
 msgstr ""
 
-#: includes/class-wmd-render.php:1403 assets/renderer.js:621
+#: includes/class-wmd-render.php:1467 assets/renderer.js:621
 msgid "Size: M"
 msgstr ""
 
@@ -1321,7 +1325,7 @@ msgstr ""
 msgid "Subtotal"
 msgstr ""
 
-#: includes/class-wmd-render.php:1382 includes/class-wmd-render.php:1428 assets/renderer.js:628
+#: includes/class-wmd-render.php:1446 includes/class-wmd-render.php:1492 assets/renderer.js:628
 msgid "Subtotal:"
 msgstr ""
 
@@ -1333,7 +1337,7 @@ msgstr ""
 msgid "System (recommended)"
 msgstr ""
 
-#: assets/renderer.js:939
+#: assets/renderer.js:975
 msgid "Take over"
 msgstr ""
 
@@ -1493,11 +1497,11 @@ msgstr ""
 msgid "This mode does not use the WooCommerce content template. Everything in the email comes from the blocks below — including the order table and the addresses."
 msgstr ""
 
-#: includes/helpers.php:1003
+#: includes/helpers.php:1006
 msgid "Total"
 msgstr ""
 
-#: includes/class-wmd-render.php:1384 includes/class-wmd-render.php:1432 assets/renderer.js:632
+#: includes/class-wmd-render.php:1448 includes/class-wmd-render.php:1497 assets/renderer.js:633
 msgid "Total:"
 msgstr ""
 
@@ -1589,7 +1593,7 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: includes/class-wmd-tags.php:56 includes/helpers.php:1002
+#: includes/class-wmd-tags.php:56 includes/helpers.php:1005
 msgid "VAT"
 msgstr ""
 
@@ -1605,7 +1609,7 @@ msgstr ""
 msgid "Variations and extra fields"
 msgstr ""
 
-#: includes/helpers.php:446 includes/helpers.php:1343
+#: includes/helpers.php:446 includes/helpers.php:1346
 msgid "View order"
 msgstr ""
 
@@ -1665,7 +1669,7 @@ msgstr ""
 msgid "WooCommerce content could not be turned into blocks"
 msgstr ""
 
-#: assets/renderer.js:937
+#: assets/renderer.js:973
 msgid "WooCommerce content — you cannot edit this here"
 msgstr ""
 
@@ -1673,7 +1677,7 @@ msgstr ""
 msgid "WooCommerce is not active."
 msgstr ""
 
-#: includes/class-wmd-render.php:1380 includes/class-wmd-render.php:1410 assets/renderer.js:622 assets/renderer.js:909
+#: includes/class-wmd-render.php:1444 includes/class-wmd-render.php:1474 assets/renderer.js:622 assets/renderer.js:945
 msgid "Wool scarf"
 msgstr ""
 
@@ -1685,7 +1689,7 @@ msgstr ""
 msgid "You are editing %s."
 msgstr ""
 
-#: includes/helpers.php:1301
+#: includes/helpers.php:1304
 msgid "You are getting this email because you placed an order in our shop."
 msgstr ""
 
@@ -1749,7 +1753,7 @@ msgstr ""
 msgid "no image"
 msgstr ""
 
-#: includes/helpers.php:1099
+#: includes/helpers.php:1102
 msgid "no payment method"
 msgstr ""
 

@@ -997,6 +997,9 @@ function wmd_total_rows() {
 		array(
 			'cart_subtotal'  => __( 'Subtotal', 'wonom-meilidisainer' ),
 			'discount'       => __( 'Discount', 'wonom-meilidisainer' ),
+			// Ei tule WooCommerce'i get_order_item_totals() pealt, vaid tellimuse
+			// kupongidelt. Rida tekib ainult siis, kui koodi päriselt kasutati.
+			'coupon_codes'   => __( 'Coupon code', 'wonom-meilidisainer' ),
 			'shipping'       => __( 'Shipping', 'wonom-meilidisainer' ),
 			'payment_method' => __( 'Payment method', 'wonom-meilidisainer' ),
 			'tax'            => __( 'VAT', 'wonom-meilidisainer' ),

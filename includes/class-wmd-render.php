@@ -713,6 +713,19 @@ class WMD_Render {
 			);
 		}
 
+		// Sooduskoodi WooCommerce siia ei pane — kokkuvõttes on ainult
+		// allahindluse summa. Lisame selle ise, aga ainult siis, kui koodi
+		// kasutati: muidu tekiks igale tellimusele tühi rida.
+		$coupons = WMD_Tags::coupon_codes( $order );
+
+		if ( '' !== $coupons ) {
+			$rows[] = array(
+				'key'   => 'coupon_codes',
+				'label' => __( 'Coupon code', 'wonom-meilidisainer' ),
+				'value' => esc_html( $coupons ),
+			);
+		}
+
 		return $rows;
 	}
 
@@ -990,6 +1003,55 @@ class WMD_Render {
 	 * @param array $brand Bränd.
 	 * @return string
 	 */
+	/**
+	 * Kokkuvõtte read kasutaja valitud järjekorras.
+	 *
+	 * Seni tuli järjekord WooCommerce'i andmetest ja ploki nooled ei muutnud
+	 * kirjas midagi, kuigi vihje lubas seda. Tundmatud read (teenustasud,
+	 * lisamaksuread) ei ole ploki nimekirjas — need jäävad alles ja lähevad
+	 * lõppsumma ette, sest lõppsumma kuulub alati viimaseks.
+	 *
+	 * @param array $rows   Read andmetest.
+	 * @param array $wanted Ploki read järjekorras.
+	 * @return array
+	 */
+	protected static function order_rows( $rows, $wanted ) {
+		$by_key = array();
+
+		foreach ( $rows as $row ) {
+			$by_key[ $row['key'] ][] = $row;
+		}
+
+		$out   = array();
+		$taken = array();
+		$last  = array();
+
+		foreach ( $wanted as $r ) {
+			$key = isset( $r['key'] ) ? $r['key'] : '';
+
+			if ( '' === $key || ! isset( $by_key[ $key ] ) || isset( $taken[ $key ] ) ) {
+				continue;
+			}
+
+			$taken[ $key ] = true;
+
+			if ( 'order_total' === $key ) {
+				$last = $by_key[ $key ];
+				continue;
+			}
+
+			$out = array_merge( $out, $by_key[ $key ] );
+		}
+
+		foreach ( $rows as $row ) {
+			if ( ! isset( $taken[ $row['key'] ] ) ) {
+				$out[] = $row;
+			}
+		}
+
+		return array_merge( $out, $last );
+	}
+
 	public static function totals_table( $rows, $p, $brand ) {
 		if ( empty( $rows ) ) {
 			return '';
@@ -1002,6 +1064,8 @@ class WMD_Render {
 				'label' => $r['label'],
 			);
 		}
+
+		$rows = self::order_rows( $rows, (array) $p['rows'] );
 
 		$f      = $brand['font_family'];
 		$fs     = (int) $brand['base_size'];
@@ -1427,6 +1491,7 @@ class WMD_Render {
 		return array(
 			array( 'key' => 'cart_subtotal', 'label' => __( 'Subtotal:', 'wonom-meilidisainer' ), 'value' => '82,40 €' ),
 			array( 'key' => 'discount', 'label' => __( 'Discount:', 'wonom-meilidisainer' ), 'value' => '-8,00 €' ),
+			array( 'key' => 'coupon_codes', 'label' => __( 'Coupon code', 'wonom-meilidisainer' ), 'value' => 'SEPT20' ),
 			array( 'key' => 'shipping', 'label' => __( 'Shipping:', 'wonom-meilidisainer' ), 'value' => '5,00 €' ),
 			array( 'key' => 'payment_method', 'label' => __( 'Payment method:', 'wonom-meilidisainer' ), 'value' => __( 'Bank transfer', 'wonom-meilidisainer' ) ),
 			array( 'key' => 'order_total', 'label' => __( 'Total:', 'wonom-meilidisainer' ), 'value' => '79,40 €' ),

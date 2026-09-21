@@ -5,7 +5,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-21 18:47+0000\n"
+"POT-Creation-Date: 2026-09-21 18:54+0000\n"
 "Language: et\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: wonom-meilidisainer\n"
@@ -98,7 +98,7 @@ msgstr "Juurdepääsuvõti"
 msgid "Account"
 msgstr "Konto"
 
-#: includes/helpers.php:1259
+#: includes/helpers.php:1262
 msgid "Account emails"
 msgstr "Konto meilid"
 
@@ -126,7 +126,7 @@ msgstr "Alt-tekst"
 msgid "Anything you have not translated still comes from %s."
 msgstr "Kõik, mida sa tõlkinud ei ole, tuleb endiselt %s keelest."
 
-#: includes/helpers.php:1116 assets/admin.js:1389
+#: includes/helpers.php:1119 assets/admin.js:1389
 msgid "Around WooCommerce content"
 msgstr "WooCommerce'i sisu ümber"
 
@@ -154,7 +154,7 @@ msgstr "Automaatsed uuendused on välja lülitatud."
 msgid "Available: "
 msgstr "Saadaval on "
 
-#: includes/class-wmd-render.php:1431 includes/class-wmd-tags.php:97 assets/renderer.js:631
+#: includes/class-wmd-render.php:1496 includes/class-wmd-tags.php:97 assets/renderer.js:632
 msgid "Bank transfer"
 msgstr "Panga ülekanne"
 
@@ -162,7 +162,7 @@ msgstr "Panga ülekanne"
 msgid "Between rows"
 msgstr "Ridade vahel"
 
-#: includes/class-wmd-render.php:1449 includes/class-wmd-tags.php:26 includes/helpers.php:736 assets/renderer.js:878
+#: includes/class-wmd-render.php:1514 includes/class-wmd-tags.php:26 includes/helpers.php:736 assets/renderer.js:914
 msgid "Billing address"
 msgstr "Arveaadress"
 
@@ -186,7 +186,7 @@ msgstr "Rasvane"
 msgid "Brand"
 msgstr "Bränd"
 
-#: includes/helpers.php:1117 assets/admin.js:1390
+#: includes/helpers.php:1120 assets/admin.js:1390
 msgid "Build the whole email"
 msgstr "Terve meil ise"
 
@@ -210,7 +210,7 @@ msgstr "Nupu tekst"
 msgid "Buttons"
 msgstr "Nupud"
 
-#: includes/helpers.php:1219
+#: includes/helpers.php:1222
 msgid "Cancelled order (to shop)"
 msgstr "Tühistatud tellimus (poele)"
 
@@ -246,7 +246,7 @@ msgstr "Klõpsa eelvaates mõnel plokil või vali see vasakust nimekirjast, et s
 msgid "Colour"
 msgstr "Värv"
 
-#: includes/class-wmd-render.php:1413 assets/renderer.js:622
+#: includes/class-wmd-render.php:1477 assets/renderer.js:622
 msgid "Colour: grey"
 msgstr "Värv: hall"
 
@@ -282,11 +282,11 @@ msgstr "Kopeerimine ei õnnestunud"
 msgid "Corner radius (px)"
 msgstr "Nurkade ümarus (px)"
 
-#: includes/class-wmd-render.php:1400 assets/renderer.js:621
+#: includes/class-wmd-render.php:1464 assets/renderer.js:621
 msgid "Cotton T-shirt"
 msgstr "Puuvillane T-särk"
 
-#: includes/class-wmd-render.php:1379 assets/renderer.js:908
+#: includes/class-wmd-render.php:1443 assets/renderer.js:944
 msgid "Cotton T-shirt, M"
 msgstr "Puuvillane T-särk, M"
 
@@ -309,6 +309,10 @@ msgstr "Riik"
 #: includes/class-wmd-tags.php:76 includes/class-wmd-tags.php:90
 msgid "County"
 msgstr "Maakond"
+
+#: includes/class-wmd-render.php:724 includes/class-wmd-render.php:1494 includes/helpers.php:1002 assets/renderer.js:630
+msgid "Coupon code"
+msgstr "Sooduskood"
 
 #: includes/class-wmd-tags.php:54
 msgid "Coupon codes used"
@@ -334,7 +338,7 @@ msgstr "Klient"
 msgid "Customer note"
 msgstr "Kliendi märkus"
 
-#: includes/helpers.php:1258
+#: includes/helpers.php:1261
 msgid "Customer order emails"
 msgstr "Kliendi tellimusmeilid"
 
@@ -398,7 +402,7 @@ msgstr "Arvuti"
 msgid "Discount"
 msgstr "Allahindlus"
 
-#: includes/class-wmd-render.php:1429 assets/renderer.js:629
+#: includes/class-wmd-render.php:1493 assets/renderer.js:629
 msgid "Discount:"
 msgstr "Allahindlus:"
 
@@ -470,7 +474,7 @@ msgstr "Kujunduse eksport ja import"
 msgid "Extra CSS (advanced)"
 msgstr "Lisa-CSS (edasijõudnutele)"
 
-#: includes/helpers.php:1224
+#: includes/helpers.php:1227
 msgid "Failed order (to shop)"
 msgstr "Ebaõnnestunud tellimus (poele)"
 
@@ -574,11 +578,11 @@ msgstr "Pealkirjad"
 msgid "Height (px)"
 msgstr "Kõrgus (px)"
 
-#: includes/helpers.php:1131
+#: includes/helpers.php:1134
 msgid "Hi {{customer_first_name}}! We have received your order <strong>#{{order_number}}</strong> and are getting it ready."
 msgstr "Tere {{customer_first_name}}! Saime su tellimuse <strong>#{{order_number}}</strong> kätte ja asume seda komplekteerima."
 
-#: includes/helpers.php:1334
+#: includes/helpers.php:1337
 msgid "Hi {{customer_first_name}}! We have received your order <strong>#{{order_number}}</strong> and are getting it ready. We will let you know when it ships."
 msgstr "Tere {{customer_first_name}}! Saime su tellimuse <strong>#{{order_number}}</strong> kätte ja asume seda komplekteerima. Anname teada, kui pakk teele läheb."
 
@@ -686,7 +690,7 @@ msgstr "Paigaldan…"
 msgid "Installs the new version right here. The page reloads afterwards; save any unsaved changes first."
 msgstr "Paigaldab uue versiooni siinsamas. Leht laaditakse pärast uuesti; salvestamata muudatused salvesta enne ära."
 
-#: includes/helpers.php:1260
+#: includes/helpers.php:1263
 msgid "Internal shop emails"
 msgstr "Poe sisemised meilid"
 
@@ -694,7 +698,7 @@ msgstr "Poe sisemised meilid"
 msgid "Invalid email address."
 msgstr "Vigane e-posti aadress."
 
-#: includes/helpers.php:1190
+#: includes/helpers.php:1193
 msgid "Invoice / pending payment"
 msgstr "Arve / makseootel tellimus"
 
@@ -822,15 +826,15 @@ msgstr "Peapealkirja suurus (px)"
 msgid "Manifest address"
 msgstr "Manifesti aadress"
 
-#: assets/renderer.js:818
+#: assets/renderer.js:854
 msgid "Mary Smith<br/>12 High Street<br/>10123 London<br/>United Kingdom"
 msgstr "Mari Tamm<br/>Pikk 12-4<br/>10123 Tallinn<br/>Eesti"
 
-#: assets/renderer.js:819
+#: assets/renderer.js:855
 msgid "Mary Smith<br/>Market Square parcel locker<br/>10411 London"
 msgstr "Mari Tamm<br/>Tallinna Balti Jaama Turg<br/>10411 Tallinn"
 
-#: assets/renderer.js:879
+#: assets/renderer.js:915
 msgid "Mary Smith<br>12 High Street<br>10123 London<br>United Kingdom"
 msgstr "Mari Tamm<br>Pikk 12-4<br>10123 Tallinn<br>Eesti"
 
@@ -850,7 +854,7 @@ msgstr "Hall abitekst"
 msgid "My account link"
 msgstr "Minu konto link"
 
-#: includes/class-wmd-render.php:1254 assets/renderer.js:196
+#: includes/class-wmd-render.php:1318 assets/renderer.js:196
 msgid "Name"
 msgstr "Nimi"
 
@@ -866,11 +870,11 @@ msgstr "Nime suurus (px)"
 msgid "Name under the image"
 msgstr "Nimi pildi all"
 
-#: includes/helpers.php:1208
+#: includes/helpers.php:1211
 msgid "New account"
 msgstr "Uus konto"
 
-#: includes/helpers.php:1214
+#: includes/helpers.php:1217
 msgid "New order (to shop)"
 msgstr "Uus tellimus (poele)"
 
@@ -894,7 +898,7 @@ msgstr "Poes ei leitud ühtegi makseviisi."
 msgid "No product categories were found."
 msgstr "Tootekategooriaid ei leitud."
 
-#: includes/helpers.php:1195
+#: includes/helpers.php:1198
 msgid "Note to customer"
 msgstr "Märkus kliendile"
 
@@ -930,7 +934,7 @@ msgstr "Üks veerg"
 msgid "Order"
 msgstr "Tellimus"
 
-#: includes/class-wmd-render.php:1372 assets/renderer.js:902
+#: includes/class-wmd-render.php:1436 assets/renderer.js:938
 msgid "Order #1042"
 msgstr "Tellimus #1042"
 
@@ -938,7 +942,7 @@ msgstr "Tellimus #1042"
 msgid "Order ID in the database"
 msgstr "Tellimuse ID andmebaasis"
 
-#: includes/helpers.php:1175
+#: includes/helpers.php:1178
 msgid "Order completed"
 msgstr "Tellimus täidetud"
 
@@ -962,15 +966,15 @@ msgstr "Tellimuse väli (üks rida)"
 msgid "Order number"
 msgstr "Tellimuse number"
 
-#: includes/helpers.php:1180
+#: includes/helpers.php:1183
 msgid "Order on hold"
 msgstr "Tellimus ootel"
 
-#: includes/helpers.php:1170
+#: includes/helpers.php:1173
 msgid "Order processing"
 msgstr "Tellimus töösse võetud"
 
-#: includes/helpers.php:1185
+#: includes/helpers.php:1188
 msgid "Order refunded"
 msgstr "Tellimus tagastatud"
 
@@ -1018,7 +1022,7 @@ msgstr "Tekstilõik"
 msgid "Parcel locker"
 msgstr "Pakiautomaat"
 
-#: includes/helpers.php:1202
+#: includes/helpers.php:1205
 msgid "Password reset"
 msgstr "Parooli lähtestamine"
 
@@ -1054,7 +1058,7 @@ msgstr "Makseviisi juhised (oma tekst)"
 msgid "Payment link"
 msgstr "Maksmise link"
 
-#: includes/helpers.php:904 includes/helpers.php:1001
+#: includes/helpers.php:904 includes/helpers.php:1004
 msgid "Payment method"
 msgstr "Makseviis"
 
@@ -1066,7 +1070,7 @@ msgstr "Makseviisi tunnus"
 msgid "Payment method name"
 msgstr "Makseviisi nimi"
 
-#: includes/class-wmd-render.php:1431 assets/renderer.js:631
+#: includes/class-wmd-render.php:1496 assets/renderer.js:632
 msgid "Payment method:"
 msgstr "Makseviis:"
 
@@ -1098,7 +1102,7 @@ msgstr "Püstine (3:4)"
 msgid "Postcode"
 msgstr "Sihtnumber"
 
-#: includes/class-wmd-render.php:1377
+#: includes/class-wmd-render.php:1441
 msgid "Price"
 msgstr "Hind"
 
@@ -1106,7 +1110,7 @@ msgstr "Hind"
 msgid "Processing"
 msgstr "Töötlemisel"
 
-#: includes/class-wmd-render.php:1375 includes/helpers.php:979
+#: includes/class-wmd-render.php:1439 includes/helpers.php:979
 msgid "Product"
 msgstr "Toode"
 
@@ -1118,7 +1122,7 @@ msgstr "Toote nimi lingiks"
 msgid "Products (own table)"
 msgstr "Tooted (oma tabel)"
 
-#: includes/class-wmd-render.php:1376 includes/helpers.php:982
+#: includes/class-wmd-render.php:1440 includes/helpers.php:982
 msgid "Quantity"
 msgstr "Kogus"
 
@@ -1214,7 +1218,7 @@ msgstr "Uuenduste seadistamiseks on vaja õigust pluginaid uuendada."
 msgid "Settings"
 msgstr "Seaded"
 
-#: includes/helpers.php:1000
+#: includes/helpers.php:1003
 msgid "Shipping"
 msgstr "Tarne"
 
@@ -1238,7 +1242,7 @@ msgstr "Tarneviis"
 msgid "Shipping total"
 msgstr "Tarne summa"
 
-#: includes/class-wmd-render.php:1383 includes/class-wmd-render.php:1430 assets/renderer.js:630
+#: includes/class-wmd-render.php:1447 includes/class-wmd-render.php:1495 assets/renderer.js:631
 msgid "Shipping:"
 msgstr "Tarne:"
 
@@ -1278,7 +1282,7 @@ msgstr "Suurus"
 msgid "Size (px)"
 msgstr "Suurus (px)"
 
-#: includes/class-wmd-render.php:1403 assets/renderer.js:621
+#: includes/class-wmd-render.php:1467 assets/renderer.js:621
 msgid "Size: M"
 msgstr "Suurus: M"
 
@@ -1322,7 +1326,7 @@ msgstr "Pealkiri postkastis"
 msgid "Subtotal"
 msgstr "Vahesumma"
 
-#: includes/class-wmd-render.php:1382 includes/class-wmd-render.php:1428 assets/renderer.js:628
+#: includes/class-wmd-render.php:1446 includes/class-wmd-render.php:1492 assets/renderer.js:628
 msgid "Subtotal:"
 msgstr "Vahesumma:"
 
@@ -1334,7 +1338,7 @@ msgstr "Väljas olekus läheb see kiri välja täpselt nii, nagu WooCommerce sel
 msgid "System (recommended)"
 msgstr "Süsteemne (soovitatud)"
 
-#: assets/renderer.js:939
+#: assets/renderer.js:975
 msgid "Take over"
 msgstr "Võta üle"
 
@@ -1494,11 +1498,11 @@ msgstr "See ei ole Meilidisaineri kujundusfail."
 msgid "This mode does not use the WooCommerce content template. Everything in the email comes from the blocks below — including the order table and the addresses."
 msgstr "Selles režiimis ei kasutata WooCommerce'i sisumalli. Kõik, mis meilis on, tuleb allolevatest plokkidest — ka tellimuse tabel ja aadressid."
 
-#: includes/helpers.php:1003
+#: includes/helpers.php:1006
 msgid "Total"
 msgstr "Kokku"
 
-#: includes/class-wmd-render.php:1384 includes/class-wmd-render.php:1432 assets/renderer.js:632
+#: includes/class-wmd-render.php:1448 includes/class-wmd-render.php:1497 assets/renderer.js:633
 msgid "Total:"
 msgstr "Kokku:"
 
@@ -1590,7 +1594,7 @@ msgstr "Kasutaja e-post"
 msgid "Username"
 msgstr "Kasutajanimi"
 
-#: includes/class-wmd-tags.php:56 includes/helpers.php:1002
+#: includes/class-wmd-tags.php:56 includes/helpers.php:1005
 msgid "VAT"
 msgstr "Käibemaks"
 
@@ -1606,7 +1610,7 @@ msgstr "Muutujad"
 msgid "Variations and extra fields"
 msgstr "Variandid ja lisaväljad"
 
-#: includes/helpers.php:446 includes/helpers.php:1343
+#: includes/helpers.php:446 includes/helpers.php:1346
 msgid "View order"
 msgstr "Vaata tellimust"
 
@@ -1666,7 +1670,7 @@ msgstr "WooCommerce'i sisu ei õnnestunud renderdada."
 msgid "WooCommerce content could not be turned into blocks"
 msgstr "WooCommerce'i sisu ei õnnestunud plokkideks võtta"
 
-#: assets/renderer.js:937
+#: assets/renderer.js:973
 msgid "WooCommerce content — you cannot edit this here"
 msgstr "WooCommerce'i enda sisu — seda siit muuta ei saa"
 
@@ -1674,7 +1678,7 @@ msgstr "WooCommerce'i enda sisu — seda siit muuta ei saa"
 msgid "WooCommerce is not active."
 msgstr "WooCommerce ei ole aktiivne."
 
-#: includes/class-wmd-render.php:1380 includes/class-wmd-render.php:1410 assets/renderer.js:622 assets/renderer.js:909
+#: includes/class-wmd-render.php:1444 includes/class-wmd-render.php:1474 assets/renderer.js:622 assets/renderer.js:945
 msgid "Wool scarf"
 msgstr "Villane sall"
 
@@ -1686,7 +1690,7 @@ msgstr "Kirjuta iga makseviisi juhised üks kord siia. Kirja toob need plokk "
 msgid "You are editing %s."
 msgstr "Muudad %s keelt."
 
-#: includes/helpers.php:1301
+#: includes/helpers.php:1304
 msgid "You are getting this email because you placed an order in our shop."
 msgstr "Said selle kirja, sest tegid meie poes tellimuse."
 
@@ -1750,7 +1754,7 @@ msgstr "on saadaval"
 msgid "no image"
 msgstr "pilt puudub"
 
-#: includes/helpers.php:1099
+#: includes/helpers.php:1102
 msgid "no payment method"
 msgstr "makseviis puudub"
 

@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.7 =
+* **A "Coupon code" row in the "Totals (own table)" block.** Tick it on and the code used on the order appears in the summary, next to the discount amount. WooCommerce does not offer this row itself — its summary only has the amount — so the plugin builds it from the order's coupons. When no code was used the row is not there at all.
+* **Fix: the up/down arrows in that block did nothing to the email.** The hint said you could reorder the rows, but the order came from WooCommerce's own data and the arrows only moved things around on screen. The rows now go out in the order you set them. Rows that are not in the list (service fees, extra tax lines) stay where they were, and the grand total stays last.
 
 = 1.0.6 =
 * **New variable: `{{coupon_codes}}`** — the coupon codes used on the order, in capitals and comma-separated when there is more than one. It appears in the Variables tab and in every { } picker, under Order.
