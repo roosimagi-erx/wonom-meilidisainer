@@ -852,10 +852,35 @@
 	function sampleAddressData() {
 		return {
 			billing: __( 'Mary Smith<br/>12 High Street<br/>10123 London<br/>United Kingdom', 'wonom-meilidisainer' ),
-			shipping: __( 'Mary Smith<br/>Market Square parcel locker<br/>10411 London', 'wonom-meilidisainer' ),
+			shipping: __( 'Kate Brown<br/>Market Square parcel locker<br/>10411 London', 'wonom-meilidisainer' ),
 			phone: '+44 7700 900123',
 			email: 'mary.smith@example.com',
+			ship_phone: '+44 7700 900456',
+			ship_email: 'kate.brown@example.com',
 		};
+	}
+
+	/**
+	 * Kas tarneaadress erineb arveaadressist. Sama loogika mis PHP pool
+	 * (WMD_Render::address_differs). Vormindatud aadress sisaldab ka nime,
+	 * seega võrdlus katab nii teise isiku kui teise aadressi.
+	 *
+	 * @param {Object} data Aadressiandmed.
+	 * @return {boolean}
+	 */
+	function addressDiffers( data ) {
+		function flat( html ) {
+			return String( html || '' )
+				.replace( /<br\s*\/?>/gi, ' ' )
+				.replace( /<[^>]*>/g, '' )
+				.replace( /\s+/g, ' ' )
+				.trim()
+				.toLowerCase();
+		}
+
+		var ship = flat( data.shipping );
+
+		return '' !== ship && ship !== flat( data.billing );
 	}
 
 	/**
@@ -889,7 +914,23 @@
 		}
 
 		if ( show !== 'billing' && plain( data.shipping ).trim() ) {
-			cols.push( '<div style="' + escAttr( title ) + '">' + esc( p.shipping_title ) + '</div><div style="' + escAttr( lines ) + '">' + plain( data.shipping ) + '</div>' );
+			var sh = '<div style="' + escAttr( title ) + '">' + esc( p.shipping_title ) + '</div><div style="' + escAttr( lines ) + '">' + plain( data.shipping );
+			var mode = p.ship_contacts || 'off';
+
+			// Sama loogika mis PHP pool (WMD_Render::addresses_block).
+			if ( mode === 'always' || ( mode === 'diff' && addressDiffers( data ) ) ) {
+				var sphone = data.ship_phone || data.phone;
+				var semail = data.ship_email || data.email;
+
+				if ( sphone ) {
+					sh += '<br/>' + esc( sphone );
+				}
+				if ( semail ) {
+					sh += '<br/>' + esc( semail );
+				}
+			}
+
+			cols.push( sh + '</div>' );
 		}
 
 		if ( ! cols.length ) {

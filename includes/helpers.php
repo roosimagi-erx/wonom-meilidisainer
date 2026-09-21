@@ -746,6 +746,19 @@ function wmd_block_types() {
 					'label'   => __( 'Show phone and email', 'wonom-meilidisainer' ),
 					'default' => 1,
 				),
+				// Kui klient tellib kauba kellelegi teisele, on saaja kontaktid
+				// tarneaadressi juures. Sama isiku puhul oleksid need kordus,
+				// seepärast on vaikimisi valik „ainult siis, kui erineb".
+				'ship_contacts'  => array(
+					'type'    => 'select',
+					'label'   => __( 'Phone and email at the shipping address', 'wonom-meilidisainer' ),
+					'options' => array(
+						'off'    => __( 'Do not show', 'wonom-meilidisainer' ),
+						'diff'   => __( 'Only when the recipient differs', 'wonom-meilidisainer' ),
+						'always' => __( 'Always', 'wonom-meilidisainer' ),
+					),
+					'default' => 'off',
+				),
 				'box'            => array(
 					'type'    => 'toggle',
 					'label'   => __( 'In a bordered box', 'wonom-meilidisainer' ),

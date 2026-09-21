@@ -923,19 +923,56 @@ class WMD_Render {
 	public static function address_data( $order ) {
 		if ( ! $order || ! is_a( $order, 'WC_Order' ) ) {
 			return array(
-				'billing'  => 'Mari Tamm<br/>Pikk 12-4<br/>10123 Tallinn<br/>Eesti',
-				'shipping' => 'Mari Tamm<br/>Tallinna Balti Jaama Turg<br/>10411 Tallinn',
-				'phone'    => '5551234',
-				'email'    => 'mari.tamm@naide.ee',
+				'billing'        => 'Mari Tamm<br/>Pikk 12-4<br/>10123 Tallinn<br/>Eesti',
+				'shipping'       => 'Kati Kask<br/>Tallinna Balti Jaama Turg<br/>10411 Tallinn',
+				'phone'          => '5551234',
+				'email'          => 'mari.tamm@naide.ee',
+				'ship_phone'     => '5559876',
+				'ship_email'     => 'kati.kask@naide.ee',
 			);
 		}
 
+		// Tarnetelefon on WooCommerce'is alates 5.6-st; vanemal puudub. Eraldi
+		// tarne-e-posti WooCommerce ei kogu — mõni kassapistik salvestab selle
+		// tellimuse väljana, seepärast vaatame ka sinna.
+		$ship_phone = is_callable( array( $order, 'get_shipping_phone' ) ) ? (string) $order->get_shipping_phone() : '';
+		$ship_email = (string) $order->get_meta( '_shipping_email' );
+
 		return array(
-			'billing'  => (string) $order->get_formatted_billing_address(),
-			'shipping' => (string) $order->get_formatted_shipping_address(),
-			'phone'    => (string) $order->get_billing_phone(),
-			'email'    => (string) $order->get_billing_email(),
+			'billing'    => (string) $order->get_formatted_billing_address(),
+			'shipping'   => (string) $order->get_formatted_shipping_address(),
+			'phone'      => (string) $order->get_billing_phone(),
+			'email'      => (string) $order->get_billing_email(),
+			'ship_phone' => $ship_phone,
+			'ship_email' => $ship_email,
 		);
+	}
+
+	/**
+	 * Kas tarneaadress erineb arveaadressist.
+	 *
+	 * Vormindatud aadress sisaldab ka nime, seega see võrdlus katab nii teise
+	 * isiku kui teise aadressi. Tühja tarneaadressi me erinevaks ei loe.
+	 *
+	 * @param array $data Aadressiandmed.
+	 * @return bool
+	 */
+	protected static function address_differs( $data ) {
+		$flat = static function ( $html ) {
+			$text = str_replace( array( '<br/>', '<br />', '<br>' ), "\n", (string) $html );
+			$text = wp_strip_all_tags( $text );
+			$text = preg_replace( '/\s+/u', ' ', $text );
+
+			return trim( strtolower( (string) $text ) );
+		};
+
+		$ship = $flat( isset( $data['shipping'] ) ? $data['shipping'] : '' );
+
+		if ( '' === $ship ) {
+			return false;
+		}
+
+		return $ship !== $flat( isset( $data['billing'] ) ? $data['billing'] : '' );
 	}
 
 	/**
@@ -974,8 +1011,29 @@ class WMD_Render {
 		}
 
 		if ( 'billing' !== $show && '' !== trim( wp_strip_all_tags( $data['shipping'] ) ) ) {
-			$cols[] = '<div style="' . esc_attr( $title ) . '">' . esc_html( $p['shipping_title'] ) . '</div>'
-				. '<div style="' . esc_attr( $lines ) . '">' . wp_kses( $data['shipping'], array( 'br' => array() ) ) . '</div>';
+			$inner = '<div style="' . esc_attr( $title ) . '">' . esc_html( $p['shipping_title'] ) . '</div>'
+				. '<div style="' . esc_attr( $lines ) . '">' . wp_kses( $data['shipping'], array( 'br' => array() ) );
+
+			$mode = isset( $p['ship_contacts'] ) ? $p['ship_contacts'] : 'off';
+
+			// „diff" on mõeldud selleks, kui klient tellib kauba kellelegi
+			// teisele: sama isiku puhul oleksid kontaktid arveaadressi juures
+			// juba olemas ja korduksid.
+			if ( 'always' === $mode || ( 'diff' === $mode && self::address_differs( $data ) ) ) {
+				// Kui saaja enda kontakte ei küsitud, jääb alles tellija oma —
+				// see on ainus number, millega pakiga seotud asju lahendada.
+				$phone = empty( $data['ship_phone'] ) ? $data['phone'] : $data['ship_phone'];
+				$email = empty( $data['ship_email'] ) ? $data['email'] : $data['ship_email'];
+
+				if ( '' !== $phone ) {
+					$inner .= '<br/>' . esc_html( $phone );
+				}
+				if ( '' !== $email ) {
+					$inner .= '<br/>' . esc_html( $email );
+				}
+			}
+
+			$cols[] = $inner . '</div>';
 		}
 
 		if ( empty( $cols ) ) {

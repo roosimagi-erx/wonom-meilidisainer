@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.9 =
+* **Phone and email at the shipping address, for when the parcel goes to somebody else.** The Addresses block has a new setting with three states: do not show, show always, or — the useful one — show only when the recipient differs from the person paying. Same person, same address: nothing is added, because those details are already at the billing address.
+* The recipient's own phone is used when the checkout collected one. WooCommerce does not collect a separate email for the recipient, so that falls back to the address on the order — the one the shop can actually reach about the parcel.
 
 = 1.0.8 =
 * **Fix: "Coupon code" went into the email but was missing from the block's row list.** A saved design only knows the rows that existed when it was saved, so the new row could not be switched off or moved — it just turned up above the grand total. The list now always shows every row the plugin offers.
