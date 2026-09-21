@@ -464,9 +464,39 @@
 	gap: 3px;
 	margin-bottom: 4px;
 	align-items: center;
+
+	/* Märgendimenüü ankur. Vt allpool. */
+	position: relative;
 }
 
-.wmd-rich-bar button {
+/*
+ * Märgendimenüü tööriistaribal.
+ *
+ * Tekstivälja kõrval seisab nupp rea paremas servas ja „right: 0" toob menüü
+ * ilusti tema alla. Tööriistaribal on nupp aga rea vasakus otsas — siis jäi
+ * 260 px lai menüü paneelist välja ja paneeli overflow lõikas sellest kitsa
+ * riba. Siin ankurdame menüü terve välja külge, mitte nupu külge.
+ */
+.wmd-rich-bar .wmd-tags {
+	position: static;
+}
+
+.wmd-rich-bar .wmd-tags-menu {
+	left: 0;
+	right: auto;
+
+	/* Riba laius = välja laius, seega menüü on alati paneeli sees. */
+	width: 100%;
+}
+
+/*
+ * Ainult riba enda nupud (B, I, ↵, link).
+ *
+ * Ilma ">" märgita tabas see reegel ka märgendimenüü kirjeid — need on samuti
+ * nupud ja jäävad DOM-is riba sisse. Menüü nägi siis välja nagu rida kokku
+ * surutud hallikaid kaste, kust märgendit välja ei lugenud.
+ */
+.wmd-rich-bar > button {
 	min-width: 26px;
 	height: 24px;
 	border: 1px solid var(--wmd-line);
@@ -477,7 +507,7 @@
 	line-height: 1;
 }
 
-.wmd-rich-bar button:hover {
+.wmd-rich-bar > button:hover {
 	background: #eef2f6;
 }
 
@@ -532,7 +562,7 @@
 	padding: 5px 7px;
 	border-radius: 4px;
 	cursor: pointer;
-	line-height: 1.3;
+	line-height: 1.35;
 }
 
 .wmd-tag:hover {
@@ -546,6 +576,9 @@
 }
 
 .wmd-tag span {
+	/* Plokk, mitte inline: inline-kujul jooksis kirjeldus 5 px võrra järgmise
+	   märgendi peale ja nimekiri nägi välja nagu kokku valgunud. */
+	display: block;
 	font-size: 11px;
 	color: var(--wmd-muted);
 }

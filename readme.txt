@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.5 =
+* **Fix: the variable picker was unusable on the "Custom HTML" and paragraph blocks.** Pressing { } gave a narrow sliver of a menu on top of the other settings instead of the list of variables. The menu was anchored to the right edge of a button sitting at the left edge of the toolbar, so it ran off the panel and the panel's scrolling cut it down to a strip. It now spans the field and stays inside the panel.
+* Fix: the variables in that menu were rendered as the toolbar's own little bordered buttons, squeezed together and hard to read. The toolbar styling no longer reaches into the menu.
 
 = 1.0.4 =
 * **Fix: editing a block while viewing a second language changed the default language too.** Text typed in the English view appeared in the Estonian email, and the other way round. Until a part has been translated, the second language shows the default language's blocks — and the designer was letting you edit those very blocks rather than a copy. The block list on the left was already protected; clicking a block in the preview was not. Now the first edit gives that language its own copy, exactly as the "Translate this part" button does.
