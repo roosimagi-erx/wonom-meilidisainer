@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.2 =
+* **Fix: the preview showed sample content whenever the design was switched off.** "The WooCommerce content could not be rendered" — because with the design off the plugin's own header and footer are not used, and those are what mark where the WooCommerce part starts and ends. Since 1.0.0 a fresh install starts switched off, so this met you on the very first screen. The preview now always builds with the design, whatever the switches say; they govern real emails, not the canvas.
+* The test email sent from the designer now also shows the design while the switches are off. Otherwise the designer's own button put the plain WooCommerce email in your inbox and the plugin looked broken. It still does not reach a single customer — the strip above the preview says so.
 
 = 1.0.1 =
 * **Fix: the desktop/mobile switch disappeared in a narrow window.** The dropdowns in the top bar refused to shrink, so they pushed the switch out of sight behind the buttons. The bar now scales with the window: the dropdowns narrow first, and if there is still no room, the row wraps. Nothing is left hidden.

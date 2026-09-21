@@ -578,6 +578,12 @@ class WMD_Ajax {
 
 		WMD_Render::$mark_wc = true;
 
+		// Markerid tulevad meie päisest ja jalusest. Kui kujundus on välja
+		// lülitatud, jätab locate_template() meie mallid vahele ja markereid ei
+		// teki — eelvaade jäi siis näidissisu peale, teatega „ei õnnestunud
+		// renderdada". Eelvaade ei ole päris kiri, seega siin lülitid ei loe.
+		$was_forced = WMD_Emails::force( true );
+
 		try {
 			if ( $found ) {
 				if ( $order ) {
@@ -613,6 +619,7 @@ class WMD_Ajax {
 			$html = '';
 		}
 
+		WMD_Emails::force( $was_forced );
 		WMD_Render::$mark_wc = false;
 
 		return array(
@@ -886,8 +893,15 @@ class WMD_Ajax {
 		$same_lang  = ( '' === $lang ) || '' === $order_lang || $lang === $order_lang;
 
 		if ( $order && wmd_woo_active() && $same_lang ) {
-			$sent = self::send_real( $email_id, $order, $to );
-			$mode = $sent ? 'real' : 'design';
+			// Testmeil peab näitama seda, mida kanvasel ehitad — ka siis, kui
+			// kirja lüliti on veel väljas. Muidu tuleks kujundaja enda nupu
+			// peale postkasti WooCommerce'i vaikekiri ja paistaks, nagu plugin
+			// ei töötaks. Kliendini see ikka ei jõua: seda ütleb kollane riba.
+			$was_forced = WMD_Emails::force( true );
+			$sent       = self::send_real( $email_id, $order, $to );
+			$mode       = $sent ? 'real' : 'design';
+
+			WMD_Emails::force( $was_forced );
 		}
 
 		if ( ! $sent ) {

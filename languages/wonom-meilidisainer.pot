@@ -5,7 +5,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-21 13:48+0000\n"
+"POT-Creation-Date: 2026-09-21 14:24+0000\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: wonom-meilidisainer\n"
 
@@ -685,7 +685,7 @@ msgstr ""
 msgid "Internal shop emails"
 msgstr ""
 
-#: includes/class-wmd-ajax.php:861
+#: includes/class-wmd-ajax.php:868
 msgid "Invalid email address."
 msgstr ""
 
@@ -1189,7 +1189,7 @@ msgstr ""
 msgid "Send test email"
 msgstr ""
 
-#: includes/class-wmd-ajax.php:944
+#: includes/class-wmd-ajax.php:958
 msgid "Sending the email failed. Check the shop's email settings."
 msgstr ""
 
@@ -1709,7 +1709,7 @@ msgstr ""
 msgid "Your note to the order"
 msgstr ""
 
-#: includes/class-wmd-ajax.php:933
+#: includes/class-wmd-ajax.php:947
 msgid "[TEST] %s"
 msgstr ""
 

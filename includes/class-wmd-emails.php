@@ -143,11 +143,41 @@ class WMD_Emails {
 	}
 
 	/**
+	 * Kas kujundus surutakse peale hoolimata lülititest.
+	 *
+	 * @var bool
+	 */
+	protected static $forced = false;
+
+	/**
+	 * Lülitab ülevõtmise korraks sunniviisiliselt sisse.
+	 *
+	 * Kujundajas peab eelvaade ja testmeil näitama seda kujundust, mida sa
+	 * parasjagu ehitad — ka siis, kui kirja lüliti on veel väljas. Ilma selleta
+	 * ei jõua meie päis ja jalus renderdusse ning koos nendega jäävad tulemata
+	 * markerid, mille järgi me WooCommerce'i sisuosa üles leiame.
+	 *
+	 * @param bool $on Kas sundida.
+	 * @return bool Eelmine olek, mille saab hiljem tagasi anda.
+	 */
+	public static function force( $on ) {
+		$was = self::$forced;
+
+		self::$forced = (bool) $on;
+
+		return $was;
+	}
+
+	/**
 	 * Kas kujundus on sisse lülitatud.
 	 *
 	 * @return bool
 	 */
 	public static function enabled() {
+		if ( self::$forced ) {
+			return true;
+		}
+
 		return (bool) get_option( 'wmd_enabled', 1 );
 	}
 
@@ -161,6 +191,10 @@ class WMD_Emails {
 	 * @return bool
 	 */
 	public static function enabled_for( $email_id ) {
+		if ( self::$forced ) {
+			return true;
+		}
+
 		if ( ! self::enabled() ) {
 			return false;
 		}
