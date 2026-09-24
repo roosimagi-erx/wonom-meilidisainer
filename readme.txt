@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.10
+Stable tag: 1.0.11
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.11 =
+* **Fix: a tracking link came out as raw markup in the email.** Montonio stores the tracking code as a finished piece of HTML, not as a bare code, and the email printed the whole `<a href="…">CODE</a>` as visible text — while the preview showed a clean link, because the preview was already stripping it. Order fields are now read as plain text everywhere, so the code goes into the link and only the code is shown.
+* This applies to every `{{meta:…}}` variable, not just Montonio's: a shipping plugin's field can hold anything, and what belongs in an email is the value, not its markup.
 
 = 1.0.10 =
 * **Fix: the contacts were added even when the parcel went to the same person.** The check compared the whole address, and a parcel locker makes the address text different even when the recipient is not. It now compares the name and the phone number, which is what actually says whether somebody else is receiving the parcel. A country code in front of one of the numbers does not count as a difference.

@@ -955,6 +955,14 @@
 			return ! q || key.toLowerCase().indexOf( q ) !== -1 || String( label ).toLowerCase().indexOf( q ) !== -1;
 		}
 
+		// Nimekirjas näitame pikast väärtusest algust. Märgendi enda väärtus
+		// jääb terveks — lühendus on ainult selle menüü jaoks.
+		function short( value ) {
+			var text = String( value == null ? '' : value );
+
+			return text.length > 60 ? text.slice( 0, 60 ) + '…' : text;
+		}
+
 		Object.keys( groups ).forEach( function ( g ) {
 			var rows = Object.keys( tags ).filter( function ( key ) {
 				return tags[ key ].group === g && matches( key, tags[ key ].label );
@@ -966,7 +974,7 @@
 
 			html += '<div class="wmd-tags-head">' + esc( groups[ g ] ) + '</div>';
 			rows.forEach( function ( key ) {
-				html += rowFn( key, tags[ key ].label, tagValue( key ) );
+				html += rowFn( key, tags[ key ].label, short( tagValue( key ) ) );
 			} );
 		} );
 
@@ -978,7 +986,7 @@
 		if ( fields.length ) {
 			html += '<div class="wmd-tags-head">' + __( 'Fields on this order', 'wonom-meilidisainer' ) + '</div>';
 			fields.forEach( function ( f ) {
-				html += rowFn( 'meta:' + f.key, __( 'Order field', 'wonom-meilidisainer' ), f.sample );
+				html += rowFn( 'meta:' + f.key, __( 'Order field', 'wonom-meilidisainer' ), short( f.sample ) );
 			} );
 		}
 

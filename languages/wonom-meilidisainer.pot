@@ -5,31 +5,31 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-21 19:23+0000\n"
+"POT-Creation-Date: 2026-09-24 06:29+0000\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: wonom-meilidisainer\n"
 
-#: assets/admin.js:2290
+#: assets/admin.js:2298
 msgid " (installed "
 msgstr ""
 
-#: assets/admin.js:2213
+#: assets/admin.js:2221
 msgid " Pick a file or paste JSON."
 msgstr ""
 
-#: assets/admin.js:1381
+#: assets/admin.js:1389
 msgid " WooCommerce email. Set them once and you are done."
 msgstr ""
 
-#: assets/admin.js:2147
+#: assets/admin.js:2155
 msgid " brings them into the email — it always shows the text for that order's payment method. For a payment method left empty the block simply does not appear."
 msgstr ""
 
-#: assets/admin.js:2147
+#: assets/admin.js:2155
 msgid "\"Payment instructions (own text)\""
 msgstr ""
 
-#: assets/admin.js:2006
+#: assets/admin.js:2014
 msgid "%d texts translated — read them over and fix what needs fixing."
 msgstr ""
 
@@ -37,15 +37,15 @@ msgstr ""
 msgid "(no note)"
 msgstr ""
 
-#: assets/admin.js:3746
+#: assets/admin.js:3754
 msgid "). Check the server error log."
 msgstr ""
 
-#: assets/admin.js:1173
+#: assets/admin.js:1181
 msgid "+ Add image"
 msgstr ""
 
-#: assets/admin.js:1114
+#: assets/admin.js:1122
 msgid "+ Add row"
 msgstr ""
 
@@ -53,7 +53,7 @@ msgstr ""
 msgid ", not the real text"
 msgstr ""
 
-#: assets/admin.js:2288
+#: assets/admin.js:2296
 msgid ", source "
 msgstr ""
 
@@ -77,11 +77,11 @@ msgstr ""
 msgid "<strong>Questions?</strong><br>Just write to us."
 msgstr ""
 
-#: assets/admin.js:1161
+#: assets/admin.js:1169
 msgid "A click adds the category to the next empty slot."
 msgstr ""
 
-#: assets/admin.js:2057
+#: assets/admin.js:2065
 msgid "A click copies the variable — you can paste it into any field, including the \"Custom HTML\" block or the extra CSS."
 msgstr ""
 
@@ -89,7 +89,7 @@ msgstr ""
 msgid "Accent colour (links)"
 msgstr ""
 
-#: assets/admin.js:2312
+#: assets/admin.js:2320
 msgid "Access token"
 msgstr ""
 
@@ -129,11 +129,11 @@ msgstr ""
 msgid "Anything you have not translated still comes from %s."
 msgstr ""
 
-#: includes/helpers.php:1144 assets/admin.js:1452
+#: includes/helpers.php:1144 assets/admin.js:1460
 msgid "Around WooCommerce content"
 msgstr ""
 
-#: assets/admin.js:2240
+#: assets/admin.js:2248
 msgid "Automatic translation"
 msgstr ""
 
@@ -141,19 +141,19 @@ msgstr ""
 msgid "Automatic translation is not set up. Add a DeepL key under Settings."
 msgstr ""
 
-#: assets/admin.js:2035
+#: assets/admin.js:2043
 msgid "Automatic translation is not set up. You can add a DeepL key under Settings — the free tier is plenty for email templates."
 msgstr ""
 
-#: assets/admin.js:2297
+#: assets/admin.js:2305
 msgid "Automatic updates"
 msgstr ""
 
-#: assets/admin.js:2284
+#: assets/admin.js:2292
 msgid "Automatic updates are switched off."
 msgstr ""
 
-#: assets/admin.js:2290
+#: assets/admin.js:2298
 msgid "Available: "
 msgstr ""
 
@@ -181,15 +181,15 @@ msgstr ""
 msgid "Billing and shipping address"
 msgstr ""
 
-#: assets/admin.js:1225 assets/admin.js:2157
+#: assets/admin.js:1233 assets/admin.js:2165
 msgid "Bold"
 msgstr ""
 
-#: assets/admin.js:2613
+#: assets/admin.js:2621
 msgid "Brand"
 msgstr ""
 
-#: includes/helpers.php:1145 assets/admin.js:1453
+#: includes/helpers.php:1145 assets/admin.js:1461
 msgid "Build the whole email"
 msgstr ""
 
@@ -217,23 +217,23 @@ msgstr ""
 msgid "Cancelled order (to shop)"
 msgstr ""
 
-#: assets/admin.js:1140 assets/admin.js:1285
+#: assets/admin.js:1148 assets/admin.js:1293
 msgid "Change"
 msgstr ""
 
-#: assets/admin.js:2321 assets/admin.js:2559
+#: assets/admin.js:2329 assets/admin.js:2567
 msgid "Check now"
 msgstr ""
 
-#: assets/admin.js:2546
+#: assets/admin.js:2554
 msgid "Checking…"
 msgstr ""
 
-#: assets/admin.js:2215
+#: assets/admin.js:2223
 msgid "Choose a file…"
 msgstr ""
 
-#: assets/admin.js:1140 assets/admin.js:1285 assets/admin.js:3664
+#: assets/admin.js:1148 assets/admin.js:1293 assets/admin.js:3672
 msgid "Choose image"
 msgstr ""
 
@@ -241,7 +241,7 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: assets/admin.js:2572
+#: assets/admin.js:2580
 msgid "Click a block in the preview, or pick one from the list on the left, to make its settings appear here."
 msgstr ""
 
@@ -265,19 +265,19 @@ msgstr ""
 msgid "Company"
 msgstr ""
 
-#: assets/admin.js:1471
+#: assets/admin.js:1479
 msgid "Content after the order table"
 msgstr ""
 
-#: assets/admin.js:1470
+#: assets/admin.js:1478
 msgid "Content before the order table"
 msgstr ""
 
-#: assets/admin.js:2106
+#: assets/admin.js:2114
 msgid "Copied: "
 msgstr ""
 
-#: assets/admin.js:2125
+#: assets/admin.js:2133
 msgid "Copying failed"
 msgstr ""
 
@@ -297,11 +297,11 @@ msgstr ""
 msgid "Could not fetch the WooCommerce content."
 msgstr ""
 
-#: assets/admin.js:2286
+#: assets/admin.js:2294
 msgid "Could not get a version from the source. Check the repository name, the release and the token."
 msgstr ""
 
-#: assets/admin.js:1833
+#: assets/admin.js:1841
 msgid "Could not get the WooCommerce content — starting from the default blocks"
 msgstr ""
 
@@ -353,7 +353,7 @@ msgstr ""
 msgid "DeepL asked us to slow down. Try again in a moment."
 msgstr ""
 
-#: assets/admin.js:2250
+#: assets/admin.js:2258
 msgid "DeepL key"
 msgstr ""
 
@@ -361,15 +361,15 @@ msgstr ""
 msgid "DeepL refused the key. Check that you copied it whole."
 msgstr ""
 
-#: assets/admin.js:1148 assets/admin.js:1337 assets/admin.js:2603
+#: assets/admin.js:1156 assets/admin.js:1345 assets/admin.js:2611
 msgid "Delete"
 msgstr ""
 
-#: assets/admin.js:1102
+#: assets/admin.js:1110
 msgid "Delete row"
 msgstr ""
 
-#: assets/admin.js:3349
+#: assets/admin.js:3357
 msgid "Delete this block?"
 msgstr ""
 
@@ -381,7 +381,7 @@ msgstr ""
 msgid "Design"
 msgstr ""
 
-#: assets/admin.js:2400
+#: assets/admin.js:2408
 msgid "Design downloaded"
 msgstr ""
 
@@ -389,15 +389,15 @@ msgstr ""
 msgid "Design emails"
 msgstr ""
 
-#: assets/admin.js:2376
+#: assets/admin.js:2384
 msgid "Design imported"
 msgstr ""
 
-#: assets/admin.js:2266
+#: assets/admin.js:2274
 msgid "Design in use"
 msgstr ""
 
-#: assets/admin.js:2682
+#: assets/admin.js:2690
 msgid "Desktop"
 msgstr ""
 
@@ -421,23 +421,23 @@ msgstr ""
 msgid "Do not show"
 msgstr ""
 
-#: assets/admin.js:1077 assets/admin.js:1101 assets/admin.js:1335
+#: assets/admin.js:1085 assets/admin.js:1109 assets/admin.js:1343
 msgid "Down"
 msgstr ""
 
-#: assets/admin.js:2204
+#: assets/admin.js:2212
 msgid "Download the design"
 msgstr ""
 
-#: assets/admin.js:1336
+#: assets/admin.js:1344
 msgid "Duplicate"
 msgstr ""
 
-#: assets/admin.js:2602
+#: assets/admin.js:2610
 msgid "Duplicate block"
 msgstr ""
 
-#: includes/class-wmd-tags.php:67 includes/class-wmd-tags.php:80 assets/admin.js:1429
+#: includes/class-wmd-tags.php:67 includes/class-wmd-tags.php:80 assets/admin.js:1437
 msgid "Email"
 msgstr ""
 
@@ -449,11 +449,11 @@ msgstr ""
 msgid "Email background"
 msgstr ""
 
-#: assets/admin.js:1468 assets/admin.js:2616
+#: assets/admin.js:1476 assets/admin.js:2624
 msgid "Email content"
 msgstr ""
 
-#: assets/admin.js:2695
+#: assets/admin.js:2703
 msgid "Email preview"
 msgstr ""
 
@@ -461,19 +461,19 @@ msgstr ""
 msgid "Email width (px)"
 msgstr ""
 
-#: assets/admin.js:2056
+#: assets/admin.js:2064
 msgid "Every variable you can use in the email."
 msgstr ""
 
-#: assets/admin.js:2554
+#: assets/admin.js:2562
 msgid "Everything is up to date"
 msgstr ""
 
-#: assets/admin.js:2288
+#: assets/admin.js:2296
 msgid "Everything is up to date — installed "
 msgstr ""
 
-#: assets/admin.js:2200
+#: assets/admin.js:2208
 msgid "Export and import the design"
 msgstr ""
 
@@ -489,15 +489,15 @@ msgstr ""
 msgid "Field key on the order"
 msgstr ""
 
-#: assets/admin.js:979
+#: assets/admin.js:987
 msgid "Fields on this order"
 msgstr ""
 
-#: assets/admin.js:2242
+#: assets/admin.js:2250
 msgid "Fills another language from the default one, so you only have to correct it instead of writing everything twice. DeepL is used because it is the only service that leaves {{variables}} untouched — without that the emails would break. The free tier gives 500,000 characters a month, which is far more than email templates need."
 msgstr ""
 
-#: assets/admin.js:2042
+#: assets/admin.js:2050
 msgid "Fills this language from the default one with a machine translation, which you then correct. Variables and links are left alone."
 msgstr ""
 
@@ -513,15 +513,15 @@ msgstr ""
 msgid "Font"
 msgstr ""
 
-#: assets/admin.js:2615
+#: assets/admin.js:2623
 msgid "Footer"
 msgstr ""
 
-#: assets/admin.js:2164
+#: assets/admin.js:2172
 msgid "For example: please transfer the amount from your bank straight to our account…"
 msgstr ""
 
-#: assets/admin.js:1255 assets/admin.js:1256
+#: assets/admin.js:1263 assets/admin.js:1264
 msgid "From brand"
 msgstr ""
 
@@ -545,15 +545,15 @@ msgstr ""
 msgid "Gap between images (px)"
 msgstr ""
 
-#: assets/admin.js:2252
+#: assets/admin.js:2260
 msgid "Get one free at deepl.com/pro-api — choose the free plan. A free key ends with :fx."
 msgstr ""
 
-#: assets/admin.js:2303
+#: assets/admin.js:2311
 msgid "GitHub release"
 msgstr ""
 
-#: assets/admin.js:2308
+#: assets/admin.js:2316
 msgid "GitHub repository"
 msgstr ""
 
@@ -565,7 +565,7 @@ msgstr ""
 msgid "HTML"
 msgstr ""
 
-#: assets/admin.js:2614
+#: assets/admin.js:2622
 msgid "Header"
 msgstr ""
 
@@ -593,7 +593,7 @@ msgstr ""
 msgid "Hi {{customer_first_name}}! We have received your order <strong>#{{order_number}}</strong> and are getting it ready. We will let you know when it ships."
 msgstr ""
 
-#: assets/admin.js:1174
+#: assets/admin.js:1182
 msgid "Hide categories"
 msgstr ""
 
@@ -613,7 +613,7 @@ msgstr ""
 msgid "How many per row"
 msgstr ""
 
-#: assets/admin.js:1450
+#: assets/admin.js:1458
 msgid "How the email is put together"
 msgstr ""
 
@@ -625,11 +625,11 @@ msgstr ""
 msgid "Image"
 msgstr ""
 
-#: assets/admin.js:3654
+#: assets/admin.js:3662
 msgid "Image address"
 msgstr ""
 
-#: assets/admin.js:1151
+#: assets/admin.js:1159
 msgid "Image address https://…"
 msgstr ""
 
@@ -657,19 +657,19 @@ msgstr ""
 msgid "Images side by side"
 msgstr ""
 
-#: assets/admin.js:2378
+#: assets/admin.js:2386
 msgid "Import failed"
 msgstr ""
 
-#: assets/admin.js:2220
+#: assets/admin.js:2228
 msgid "Import the pasted JSON"
 msgstr ""
 
-#: assets/admin.js:2365
+#: assets/admin.js:2373
 msgid "Importing overwrites the whole current design — brand, header, footer, every email and the payment instructions. Continue?"
 msgstr ""
 
-#: assets/admin.js:2213
+#: assets/admin.js:2221
 msgid "Importing overwrites the whole current design."
 msgstr ""
 
@@ -681,7 +681,7 @@ msgstr ""
 msgid "Inner padding (px)"
 msgstr ""
 
-#: assets/admin.js:996
+#: assets/admin.js:1004
 msgid "Insert a variable"
 msgstr ""
 
@@ -689,11 +689,11 @@ msgstr ""
 msgid "Installed version %s."
 msgstr ""
 
-#: assets/admin.js:2518
+#: assets/admin.js:2526
 msgid "Installing…"
 msgstr ""
 
-#: assets/admin.js:2330
+#: assets/admin.js:2338
 msgid "Installs the new version right here. The page reloads afterwards; save any unsaved changes first."
 msgstr ""
 
@@ -701,7 +701,7 @@ msgstr ""
 msgid "Internal shop emails"
 msgstr ""
 
-#: includes/class-wmd-ajax.php:877
+#: includes/class-wmd-ajax.php:879
 msgid "Invalid email address."
 msgstr ""
 
@@ -709,7 +709,7 @@ msgstr ""
 msgid "Invoice / pending payment"
 msgstr ""
 
-#: assets/admin.js:1226 assets/admin.js:2158
+#: assets/admin.js:1234 assets/admin.js:2166
 msgid "Italic"
 msgstr ""
 
@@ -717,7 +717,7 @@ msgstr ""
 msgid "Kate Brown<br/>Market Square parcel locker<br/>10411 London"
 msgstr ""
 
-#: includes/helpers.php:970 assets/admin.js:1098
+#: includes/helpers.php:970 assets/admin.js:1106
 msgid "Label"
 msgstr ""
 
@@ -729,7 +729,7 @@ msgstr ""
 msgid "Large"
 msgstr ""
 
-#: assets/admin.js:1441
+#: assets/admin.js:1449
 msgid "Large heading in the email"
 msgstr ""
 
@@ -737,7 +737,7 @@ msgstr ""
 msgid "Last name"
 msgstr ""
 
-#: assets/admin.js:2666
+#: assets/admin.js:2674
 msgid "Latest order in the shop"
 msgstr ""
 
@@ -745,7 +745,7 @@ msgstr ""
 msgid "Layout"
 msgstr ""
 
-#: assets/admin.js:1146
+#: assets/admin.js:1154
 msgid "Left"
 msgstr ""
 
@@ -753,7 +753,7 @@ msgstr ""
 msgid "Left column"
 msgstr ""
 
-#: assets/admin.js:1227 assets/admin.js:2159
+#: assets/admin.js:1235 assets/admin.js:2167
 msgid "Line break"
 msgstr ""
 
@@ -769,7 +769,7 @@ msgstr ""
 msgid "Lines and borders"
 msgstr ""
 
-#: includes/helpers.php:452 assets/admin.js:1228 assets/admin.js:2160
+#: includes/helpers.php:452 assets/admin.js:1236 assets/admin.js:2168
 msgid "Link"
 msgstr ""
 
@@ -777,11 +777,11 @@ msgstr ""
 msgid "Link (optional)"
 msgstr ""
 
-#: assets/admin.js:1108
+#: assets/admin.js:1116
 msgid "Link (optional), {{value}} = the value"
 msgstr ""
 
-#: assets/admin.js:3499
+#: assets/admin.js:3507
 msgid "Link address"
 msgstr ""
 
@@ -789,15 +789,15 @@ msgstr ""
 msgid "Link on click"
 msgstr ""
 
-#: assets/admin.js:1150
+#: assets/admin.js:1158
 msgid "Link, for example the category address"
 msgstr ""
 
-#: assets/admin.js:1174 assets/admin.js:3155
+#: assets/admin.js:1182 assets/admin.js:3163
 msgid "Load product categories"
 msgstr ""
 
-#: assets/admin.js:1466
+#: assets/admin.js:1474
 msgid "Load the WooCommerce content as blocks"
 msgstr ""
 
@@ -805,7 +805,7 @@ msgstr ""
 msgid "Loading the designer…"
 msgstr ""
 
-#: assets/admin.js:1814 assets/admin.js:3147
+#: assets/admin.js:1822 assets/admin.js:3155
 msgid "Loading…"
 msgstr ""
 
@@ -833,7 +833,7 @@ msgstr ""
 msgid "Main heading size (px)"
 msgstr ""
 
-#: assets/admin.js:2316
+#: assets/admin.js:2324
 msgid "Manifest address"
 msgstr ""
 
@@ -849,7 +849,7 @@ msgstr ""
 msgid "Medium"
 msgstr ""
 
-#: assets/admin.js:2683
+#: assets/admin.js:2691
 msgid "Mobile"
 msgstr ""
 
@@ -873,7 +873,7 @@ msgstr ""
 msgid "Name size (px)"
 msgstr ""
 
-#: assets/admin.js:1144
+#: assets/admin.js:1152
 msgid "Name under the image"
 msgstr ""
 
@@ -885,7 +885,7 @@ msgstr ""
 msgid "New order (to shop)"
 msgstr ""
 
-#: assets/admin.js:1316 assets/admin.js:1342
+#: assets/admin.js:1324 assets/admin.js:1350
 msgid "No blocks here yet. Add one below."
 msgstr ""
 
@@ -897,11 +897,11 @@ msgstr ""
 msgid "No lines"
 msgstr ""
 
-#: assets/admin.js:2140
+#: assets/admin.js:2148
 msgid "No payment methods were found in the shop."
 msgstr ""
 
-#: assets/admin.js:1167
+#: assets/admin.js:1175
 msgid "No product categories were found."
 msgstr ""
 
@@ -909,7 +909,7 @@ msgstr ""
 msgid "Note to customer"
 msgstr ""
 
-#: assets/admin.js:2068 assets/admin.js:2087
+#: assets/admin.js:2076 assets/admin.js:2095
 msgid "Nothing found."
 msgstr ""
 
@@ -917,7 +917,7 @@ msgstr ""
 msgid "Nothing is translated here yet — everything comes from %s."
 msgstr ""
 
-#: assets/admin.js:2571
+#: assets/admin.js:2579
 msgid "Nothing selected"
 msgstr ""
 
@@ -929,7 +929,7 @@ msgstr ""
 msgid "Number of items"
 msgstr ""
 
-#: assets/admin.js:2246 assets/admin.js:2302
+#: assets/admin.js:2254 assets/admin.js:2310
 msgid "Off"
 msgstr ""
 
@@ -965,7 +965,7 @@ msgstr ""
 msgid "Order details (table)"
 msgstr ""
 
-#: assets/admin.js:981
+#: assets/admin.js:989
 msgid "Order field"
 msgstr ""
 
@@ -1017,7 +1017,7 @@ msgstr ""
 msgid "Outlined"
 msgstr ""
 
-#: assets/admin.js:2304
+#: assets/admin.js:2312
 msgid "Own JSON manifest"
 msgstr ""
 
@@ -1041,7 +1041,7 @@ msgstr ""
 msgid "Password reset link"
 msgstr ""
 
-#: assets/admin.js:2435
+#: assets/admin.js:2443
 msgid "Paste the JSON first"
 msgstr ""
 
@@ -1085,7 +1085,7 @@ msgstr ""
 msgid "Payment method:"
 msgstr ""
 
-#: assets/admin.js:2617
+#: assets/admin.js:2625
 msgid "Payment methods"
 msgstr ""
 
@@ -1097,7 +1097,7 @@ msgstr ""
 msgid "Phone and email at the shipping address"
 msgstr ""
 
-#: assets/admin.js:1426
+#: assets/admin.js:1434
 msgid "Pick an email and add to it. A field left empty means the WooCommerce default is used."
 msgstr ""
 
@@ -1141,15 +1141,15 @@ msgstr ""
 msgid "Quantity"
 msgstr ""
 
-#: assets/admin.js:2423
+#: assets/admin.js:2431
 msgid "Reading the file failed"
 msgstr ""
 
-#: assets/admin.js:2525
+#: assets/admin.js:2533
 msgid "Reloading the page…"
 msgstr ""
 
-#: assets/admin.js:1286
+#: assets/admin.js:1294
 msgid "Remove"
 msgstr ""
 
@@ -1157,19 +1157,19 @@ msgstr ""
 msgid "Renaming the update folder failed."
 msgstr ""
 
-#: assets/admin.js:2688
+#: assets/admin.js:2696
 msgid "Reset"
 msgstr ""
 
-#: assets/admin.js:2688
+#: assets/admin.js:2696
 msgid "Reset the design"
 msgstr ""
 
-#: assets/admin.js:3569
+#: assets/admin.js:3577
 msgid "Reset the whole design to its defaults? This cannot be undone."
 msgstr ""
 
-#: includes/helpers.php:860 assets/admin.js:1147
+#: includes/helpers.php:860 assets/admin.js:1155
 msgid "Right"
 msgstr ""
 
@@ -1185,39 +1185,39 @@ msgstr ""
 msgid "SKU"
 msgstr ""
 
-#: assets/admin.js:2687
+#: assets/admin.js:2695
 msgid "Save"
 msgstr ""
 
-#: assets/admin.js:2255
+#: assets/admin.js:2263
 msgid "Save the key"
 msgstr ""
 
-#: assets/admin.js:2320
+#: assets/admin.js:2328
 msgid "Save the source"
 msgstr ""
 
-#: assets/admin.js:2463 assets/admin.js:2502 assets/admin.js:3578 assets/admin.js:3637
+#: assets/admin.js:2471 assets/admin.js:2510 assets/admin.js:3586 assets/admin.js:3645
 msgid "Saved"
 msgstr ""
 
-#: assets/admin.js:3639 assets/admin.js:3750
+#: assets/admin.js:3647 assets/admin.js:3758
 msgid "Saving failed"
 msgstr ""
 
-#: assets/admin.js:2059
+#: assets/admin.js:2067
 msgid "Search for a variable…"
 msgstr ""
 
-#: assets/admin.js:2686 assets/admin.js:3621
+#: assets/admin.js:2694 assets/admin.js:3629
 msgid "Send test email"
 msgstr ""
 
-#: includes/class-wmd-ajax.php:967
+#: includes/class-wmd-ajax.php:969
 msgid "Sending the email failed. Check the shop's email settings."
 msgstr ""
 
-#: assets/admin.js:3602
+#: assets/admin.js:3610
 msgid "Sending…"
 msgstr ""
 
@@ -1225,11 +1225,11 @@ msgstr ""
 msgid "Set password link (new account)"
 msgstr ""
 
-#: assets/admin.js:2275
+#: assets/admin.js:2283
 msgid "Setting up updates needs permission to update plugins."
 msgstr ""
 
-#: assets/admin.js:2619
+#: assets/admin.js:2627
 msgid "Settings"
 msgstr ""
 
@@ -1285,7 +1285,7 @@ msgstr ""
 msgid "Show phone and email"
 msgstr ""
 
-#: assets/admin.js:2207
+#: assets/admin.js:2215
 msgid "Show the JSON"
 msgstr ""
 
@@ -1301,7 +1301,7 @@ msgstr ""
 msgid "Size: M"
 msgstr ""
 
-#: assets/admin.js:1177
+#: assets/admin.js:1185
 msgid "Slots left empty are not put into the real email — they are shown in the designer only so you can see the layout."
 msgstr ""
 
@@ -1333,7 +1333,7 @@ msgstr ""
 msgid "Style"
 msgstr ""
 
-#: assets/admin.js:1437
+#: assets/admin.js:1445
 msgid "Subject line"
 msgstr ""
 
@@ -1345,7 +1345,7 @@ msgstr ""
 msgid "Subtotal:"
 msgstr ""
 
-#: assets/admin.js:1435
+#: assets/admin.js:1443
 msgid "Switched off, this email goes out exactly as WooCommerce sends it. Everything set here stays saved and comes back when you switch it on again."
 msgstr ""
 
@@ -1357,7 +1357,7 @@ msgstr ""
 msgid "Take over"
 msgstr ""
 
-#: assets/admin.js:1467
+#: assets/admin.js:1475
 msgid "Takes this email's current WooCommerce content apart into blocks and replaces the blocks below. Useful when you want to start again from the WooCommerce text."
 msgstr ""
 
@@ -1381,11 +1381,11 @@ msgstr ""
 msgid "The WooCommerce part of the canvas shows "
 msgstr ""
 
-#: assets/admin.js:3589
+#: assets/admin.js:3597
 msgid "The design applies to emails"
 msgstr ""
 
-#: assets/admin.js:3589
+#: assets/admin.js:3597
 msgid "The design is switched off"
 msgstr ""
 
@@ -1397,7 +1397,7 @@ msgstr ""
 msgid "The design is switched off on this email, so it goes out as WooCommerce sends it."
 msgstr ""
 
-#: assets/admin.js:3616
+#: assets/admin.js:3624
 msgid "The design was saved and the test email went to "
 msgstr ""
 
@@ -1405,43 +1405,43 @@ msgstr ""
 msgid "The designer needs JavaScript."
 msgstr ""
 
-#: assets/admin.js:2361
+#: assets/admin.js:2369
 msgid "The file could not be read"
 msgstr ""
 
-#: assets/admin.js:2630
+#: assets/admin.js:2638
 msgid "The footer is the same at the bottom of every email."
 msgstr ""
 
-#: assets/admin.js:2628
+#: assets/admin.js:2636
 msgid "The header is the same at the top of every email."
 msgstr ""
 
-#: assets/admin.js:2223
+#: assets/admin.js:2231
 msgid "The logo still points at the source shop's media library — in another shop it is worth uploading it again. Payment instructions carry over by their ID; if the target shop has other payment gateways, those rows are simply left unused."
 msgstr ""
 
-#: assets/admin.js:2270
+#: assets/admin.js:2278
 msgid "The main switch for the whole plugin. Switched off, every email goes out as WooCommerce sends it. Whether the design reaches one particular email is decided by the switch on that email under Email content."
 msgstr ""
 
-#: assets/admin.js:2298
+#: assets/admin.js:2306
 msgid "The plugin is not on WordPress.org, so updates come straight from your GitHub releases. WordPress shows the update notice on the ordinary Plugins page too."
 msgstr ""
 
-#: assets/admin.js:3745
+#: assets/admin.js:3753
 msgid "The server firewall blocked the request (HTTP 403). Ask your host to allow this address."
 msgstr ""
 
-#: assets/admin.js:3746
+#: assets/admin.js:3754
 msgid "The server replied unexpectedly (HTTP "
 msgstr ""
 
-#: assets/admin.js:2554
+#: assets/admin.js:2562
 msgid "The source did not respond"
 msgstr ""
 
-#: assets/admin.js:1083
+#: assets/admin.js:1091
 msgid "The tick shows whether the column goes into the email. You can rewrite the label and reorder it with the arrows."
 msgstr ""
 
@@ -1453,7 +1453,7 @@ msgstr ""
 msgid "The translation service sent an answer we could not read."
 msgstr ""
 
-#: assets/admin.js:1991
+#: assets/admin.js:1999
 msgid "The translation service sent back a different number of texts than we asked for."
 msgstr ""
 
@@ -1465,19 +1465,19 @@ msgstr ""
 msgid "The update source did not respond."
 msgstr ""
 
-#: assets/admin.js:2051
+#: assets/admin.js:2059
 msgid "The value comes from the selected order ("
 msgstr ""
 
-#: assets/admin.js:2053
+#: assets/admin.js:2061
 msgid "The value comes from the selected order."
 msgstr ""
 
-#: assets/admin.js:2201
+#: assets/admin.js:2209
 msgid "The whole design — brand, header, footer, every email and the payment instructions — in one file. In another shop you import it and have the same setup at once."
 msgstr ""
 
-#: assets/admin.js:1463
+#: assets/admin.js:1471
 msgid "There is no content in this language yet, so this email goes out with the WooCommerce content. Add blocks below."
 msgstr ""
 
@@ -1485,31 +1485,31 @@ msgstr ""
 msgid "There is no newer version."
 msgstr ""
 
-#: assets/admin.js:1969
+#: assets/admin.js:1977
 msgid "There is nothing to translate here."
 msgstr ""
 
-#: assets/admin.js:1320
+#: assets/admin.js:1328
 msgid "These blocks come from the default language. Translate this part to give this language its own."
 msgstr ""
 
-#: assets/admin.js:1381
+#: assets/admin.js:1389
 msgid "These settings apply to "
 msgstr ""
 
-#: assets/admin.js:1805
+#: assets/admin.js:1813
 msgid "This email already has "
 msgstr ""
 
-#: assets/admin.js:2054
+#: assets/admin.js:2062
 msgid "This email does not come from an order, so the order variables have no value here."
 msgstr ""
 
-#: assets/admin.js:2349
+#: assets/admin.js:2357
 msgid "This is not an Email Designer design file."
 msgstr ""
 
-#: assets/admin.js:1457
+#: assets/admin.js:1465
 msgid "This mode does not use the WooCommerce content template. Everything in the email comes from the blocks below — including the order table and the addresses."
 msgstr ""
 
@@ -1529,23 +1529,23 @@ msgstr ""
 msgid "Tracking code"
 msgstr ""
 
-#: assets/admin.js:2040
+#: assets/admin.js:2048
 msgid "Translate this email automatically"
 msgstr ""
 
-#: assets/admin.js:1323
+#: assets/admin.js:1331
 msgid "Translate this part"
 msgstr ""
 
-#: assets/admin.js:1978
+#: assets/admin.js:1986
 msgid "Translating…"
 msgstr ""
 
-#: assets/admin.js:2244
+#: assets/admin.js:2252
 msgid "Translation service"
 msgstr ""
 
-#: assets/admin.js:2538
+#: assets/admin.js:2546
 msgid "Try again"
 msgstr ""
 
@@ -1565,35 +1565,35 @@ msgstr ""
 msgid "Unit price"
 msgstr ""
 
-#: assets/admin.js:2676
+#: assets/admin.js:2684
 msgid "Unsaved changes"
 msgstr ""
 
-#: assets/admin.js:2592
+#: assets/admin.js:2600
 msgid "Unticked = always show. Tick the payment methods for which the block goes into the email — that way bank transfer instructions can go only to bank transfer orders."
 msgstr ""
 
-#: assets/admin.js:1076 assets/admin.js:1100 assets/admin.js:1334
+#: assets/admin.js:1084 assets/admin.js:1108 assets/admin.js:1342
 msgid "Up"
 msgstr ""
 
-#: assets/admin.js:2554
+#: assets/admin.js:2562
 msgid "Update "
 msgstr ""
 
-#: assets/admin.js:2328
+#: assets/admin.js:2336
 msgid "Update now to version "
 msgstr ""
 
-#: assets/admin.js:2300
+#: assets/admin.js:2308
 msgid "Update source"
 msgstr ""
 
-#: assets/admin.js:2269
+#: assets/admin.js:2277
 msgid "Use the design on emails"
 msgstr ""
 
-#: assets/admin.js:1434
+#: assets/admin.js:1442
 msgid "Use this design on this email"
 msgstr ""
 
@@ -1613,11 +1613,11 @@ msgstr ""
 msgid "VAT"
 msgstr ""
 
-#: assets/admin.js:1105
+#: assets/admin.js:1113
 msgid "Value or {{variable}}"
 msgstr ""
 
-#: assets/admin.js:2618
+#: assets/admin.js:2626
 msgid "Variables"
 msgstr ""
 
@@ -1629,7 +1629,7 @@ msgstr ""
 msgid "View order"
 msgstr ""
 
-#: assets/admin.js:2590
+#: assets/admin.js:2598
 msgid "Visibility"
 msgstr ""
 
@@ -1641,7 +1641,7 @@ msgstr ""
 msgid "What to show"
 msgstr ""
 
-#: assets/admin.js:2678
+#: assets/admin.js:2686
 msgid "What to show in the preview"
 msgstr ""
 
@@ -1649,15 +1649,15 @@ msgstr ""
 msgid "When to show the shipping address"
 msgstr ""
 
-#: assets/admin.js:3597
+#: assets/admin.js:3605
 msgid "Where should the test email go?"
 msgstr ""
 
-#: assets/admin.js:2651
+#: assets/admin.js:2659
 msgid "Which language's content to edit"
 msgstr ""
 
-#: assets/admin.js:2665
+#: assets/admin.js:2673
 msgid "Which order to fill the preview with"
 msgstr ""
 
@@ -1673,11 +1673,11 @@ msgstr ""
 msgid "Wonom Email Designer needs WooCommerce to work. You can still use the designer, but emails are left untouched."
 msgstr ""
 
-#: assets/admin.js:1447
+#: assets/admin.js:1455
 msgid "WooCommerce additional content at the end"
 msgstr ""
 
-#: assets/admin.js:1782
+#: assets/admin.js:1790
 msgid "WooCommerce content could not be loaded"
 msgstr ""
 
@@ -1685,7 +1685,7 @@ msgstr ""
 msgid "WooCommerce content could not be rendered."
 msgstr ""
 
-#: assets/admin.js:1819
+#: assets/admin.js:1827
 msgid "WooCommerce content could not be turned into blocks"
 msgstr ""
 
@@ -1701,7 +1701,7 @@ msgstr ""
 msgid "Wool scarf"
 msgstr ""
 
-#: assets/admin.js:2147
+#: assets/admin.js:2155
 msgid "Write the instructions for each payment method here once. The block "
 msgstr ""
 
@@ -1713,7 +1713,7 @@ msgstr ""
 msgid "You are getting this email because you placed an order in our shop."
 msgstr ""
 
-#: assets/admin.js:1115
+#: assets/admin.js:1123
 msgid "You can pick the value under the { } button — the real fields of this order are there too, such as the tracking code."
 msgstr ""
 
@@ -1725,11 +1725,11 @@ msgstr ""
 msgid "You do not have permission."
 msgstr ""
 
-#: assets/admin.js:2513
+#: assets/admin.js:2521
 msgid "You have unsaved changes. Updating reloads the page and they will be lost. Continue?"
 msgstr ""
 
-#: assets/admin.js:1448
+#: assets/admin.js:1456
 msgid "You will find this text under WooCommerce → Settings → Emails. It cannot be emptied there — an empty field is replaced by the default text (\"Thanks for shopping with us.\"). Here you can switch it off for good."
 msgstr ""
 
@@ -1737,39 +1737,39 @@ msgstr ""
 msgid "Your note to the order"
 msgstr ""
 
-#: includes/class-wmd-ajax.php:956
+#: includes/class-wmd-ajax.php:958
 msgid "[TEST] %s"
 msgstr ""
 
-#: assets/admin.js:1855
+#: assets/admin.js:1863
 msgid "blocks loaded — the WooCommerce text no longer goes into the email"
 msgstr ""
 
-#: assets/admin.js:1805
+#: assets/admin.js:1813
 msgid "blocks. Replace them with the current WooCommerce content?"
 msgstr ""
 
-#: assets/admin.js:1471
+#: assets/admin.js:1479
 msgid "button, upsell"
 msgstr ""
 
-#: assets/admin.js:1412
+#: assets/admin.js:1420
 msgid "design off"
 msgstr ""
 
-#: assets/admin.js:1381
+#: assets/admin.js:1389
 msgid "every"
 msgstr ""
 
-#: assets/admin.js:1470
+#: assets/admin.js:1478
 msgid "greeting, info"
 msgstr ""
 
-#: assets/admin.js:2554
+#: assets/admin.js:2562
 msgid "is available"
 msgstr ""
 
-#: assets/admin.js:1372
+#: assets/admin.js:1380
 msgid "no image"
 msgstr ""
 
@@ -1785,7 +1785,7 @@ msgstr ""
 msgid "on"
 msgstr ""
 
-#: assets/admin.js:2313
+#: assets/admin.js:2321
 msgid "only for a private repository"
 msgstr ""
 
@@ -1793,15 +1793,15 @@ msgstr ""
 msgid "sample content"
 msgstr ""
 
-#: assets/admin.js:1468
+#: assets/admin.js:1476
 msgid "the whole body"
 msgstr ""
 
-#: assets/admin.js:2309
+#: assets/admin.js:2317
 msgid "user/repository"
 msgstr ""
 
-#: assets/admin.js:2218
+#: assets/admin.js:2226
 msgid "…or paste JSON here"
 msgstr ""
 

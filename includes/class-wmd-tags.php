@@ -311,6 +311,26 @@ class WMD_Tags {
 	}
 
 	/**
+	 * Tellimuse välja väärtus tekstina.
+	 *
+	 * Tarnepluginad salvestavad oma välju vabas vormis ja mõni paneb sinna
+	 * valmis HTML-i — Montonio jälgimiskood tuleb koos `<a>` ja `<br>`-iga.
+	 * Meilis on vaja väärtust ennast: lingi ehitab plokk ise ja märgendi
+	 * väärtus võib minna ka URL-i sisse. Ilma selleta paistis kirjas terve
+	 * `<a href="…">KOOD</a>` tekstina ja lingist sai segadus.
+	 *
+	 * @param string $value Toores väärtus.
+	 * @return string
+	 */
+	public static function plain_meta( $value ) {
+		$text = preg_replace( '#<br\s*/?>#i', ' ', (string) $value );
+		$text = wp_strip_all_tags( $text );
+		$text = preg_replace( '/\s+/u', ' ', $text );
+
+		return trim( (string) $text );
+	}
+
+	/**
 	 * Kontekst päris tellimusest.
 	 *
 	 * @param WC_Order|null $order Tellimus.
@@ -425,8 +445,9 @@ class WMD_Tags {
 
 					// Võtit ei tohi väiketäheliseks teha — meta võtmed on tõstutundlikud.
 					$meta_key = trim( substr( $m[1], 5 ) );
+					$raw      = $order->get_meta( $meta_key, true );
 
-					return (string) $order->get_meta( $meta_key, true );
+					return is_scalar( $raw ) ? self::plain_meta( $raw ) : '';
 				}
 
 				return isset( $ctx[ $key ] ) && is_scalar( $ctx[ $key ] ) ? (string) $ctx[ $key ] : '';

@@ -447,7 +447,9 @@ class WMD_Ajax {
 				continue;
 			}
 
-			$value = trim( (string) $value );
+			// Täpselt sama puhastus, mille läbib päris kiri — muidu näitaks
+			// kanvas puhast koodi ja postkasti läheks HTML tekstina.
+			$value = WMD_Tags::plain_meta( $value );
 
 			if ( '' === $value ) {
 				continue;
@@ -455,7 +457,7 @@ class WMD_Ajax {
 
 			$out[] = array(
 				'key'    => (string) $data['key'],
-				'sample' => mb_substr( wp_strip_all_tags( $value ), 0, 60 ),
+				'sample' => $value,
 			);
 		}
 
