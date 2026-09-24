@@ -5,7 +5,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-24 06:29+0000\n"
+"POT-Creation-Date: 2026-09-24 16:40+0000\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: wonom-meilidisainer\n"
 
@@ -157,7 +157,7 @@ msgstr ""
 msgid "Available: "
 msgstr ""
 
-#: includes/class-wmd-render.php:1590 includes/class-wmd-tags.php:97 assets/renderer.js:632
+#: includes/class-wmd-render.php:1619 includes/class-wmd-tags.php:97 assets/renderer.js:632
 msgid "Bank transfer"
 msgstr ""
 
@@ -165,7 +165,7 @@ msgstr ""
 msgid "Between rows"
 msgstr ""
 
-#: includes/class-wmd-render.php:1608 includes/class-wmd-tags.php:26 includes/helpers.php:736 assets/renderer.js:981
+#: includes/class-wmd-render.php:1637 includes/class-wmd-tags.php:26 includes/helpers.php:736 assets/renderer.js:989
 msgid "Billing address"
 msgstr ""
 
@@ -249,7 +249,7 @@ msgstr ""
 msgid "Colour"
 msgstr ""
 
-#: includes/class-wmd-render.php:1571 assets/renderer.js:622
+#: includes/class-wmd-render.php:1600 assets/renderer.js:622
 msgid "Colour: grey"
 msgstr ""
 
@@ -285,11 +285,11 @@ msgstr ""
 msgid "Corner radius (px)"
 msgstr ""
 
-#: includes/class-wmd-render.php:1558 assets/renderer.js:621
+#: includes/class-wmd-render.php:1587 assets/renderer.js:621
 msgid "Cotton T-shirt"
 msgstr ""
 
-#: includes/class-wmd-render.php:1537 assets/renderer.js:1011
+#: includes/class-wmd-render.php:1566 assets/renderer.js:1019
 msgid "Cotton T-shirt, M"
 msgstr ""
 
@@ -313,7 +313,7 @@ msgstr ""
 msgid "County"
 msgstr ""
 
-#: includes/class-wmd-render.php:724 includes/class-wmd-render.php:1588 includes/helpers.php:1027 assets/renderer.js:630
+#: includes/class-wmd-render.php:724 includes/class-wmd-render.php:1617 includes/helpers.php:1027 assets/renderer.js:630
 msgid "Coupon code"
 msgstr ""
 
@@ -405,7 +405,7 @@ msgstr ""
 msgid "Discount"
 msgstr ""
 
-#: includes/class-wmd-render.php:1587 assets/renderer.js:629
+#: includes/class-wmd-render.php:1616 assets/renderer.js:629
 msgid "Discount:"
 msgstr ""
 
@@ -713,7 +713,7 @@ msgstr ""
 msgid "Italic"
 msgstr ""
 
-#: assets/renderer.js:855
+#: assets/renderer.js:863
 msgid "Kate Brown<br/>Market Square parcel locker<br/>10411 London"
 msgstr ""
 
@@ -837,11 +837,11 @@ msgstr ""
 msgid "Manifest address"
 msgstr ""
 
-#: assets/renderer.js:854
+#: assets/renderer.js:862
 msgid "Mary Smith<br/>12 High Street<br/>10123 London<br/>United Kingdom"
 msgstr ""
 
-#: assets/renderer.js:982
+#: assets/renderer.js:990
 msgid "Mary Smith<br>12 High Street<br>10123 London<br>United Kingdom"
 msgstr ""
 
@@ -861,7 +861,7 @@ msgstr ""
 msgid "My account link"
 msgstr ""
 
-#: includes/class-wmd-render.php:1412 assets/renderer.js:196
+#: includes/class-wmd-render.php:1421 assets/renderer.js:196
 msgid "Name"
 msgstr ""
 
@@ -945,7 +945,7 @@ msgstr ""
 msgid "Order"
 msgstr ""
 
-#: includes/class-wmd-render.php:1530 assets/renderer.js:1005
+#: includes/class-wmd-render.php:1559 assets/renderer.js:1013
 msgid "Order #1042"
 msgstr ""
 
@@ -1081,7 +1081,7 @@ msgstr ""
 msgid "Payment method name"
 msgstr ""
 
-#: includes/class-wmd-render.php:1590 assets/renderer.js:632
+#: includes/class-wmd-render.php:1619 assets/renderer.js:632
 msgid "Payment method:"
 msgstr ""
 
@@ -1117,7 +1117,7 @@ msgstr ""
 msgid "Postcode"
 msgstr ""
 
-#: includes/class-wmd-render.php:1535
+#: includes/class-wmd-render.php:1564
 msgid "Price"
 msgstr ""
 
@@ -1125,7 +1125,7 @@ msgstr ""
 msgid "Processing"
 msgstr ""
 
-#: includes/class-wmd-render.php:1533 includes/helpers.php:1004
+#: includes/class-wmd-render.php:1562 includes/helpers.php:1004
 msgid "Product"
 msgstr ""
 
@@ -1137,7 +1137,7 @@ msgstr ""
 msgid "Products (own table)"
 msgstr ""
 
-#: includes/class-wmd-render.php:1534 includes/helpers.php:1007
+#: includes/class-wmd-render.php:1563 includes/helpers.php:1007
 msgid "Quantity"
 msgstr ""
 
@@ -1257,7 +1257,7 @@ msgstr ""
 msgid "Shipping total"
 msgstr ""
 
-#: includes/class-wmd-render.php:1541 includes/class-wmd-render.php:1589 assets/renderer.js:631
+#: includes/class-wmd-render.php:1570 includes/class-wmd-render.php:1618 assets/renderer.js:631
 msgid "Shipping:"
 msgstr ""
 
@@ -1297,7 +1297,7 @@ msgstr ""
 msgid "Size (px)"
 msgstr ""
 
-#: includes/class-wmd-render.php:1561 assets/renderer.js:621
+#: includes/class-wmd-render.php:1590 assets/renderer.js:621
 msgid "Size: M"
 msgstr ""
 
@@ -1341,7 +1341,7 @@ msgstr ""
 msgid "Subtotal"
 msgstr ""
 
-#: includes/class-wmd-render.php:1540 includes/class-wmd-render.php:1586 assets/renderer.js:628
+#: includes/class-wmd-render.php:1569 includes/class-wmd-render.php:1615 assets/renderer.js:628
 msgid "Subtotal:"
 msgstr ""
 
@@ -1353,7 +1353,7 @@ msgstr ""
 msgid "System (recommended)"
 msgstr ""
 
-#: assets/renderer.js:1042
+#: assets/renderer.js:1050
 msgid "Take over"
 msgstr ""
 
@@ -1517,7 +1517,7 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
-#: includes/class-wmd-render.php:1542 includes/class-wmd-render.php:1591 assets/renderer.js:633
+#: includes/class-wmd-render.php:1571 includes/class-wmd-render.php:1620 assets/renderer.js:633
 msgid "Total:"
 msgstr ""
 
@@ -1689,7 +1689,7 @@ msgstr ""
 msgid "WooCommerce content could not be turned into blocks"
 msgstr ""
 
-#: assets/renderer.js:1040
+#: assets/renderer.js:1048
 msgid "WooCommerce content — you cannot edit this here"
 msgstr ""
 
@@ -1697,7 +1697,7 @@ msgstr ""
 msgid "WooCommerce is not active."
 msgstr ""
 
-#: includes/class-wmd-render.php:1538 includes/class-wmd-render.php:1568 assets/renderer.js:622 assets/renderer.js:1012
+#: includes/class-wmd-render.php:1567 includes/class-wmd-render.php:1597 assets/renderer.js:622 assets/renderer.js:1020
 msgid "Wool scarf"
 msgstr ""
 

@@ -756,7 +756,10 @@ class WMD_Render {
 		$grid   = 'grid' === $p['lines'];
 		$cell   = 'padding:10px 8px;font-family:' . $f . ';font-size:' . $fs . 'px;line-height:1.5;vertical-align:top;';
 
-		$out = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;">';
+		// Klassid ja data-label on telefoni jaoks: email_css() meediapäring
+		// virnastab kitsal ekraanil read (pilt + nimi kogu laiuses, kood/tk/
+		// summa nende all) ja paneb detailide ette veeru sildi.
+		$out = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="wmd-items" style="width:100%;border-collapse:collapse;">';
 
 		if ( ! empty( $p['header'] ) ) {
 			$out .= '<thead><tr>';
@@ -788,7 +791,13 @@ class WMD_Render {
 					$style .= $grid ? 'border:' . $border . ';' : 'border-bottom:' . $border . ';';
 				}
 
-				$out .= '<td style="' . esc_attr( $style ) . '">' . self::item_cell( $key, $row, $p, $brand ) . '</td>';
+				$attrs = 'class="wmd-c-' . esc_attr( $key ) . '"';
+
+				if ( in_array( $key, array( 'sku', 'meta', 'qty', 'unit' ), true ) ) {
+					$attrs .= ' data-label="' . esc_attr( wp_strip_all_tags( $col['label'] ) ) . '"';
+				}
+
+				$out .= '<td ' . $attrs . ' style="' . esc_attr( $style ) . '">' . self::item_cell( $key, $row, $p, $brand ) . '</td>';
 			}
 
 			$out .= '</tr>';
@@ -1486,6 +1495,26 @@ class WMD_Render {
 @media only screen and (max-width: 480px) {
 	.wmd-cards tr { display: block !important; }
 	.wmd-cardcell { display: inline-block !important; width: 50% !important; padding: 0 0 12px 0 !important; box-sizing: border-box !important; }
+}
+/*
+ * Toodete tabel telefonis: viis veergu ei mahu 360 px peale ära, eriti kui
+ * klient on teksti suurendanud — tootenimi murdus keset sõna. Kitsal ekraanil
+ * läheb iga toode virna: pilt ja nimi kogu laiuses, kood/tk/summa nende all.
+ * !important on vajalik, sest WooCommerce kirjutab lauastiilid elementidele
+ * sisse ja meediapäring peab need üle lööma. Kliendid, mis <style> plokki ei
+ * loe, jäävad tavalise tabeli juurde.
+ */
+@media only screen and (max-width: 480px) {
+	.wmd-items thead { display: none !important; }
+	.wmd-items, .wmd-items tbody, .wmd-items tr, .wmd-items td { display: block !important; width: auto !important; box-sizing: border-box !important; }
+	.wmd-items tr { overflow: hidden !important; padding: 12px 0 12px 68px !important; border-bottom: 1px solid ' . $brand['border_color'] . ' !important; }
+	.wmd-items td { border: 0 !important; padding: 0 !important; text-align: left !important; }
+	.wmd-items td.wmd-c-image { float: left !important; width: 56px !important; margin-left: -68px !important; }
+	.wmd-items td.wmd-c-image img, .wmd-items td.wmd-c-image div { width: 56px !important; height: auto !important; }
+	.wmd-items td.wmd-c-name { padding-bottom: 4px !important; }
+	.wmd-items td.wmd-c-sku, .wmd-items td.wmd-c-meta, .wmd-items td.wmd-c-qty, .wmd-items td.wmd-c-unit { display: inline-block !important; margin: 2px 12px 0 0 !important; font-size: 13px !important; color: ' . $brand['muted_color'] . ' !important; }
+	.wmd-items td.wmd-c-sku::before, .wmd-items td.wmd-c-meta::before, .wmd-items td.wmd-c-qty::before, .wmd-items td.wmd-c-unit::before { content: attr(data-label) ": "; }
+	.wmd-items td.wmd-c-total { float: right !important; margin-top: 2px !important; font-weight: 700 !important; }
 }
 ';
 

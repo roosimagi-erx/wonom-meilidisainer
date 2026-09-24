@@ -650,7 +650,9 @@
 		var border = p.lines === 'none' ? '' : '1px solid ' + brand.border_color;
 		var grid = p.lines === 'grid';
 		var cell = 'padding:10px 8px;font-family:' + f + ';font-size:' + fs + 'px;line-height:1.5;vertical-align:top;';
-		var out = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;">';
+		// Sama märgistus mis PHP pool: klassid ja data-label on telefoni
+		// meediapäringu jaoks (vt full() css ja WMD_Render::email_css).
+		var out = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="wmd-items" style="width:100%;border-collapse:collapse;">';
 
 		if ( p.header ) {
 			out += '<thead><tr>';
@@ -676,7 +678,13 @@
 				if ( border ) {
 					s += grid ? 'border:' + border + ';' : 'border-bottom:' + border + ';';
 				}
-				out += '<td style="' + escAttr( s ) + '">' + itemCell( c.key, row, p, brand ) + '</td>';
+				var attrs = 'class="wmd-c-' + escAttr( c.key ) + '"';
+
+				if ( [ 'sku', 'meta', 'qty', 'unit' ].indexOf( c.key ) !== -1 ) {
+					attrs += ' data-label="' + escAttr( String( c.label ).replace( /<[^>]*>/g, '' ) ) + '"';
+				}
+
+				out += '<td ' + attrs + ' style="' + escAttr( s ) + '">' + itemCell( c.key, row, p, brand ) + '</td>';
 			} );
 			out += '</tr>';
 		} );
@@ -1064,6 +1072,20 @@
 			'@media only screen and (max-width:620px){' +
 			'.wmd-card{width:100% !important;}' +
 			'.wmd-col{display:block !important;width:100% !important;padding:0 0 12px 0 !important;}' +
+			'}' +
+			// Toodete tabel virna, sama reegel mis WMD_Render::email_css. Siin ka
+			// seepärast, et kanvas oleks õige juba enne, kui serveri CSS kohale jõuab.
+			'@media only screen and (max-width:480px){' +
+			'.wmd-items thead{display:none !important;}' +
+			'.wmd-items,.wmd-items tbody,.wmd-items tr,.wmd-items td{display:block !important;width:auto !important;box-sizing:border-box !important;}' +
+			'.wmd-items tr{overflow:hidden !important;padding:12px 0 12px 68px !important;border-bottom:1px solid ' + brand.border_color + ' !important;}' +
+			'.wmd-items td{border:0 !important;padding:0 !important;text-align:left !important;}' +
+			'.wmd-items td.wmd-c-image{float:left !important;width:56px !important;margin-left:-68px !important;}' +
+			'.wmd-items td.wmd-c-image img,.wmd-items td.wmd-c-image div{width:56px !important;height:auto !important;}' +
+			'.wmd-items td.wmd-c-name{padding-bottom:4px !important;}' +
+			'.wmd-items td.wmd-c-sku,.wmd-items td.wmd-c-meta,.wmd-items td.wmd-c-qty,.wmd-items td.wmd-c-unit{display:inline-block !important;margin:2px 12px 0 0 !important;font-size:13px !important;color:' + brand.muted_color + ' !important;}' +
+			'.wmd-items td.wmd-c-sku::before,.wmd-items td.wmd-c-meta::before,.wmd-items td.wmd-c-qty::before,.wmd-items td.wmd-c-unit::before{content:attr(data-label) ": ";}' +
+			'.wmd-items td.wmd-c-total{float:right !important;margin-top:2px !important;font-weight:700 !important;}' +
 			'}' +
 			( brand.custom_css || '' );
 

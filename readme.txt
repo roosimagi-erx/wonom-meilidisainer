@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.11
+Stable tag: 1.0.12
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.12 =
+* **The products table stacks on phones.** Five columns never fit a 360 px screen, and once the customer has enlarged the text the product name was left with 60 px and broke in the middle of words. On narrow screens each product now becomes a card: the image and the name take the full width, and the code, quantity and line total sit underneath, each with its label. On a computer the table is exactly as before.
+* This uses a media query in the email, so it works wherever the mail client reads the `<style>` block — Apple Mail, iPhone and iPad, the Gmail app with a Google account, Outlook for iOS and Android, Samsung Mail. Clients that do not read it show the old table.
 
 = 1.0.11 =
 * **Fix: a tracking link came out as raw markup in the email.** Montonio stores the tracking code as a finished piece of HTML, not as a bare code, and the email printed the whole `<a href="…">CODE</a>` as visible text — while the preview showed a clean link, because the preview was already stripping it. Order fields are now read as plain text everywhere, so the code goes into the link and only the code is shown.
