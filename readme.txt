@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.12
+Stable tag: 1.0.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.13 =
+* **Fix: on iPhone, a product's code, quantity and price could turn into blue underlined links.** Not the plugin's links — iOS Mail adds its own to anything that looks like a date, a phone number or a flight number ("Tk: 1" reads as flight TK1 to it), and it did so on the product rows. In the products and totals tables those automatic links now look like ordinary text. The phone number and email under the address keep theirs: tapping to call is useful there.
 
 = 1.0.12 =
 * **The products table stacks on phones.** Five columns never fit a 360 px screen, and once the customer has enlarged the text the product name was left with 60 px and broke in the middle of words. On narrow screens each product now becomes a card: the image and the name take the full width, and the code, quantity and line total sit underneath, each with its label. On a computer the table is exactly as before.

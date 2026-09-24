@@ -1176,7 +1176,7 @@ class WMD_Render {
 		$width  = 'full' === $p['align'] ? '100%' : '60%';
 		$table  = 'right' === $p['align'] ? 'width:' . $width . ';margin-left:auto;' : 'width:100%;';
 
-		$out = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="' . esc_attr( $table ) . 'border-collapse:collapse;">';
+		$out = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" class="wmd-totals" style="' . esc_attr( $table ) . 'border-collapse:collapse;">';
 
 		foreach ( $rows as $row ) {
 			$key = $row['key'];
@@ -1495,6 +1495,19 @@ class WMD_Render {
 @media only screen and (max-width: 480px) {
 	.wmd-cards tr { display: block !important; }
 	.wmd-cardcell { display: inline-block !important; width: 50% !important; padding: 0 0 12px 0 !important; box-sizing: border-box !important; }
+}
+/*
+ * iOS Mail teeb numbritest ise linke: kuupäevad, telefonid, aadressid, isegi
+ * lennunumbrid („Tk: 1" loeb ta lennuks TK1). Toodete ja kokkuvõtte tabelis
+ * paistavad need siniste allajoonitud linkidena, mida keegi ei tellinud.
+ * Apple mähib need <a x-apple-data-detectors> sisse — anname neile tavalise
+ * teksti välimuse. Aadressi telefoni ja e-posti see ei puuduta: seal on
+ * puudutatav link kasulik. @media on kohustuslik: ilma selleta viskaks
+ * WooCommerce inliner reegli minema, sest see ei sobitu ühegi elemendiga
+ * enne, kui iOS need lingid ise sisse paneb.
+ */
+@media screen {
+	.wmd-items a[x-apple-data-detectors], .wmd-totals a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; font-size: inherit !important; font-family: inherit !important; font-weight: inherit !important; line-height: inherit !important; }
 }
 /*
  * Toodete tabel telefonis: viis veergu ei mahu 360 px peale ära, eriti kui

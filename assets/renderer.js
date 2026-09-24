@@ -769,7 +769,7 @@
 		var fs = num( brand.base_size, 15 );
 		var border = p.lines === 'none' ? '' : '1px solid ' + brand.border_color;
 		var table = p.align === 'right' ? 'width:60%;margin-left:auto;' : 'width:100%;';
-		var out = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="' + escAttr( table ) + 'border-collapse:collapse;">';
+		var out = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" class="wmd-totals" style="' + escAttr( table ) + 'border-collapse:collapse;">';
 
 		rows.forEach( function ( row ) {
 			var w = wanted[ row.key ];
@@ -1072,6 +1072,12 @@
 			'@media only screen and (max-width:620px){' +
 			'.wmd-card{width:100% !important;}' +
 			'.wmd-col{display:block !important;width:100% !important;padding:0 0 12px 0 !important;}' +
+			'}' +
+			// iOS Maili automaatlingid tabelites tavalise teksti moodi — sama
+			// reegel mis WMD_Render::email_css. Kanvasel neid linke ei teki, aga
+			// CSS on siin paarilisuse pärast.
+			'@media screen{' +
+			'.wmd-items a[x-apple-data-detectors],.wmd-totals a[x-apple-data-detectors]{color:inherit !important;text-decoration:none !important;font-size:inherit !important;font-family:inherit !important;font-weight:inherit !important;line-height:inherit !important;}' +
 			'}' +
 			// Toodete tabel virna, sama reegel mis WMD_Render::email_css. Siin ka
 			// seepärast, et kanvas oleks õige juba enne, kui serveri CSS kohale jõuab.
