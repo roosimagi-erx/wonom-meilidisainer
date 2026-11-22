@@ -13,9 +13,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$wmd_email    = WMD_Emails::current();
-$wmd_email_id = WMD_Emails::current_id();
-$wmd_ctx      = WMD_Emails::context_for( $wmd_email );
+$wmd_email = WMD_Emails::current();
 
+// Koostamine käib läbi turvavõrgu, vt email-header.php ja WMD_Emails::guard.
 // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML koostatakse WMD_Render sees.
-echo WMD_Render::footer_html( $wmd_email_id, $wmd_ctx );
+echo WMD_Emails::guard(
+	'footer',
+	$wmd_email,
+	static function () use ( $wmd_email ) {
+		$wmd_email_id = WMD_Emails::current_id();
+		$wmd_ctx      = WMD_Emails::context_for( $wmd_email );
+
+		return WMD_Render::footer_html( $wmd_email_id, $wmd_ctx );
+	}
+);

@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.13
+Stable tag: 1.0.14
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,11 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.14 =
+* **Safety net for sending.** If building an email with the design ever fails — a broken block, a clash with another plugin — the email now goes out with WooCommerce's own default template instead, and the error is written to the log (WooCommerce → Status → Logs, source `wonom-meilidisainer`). Before, such an error could stop the request that was changing the order's status. An email that builds correctly is byte for byte the same as in 1.0.13; the safety net only acts when something goes wrong.
+* **"Check for updates now" checks this plugin only.** It used to throw away WordPress's whole list of available updates, which made WordPress ask every plugin and theme for updates again on the next admin page. Saving the update settings and installing an update from the designer no longer do that either.
+* **The preview sends one request at a time.** Clicking quickly through emails, orders or languages used to leave a request running for each of them. A new request now cancels the one before it. If the server has not answered in 10 seconds, the canvas says so and shows sample content; it tries again once you keep working, at the earliest 30 seconds later.
 
 = 1.0.13 =
 * **Fix: on iPhone, a product's code, quantity and price could turn into blue underlined links.** Not the plugin's links — iOS Mail adds its own to anything that looks like a date, a phone number or a flight number ("Tk: 1" reads as flight TK1 to it), and it did so on the product rows. In the products and totals tables those automatic links now look like ordinary text. The phone number and email under the address keep theirs: tapping to call is useful there.

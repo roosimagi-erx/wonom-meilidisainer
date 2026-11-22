@@ -5,32 +5,32 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-24 16:58+0000\n"
+"POT-Creation-Date: 2026-11-22 12:35+0000\n"
 "Language: et\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: wonom-meilidisainer\n"
 
-#: assets/admin.js:2298
+#: assets/admin.js:2365
 msgid " (installed "
 msgstr " (paigaldatud "
 
-#: assets/admin.js:2221
+#: assets/admin.js:2288
 msgid " Pick a file or paste JSON."
 msgstr " Vali fail või kleebi JSON."
 
-#: assets/admin.js:1389
+#: assets/admin.js:1456
 msgid " WooCommerce email. Set them once and you are done."
 msgstr " WooCommerce'i meilidele. Sea üks kord ja oledki valmis."
 
-#: assets/admin.js:2155
+#: assets/admin.js:2222
 msgid " brings them into the email — it always shows the text for that order's payment method. For a payment method left empty the block simply does not appear."
 msgstr " — see näitab alati selle tellimuse makseviisi teksti. Tühjaks jäetud makseviisi puhul plokk lihtsalt ei ilmu."
 
-#: assets/admin.js:2155
+#: assets/admin.js:2222
 msgid "\"Payment instructions (own text)\""
 msgstr "„Makseviisi juhised (oma tekst)\""
 
-#: assets/admin.js:2014
+#: assets/admin.js:2081
 msgid "%d texts translated — read them over and fix what needs fixing."
 msgstr "%d teksti tõlgitud — loe üle ja paranda, mis vajab."
 
@@ -38,23 +38,23 @@ msgstr "%d teksti tõlgitud — loe üle ja paranda, mis vajab."
 msgid "(no note)"
 msgstr "(märkust ei ole)"
 
-#: assets/admin.js:3754
+#: assets/admin.js:3822
 msgid "). Check the server error log."
 msgstr "). Vaata serveri vealogi."
 
-#: assets/admin.js:1181
+#: assets/admin.js:1248
 msgid "+ Add image"
 msgstr "+ Lisa pilt"
 
-#: assets/admin.js:1122
+#: assets/admin.js:1189
 msgid "+ Add row"
 msgstr "+ Lisa rida"
 
-#: assets/admin.js:761
+#: assets/admin.js:768
 msgid ", not the real text"
 msgstr ", mitte päris tekst"
 
-#: assets/admin.js:2296
+#: assets/admin.js:2363
 msgid ", source "
 msgstr ", allikas "
 
@@ -78,11 +78,11 @@ msgstr "<strong>Tarneaeg</strong><br>1–3 tööpäeva"
 msgid "<strong>Questions?</strong><br>Just write to us."
 msgstr "<strong>Küsimused?</strong><br>Kirjuta meile julgelt."
 
-#: assets/admin.js:1169
+#: assets/admin.js:1236
 msgid "A click adds the category to the next empty slot."
 msgstr "Klõps lisab kategooria järgmisse tühja kohta."
 
-#: assets/admin.js:2065
+#: assets/admin.js:2132
 msgid "A click copies the variable — you can paste it into any field, including the \"Custom HTML\" block or the extra CSS."
 msgstr "Klõps kopeerib muutuja — saad selle kleepida ükskõik millisesse välja, ka „Oma HTML\" plokki või lisa-CSS-i."
 
@@ -90,7 +90,7 @@ msgstr "Klõps kopeerib muutuja — saad selle kleepida ükskõik millisesse vä
 msgid "Accent colour (links)"
 msgstr "Aktsentvärv (lingid)"
 
-#: assets/admin.js:2320
+#: assets/admin.js:2387
 msgid "Access token"
 msgstr "Juurdepääsuvõti"
 
@@ -126,15 +126,15 @@ msgstr "Alt-tekst"
 msgid "Always"
 msgstr "Alati"
 
-#: assets/admin.js:384
+#: assets/admin.js:391
 msgid "Anything you have not translated still comes from %s."
 msgstr "Kõik, mida sa tõlkinud ei ole, tuleb endiselt %s keelest."
 
-#: includes/helpers.php:1144 assets/admin.js:1460
+#: includes/helpers.php:1144 assets/admin.js:1527
 msgid "Around WooCommerce content"
 msgstr "WooCommerce'i sisu ümber"
 
-#: assets/admin.js:2248
+#: assets/admin.js:2315
 msgid "Automatic translation"
 msgstr "Automaatne tõlge"
 
@@ -142,19 +142,19 @@ msgstr "Automaatne tõlge"
 msgid "Automatic translation is not set up. Add a DeepL key under Settings."
 msgstr "Automaatne tõlge ei ole seadistatud. Lisa DeepL-i võti Seaded alt."
 
-#: assets/admin.js:2043
+#: assets/admin.js:2110
 msgid "Automatic translation is not set up. You can add a DeepL key under Settings — the free tier is plenty for email templates."
 msgstr "Automaatne tõlge ei ole seadistatud. DeepL-i võtme saad lisada Seaded alt — tasuta tasemest jagub meilimallide jaoks küll."
 
-#: assets/admin.js:2305
+#: assets/admin.js:2372
 msgid "Automatic updates"
 msgstr "Automaatsed uuendused"
 
-#: assets/admin.js:2292
+#: assets/admin.js:2359
 msgid "Automatic updates are switched off."
 msgstr "Automaatsed uuendused on välja lülitatud."
 
-#: assets/admin.js:2298
+#: assets/admin.js:2365
 msgid "Available: "
 msgstr "Saadaval on "
 
@@ -182,15 +182,15 @@ msgstr "Ainult arveaadress"
 msgid "Billing and shipping address"
 msgstr "Arve- ja tarneaadress"
 
-#: assets/admin.js:1233 assets/admin.js:2165
+#: assets/admin.js:1300 assets/admin.js:2232
 msgid "Bold"
 msgstr "Rasvane"
 
-#: assets/admin.js:2621
+#: assets/admin.js:2688
 msgid "Brand"
 msgstr "Bränd"
 
-#: includes/helpers.php:1145 assets/admin.js:1461
+#: includes/helpers.php:1145 assets/admin.js:1528
 msgid "Build the whole email"
 msgstr "Terve meil ise"
 
@@ -218,23 +218,23 @@ msgstr "Nupud"
 msgid "Cancelled order (to shop)"
 msgstr "Tühistatud tellimus (poele)"
 
-#: assets/admin.js:1148 assets/admin.js:1293
+#: assets/admin.js:1215 assets/admin.js:1360
 msgid "Change"
 msgstr "Vaheta"
 
-#: assets/admin.js:2329 assets/admin.js:2567
+#: assets/admin.js:2396 assets/admin.js:2634
 msgid "Check now"
 msgstr "Kontrolli kohe"
 
-#: assets/admin.js:2554
+#: assets/admin.js:2621
 msgid "Checking…"
 msgstr "Kontrollin…"
 
-#: assets/admin.js:2223
+#: assets/admin.js:2290
 msgid "Choose a file…"
 msgstr "Vali fail…"
 
-#: assets/admin.js:1148 assets/admin.js:1293 assets/admin.js:3672
+#: assets/admin.js:1215 assets/admin.js:1360 assets/admin.js:3739
 msgid "Choose image"
 msgstr "Vali pilt"
 
@@ -242,7 +242,7 @@ msgstr "Vali pilt"
 msgid "City"
 msgstr "Linn"
 
-#: assets/admin.js:2580
+#: assets/admin.js:2647
 msgid "Click a block in the preview, or pick one from the list on the left, to make its settings appear here."
 msgstr "Klõpsa eelvaates mõnel plokil või vali see vasakust nimekirjast, et selle seaded siia ilmuksid."
 
@@ -266,19 +266,19 @@ msgstr "Veerud"
 msgid "Company"
 msgstr "Ettevõte"
 
-#: assets/admin.js:1479
+#: assets/admin.js:1546
 msgid "Content after the order table"
 msgstr "Sisu pärast tellimuse tabelit"
 
-#: assets/admin.js:1478
+#: assets/admin.js:1545
 msgid "Content before the order table"
 msgstr "Sisu enne tellimuse tabelit"
 
-#: assets/admin.js:2114
+#: assets/admin.js:2181
 msgid "Copied: "
 msgstr "Kopeeritud: "
 
-#: assets/admin.js:2133
+#: assets/admin.js:2200
 msgid "Copying failed"
 msgstr "Kopeerimine ei õnnestunud"
 
@@ -294,15 +294,15 @@ msgstr "Puuvillane T-särk"
 msgid "Cotton T-shirt, M"
 msgstr "Puuvillane T-särk, M"
 
-#: assets/admin.js:803
+#: assets/admin.js:869
 msgid "Could not fetch the WooCommerce content."
 msgstr "Ei saanud WooCommerce'i sisu kätte."
 
-#: assets/admin.js:2294
+#: assets/admin.js:2361
 msgid "Could not get a version from the source. Check the repository name, the release and the token."
 msgstr "Allikast ei saanud versiooni kätte. Kontrolli hoidla nime, väljalaset ja võtit."
 
-#: assets/admin.js:1841
+#: assets/admin.js:1908
 msgid "Could not get the WooCommerce content — starting from the default blocks"
 msgstr "WooCommerce'i sisu ei saanud — alustame vaikeplokkidest"
 
@@ -354,7 +354,7 @@ msgstr "Maksmise kuupäev"
 msgid "DeepL asked us to slow down. Try again in a moment."
 msgstr "DeepL palus aeglasemalt. Proovi hetke pärast uuesti."
 
-#: assets/admin.js:2258
+#: assets/admin.js:2325
 msgid "DeepL key"
 msgstr "DeepL-i võti"
 
@@ -362,15 +362,15 @@ msgstr "DeepL-i võti"
 msgid "DeepL refused the key. Check that you copied it whole."
 msgstr "DeepL ei võtnud võtit vastu. Kontrolli, kas kopeerisid selle tervikuna."
 
-#: assets/admin.js:1156 assets/admin.js:1345 assets/admin.js:2611
+#: assets/admin.js:1223 assets/admin.js:1412 assets/admin.js:2678
 msgid "Delete"
 msgstr "Kustuta"
 
-#: assets/admin.js:1110
+#: assets/admin.js:1177
 msgid "Delete row"
 msgstr "Kustuta rida"
 
-#: assets/admin.js:3357
+#: assets/admin.js:3424
 msgid "Delete this block?"
 msgstr "Kustutan selle ploki?"
 
@@ -382,7 +382,7 @@ msgstr "Näidispood"
 msgid "Design"
 msgstr "Kujunda"
 
-#: assets/admin.js:2408
+#: assets/admin.js:2475
 msgid "Design downloaded"
 msgstr "Kujundus laaditi alla"
 
@@ -390,15 +390,15 @@ msgstr "Kujundus laaditi alla"
 msgid "Design emails"
 msgstr "Kujunda meilid"
 
-#: assets/admin.js:2384
+#: assets/admin.js:2451
 msgid "Design imported"
 msgstr "Kujundus imporditud"
 
-#: assets/admin.js:2274
+#: assets/admin.js:2341
 msgid "Design in use"
 msgstr "Kujunduse kasutamine"
 
-#: assets/admin.js:2690
+#: assets/admin.js:2757
 msgid "Desktop"
 msgstr "Arvuti"
 
@@ -422,23 +422,23 @@ msgstr "Joon"
 msgid "Do not show"
 msgstr "Ära näita"
 
-#: assets/admin.js:1085 assets/admin.js:1109 assets/admin.js:1343
+#: assets/admin.js:1152 assets/admin.js:1176 assets/admin.js:1410
 msgid "Down"
 msgstr "Alla"
 
-#: assets/admin.js:2212
+#: assets/admin.js:2279
 msgid "Download the design"
 msgstr "Laadi kujundus alla"
 
-#: assets/admin.js:1344
+#: assets/admin.js:1411
 msgid "Duplicate"
 msgstr "Kopeeri"
 
-#: assets/admin.js:2610
+#: assets/admin.js:2677
 msgid "Duplicate block"
 msgstr "Kopeeri plokk"
 
-#: includes/class-wmd-tags.php:67 includes/class-wmd-tags.php:80 assets/admin.js:1437
+#: includes/class-wmd-tags.php:67 includes/class-wmd-tags.php:80 assets/admin.js:1504
 msgid "Email"
 msgstr "Meil"
 
@@ -450,11 +450,11 @@ msgstr "Meilidisainer"
 msgid "Email background"
 msgstr "Meili taust"
 
-#: assets/admin.js:1476 assets/admin.js:2624
+#: assets/admin.js:1543 assets/admin.js:2691
 msgid "Email content"
 msgstr "Kirja sisu"
 
-#: assets/admin.js:2703
+#: assets/admin.js:2770
 msgid "Email preview"
 msgstr "Meili eelvaade"
 
@@ -462,19 +462,19 @@ msgstr "Meili eelvaade"
 msgid "Email width (px)"
 msgstr "Meili laius (px)"
 
-#: assets/admin.js:2064
+#: assets/admin.js:2131
 msgid "Every variable you can use in the email."
 msgstr "Kõik muutujad, mida kirjas kasutada saab."
 
-#: assets/admin.js:2562
+#: assets/admin.js:2629
 msgid "Everything is up to date"
 msgstr "Kõik on värske"
 
-#: assets/admin.js:2296
+#: assets/admin.js:2363
 msgid "Everything is up to date — installed "
 msgstr "Kõik on värske — paigaldatud "
 
-#: assets/admin.js:2208
+#: assets/admin.js:2275
 msgid "Export and import the design"
 msgstr "Kujunduse eksport ja import"
 
@@ -490,15 +490,15 @@ msgstr "Ebaõnnestunud tellimus (poele)"
 msgid "Field key on the order"
 msgstr "Välja võti tellimusel"
 
-#: assets/admin.js:987
+#: assets/admin.js:1054
 msgid "Fields on this order"
 msgstr "Selle tellimuse väljad"
 
-#: assets/admin.js:2250
+#: assets/admin.js:2317
 msgid "Fills another language from the default one, so you only have to correct it instead of writing everything twice. DeepL is used because it is the only service that leaves {{variables}} untouched — without that the emails would break. The free tier gives 500,000 characters a month, which is far more than email templates need."
 msgstr "Täidab teise keele vaikekeele pealt, nii et sa pead ainult parandama, mitte kõike kaks korda kirjutama. DeepL on valitud sellepärast, et ta ainsana jätab {{muutujad}} puutumata — ilma selleta läheksid kirjad katki. Tasuta tase annab 500 000 tähemärki kuus, mis on meilimallide jaoks kordades rohkem kui vaja."
 
-#: assets/admin.js:2050
+#: assets/admin.js:2117
 msgid "Fills this language from the default one with a machine translation, which you then correct. Variables and links are left alone."
 msgstr "Täidab selle keele vaikekeele pealt masintõlkega, mille sa siis üle parandad. Muutujad ja lingid jäävad puutumata."
 
@@ -514,15 +514,15 @@ msgstr "Eesnimi"
 msgid "Font"
 msgstr "Kirjatüüp"
 
-#: assets/admin.js:2623
+#: assets/admin.js:2690
 msgid "Footer"
 msgstr "Jalus"
 
-#: assets/admin.js:2172
+#: assets/admin.js:2239
 msgid "For example: please transfer the amount from your bank straight to our account…"
 msgstr "Nt: Palun tee ülekanne oma pangast otse meie kontole…"
 
-#: assets/admin.js:1263 assets/admin.js:1264
+#: assets/admin.js:1330 assets/admin.js:1331
 msgid "From brand"
 msgstr "Brändist"
 
@@ -546,15 +546,15 @@ msgstr "Vahe ikoonide vahel (px)"
 msgid "Gap between images (px)"
 msgstr "Vahe piltide vahel (px)"
 
-#: assets/admin.js:2260
+#: assets/admin.js:2327
 msgid "Get one free at deepl.com/pro-api — choose the free plan. A free key ends with :fx."
 msgstr "Tasuta võtme saad aadressilt deepl.com/pro-api — vali tasuta pakett. Tasuta võti lõpeb :fx."
 
-#: assets/admin.js:2311
+#: assets/admin.js:2378
 msgid "GitHub release"
 msgstr "GitHubi väljalase"
 
-#: assets/admin.js:2316
+#: assets/admin.js:2383
 msgid "GitHub repository"
 msgstr "GitHubi hoidla"
 
@@ -566,7 +566,7 @@ msgstr "Lõppsumma rasvaselt"
 msgid "HTML"
 msgstr "HTML"
 
-#: assets/admin.js:2622
+#: assets/admin.js:2689
 msgid "Header"
 msgstr "Päis"
 
@@ -594,7 +594,7 @@ msgstr "Tere {{customer_first_name}}! Saime su tellimuse <strong>#{{order_number
 msgid "Hi {{customer_first_name}}! We have received your order <strong>#{{order_number}}</strong> and are getting it ready. We will let you know when it ships."
 msgstr "Tere {{customer_first_name}}! Saime su tellimuse <strong>#{{order_number}}</strong> kätte ja asume seda komplekteerima. Anname teada, kui pakk teele läheb."
 
-#: assets/admin.js:1182
+#: assets/admin.js:1249
 msgid "Hide categories"
 msgstr "Peida kategooriad"
 
@@ -614,7 +614,7 @@ msgstr "Peida, kui märkust pole"
 msgid "How many per row"
 msgstr "Mitu ühes reas"
 
-#: assets/admin.js:1458
+#: assets/admin.js:1525
 msgid "How the email is put together"
 msgstr "Kuidas meil kokku pannakse"
 
@@ -626,11 +626,11 @@ msgstr "Ikooni suurus (px)"
 msgid "Image"
 msgstr "Pilt"
 
-#: assets/admin.js:3662
+#: assets/admin.js:3729
 msgid "Image address"
 msgstr "Pildi aadress"
 
-#: assets/admin.js:1159
+#: assets/admin.js:1226
 msgid "Image address https://…"
 msgstr "Pildi aadress https://…"
 
@@ -658,19 +658,19 @@ msgstr "Pildid lõigatakse keskelt ühesuuruseks, et rida oleks sirge. „Origin
 msgid "Images side by side"
 msgstr "Pildid kõrvuti"
 
-#: assets/admin.js:2386
+#: assets/admin.js:2453
 msgid "Import failed"
 msgstr "Import ebaõnnestus"
 
-#: assets/admin.js:2228
+#: assets/admin.js:2295
 msgid "Import the pasted JSON"
 msgstr "Impordi kleebitud JSON"
 
-#: assets/admin.js:2373
+#: assets/admin.js:2440
 msgid "Importing overwrites the whole current design — brand, header, footer, every email and the payment instructions. Continue?"
 msgstr "Import kirjutab kogu praeguse kujunduse üle — bränd, päis, jalus, kõik meilid ja makseviiside juhised. Jätkan?"
 
-#: assets/admin.js:2221
+#: assets/admin.js:2288
 msgid "Importing overwrites the whole current design."
 msgstr "Import kirjutab kogu praeguse kujunduse üle."
 
@@ -682,19 +682,19 @@ msgstr "Raamitud kastis"
 msgid "Inner padding (px)"
 msgstr "Sisemine veeris (px)"
 
-#: assets/admin.js:1004
+#: assets/admin.js:1071
 msgid "Insert a variable"
 msgstr "Lisa muutuja"
 
-#: includes/class-wmd-updater.php:594
+#: includes/class-wmd-updater.php:657
 msgid "Installed version %s."
 msgstr "Paigaldatud versioon %s."
 
-#: assets/admin.js:2526
+#: assets/admin.js:2593
 msgid "Installing…"
 msgstr "Paigaldan…"
 
-#: assets/admin.js:2338
+#: assets/admin.js:2405
 msgid "Installs the new version right here. The page reloads afterwards; save any unsaved changes first."
 msgstr "Paigaldab uue versiooni siinsamas. Leht laaditakse pärast uuesti; salvestamata muudatused salvesta enne ära."
 
@@ -710,7 +710,7 @@ msgstr "Vigane e-posti aadress."
 msgid "Invoice / pending payment"
 msgstr "Arve / makseootel tellimus"
 
-#: assets/admin.js:1234 assets/admin.js:2166
+#: assets/admin.js:1301 assets/admin.js:2233
 msgid "Italic"
 msgstr "Kaldkiri"
 
@@ -718,7 +718,7 @@ msgstr "Kaldkiri"
 msgid "Kate Brown<br/>Market Square parcel locker<br/>10411 London"
 msgstr "Kati Kask<br/>Tallinna Balti Jaama Turg<br/>10411 Tallinn"
 
-#: includes/helpers.php:970 assets/admin.js:1106
+#: includes/helpers.php:970 assets/admin.js:1173
 msgid "Label"
 msgstr "Silt"
 
@@ -730,7 +730,7 @@ msgstr "Lamav (4:3)"
 msgid "Large"
 msgstr "Suur"
 
-#: assets/admin.js:1449
+#: assets/admin.js:1516
 msgid "Large heading in the email"
 msgstr "Suur pealkiri meilis"
 
@@ -738,7 +738,7 @@ msgstr "Suur pealkiri meilis"
 msgid "Last name"
 msgstr "Perenimi"
 
-#: assets/admin.js:2674
+#: assets/admin.js:2741
 msgid "Latest order in the shop"
 msgstr "Poe viimane tellimus"
 
@@ -746,7 +746,7 @@ msgstr "Poe viimane tellimus"
 msgid "Layout"
 msgstr "Paigutus"
 
-#: assets/admin.js:1154
+#: assets/admin.js:1221
 msgid "Left"
 msgstr "Vasakule"
 
@@ -754,7 +754,7 @@ msgstr "Vasakule"
 msgid "Left column"
 msgstr "Vasak veerg"
 
-#: assets/admin.js:1235 assets/admin.js:2167
+#: assets/admin.js:1302 assets/admin.js:2234
 msgid "Line break"
 msgstr "Reavahetus"
 
@@ -770,7 +770,7 @@ msgstr "Jooned"
 msgid "Lines and borders"
 msgstr "Jooned ja piirded"
 
-#: includes/helpers.php:452 assets/admin.js:1236 assets/admin.js:2168
+#: includes/helpers.php:452 assets/admin.js:1303 assets/admin.js:2235
 msgid "Link"
 msgstr "Link"
 
@@ -778,11 +778,11 @@ msgstr "Link"
 msgid "Link (optional)"
 msgstr "Link (valikuline)"
 
-#: assets/admin.js:1116
+#: assets/admin.js:1183
 msgid "Link (optional), {{value}} = the value"
 msgstr "Link (valikuline), {{value}} = väärtus"
 
-#: assets/admin.js:3507
+#: assets/admin.js:3574
 msgid "Link address"
 msgstr "Lingi aadress"
 
@@ -790,15 +790,15 @@ msgstr "Lingi aadress"
 msgid "Link on click"
 msgstr "Link klõpsamisel"
 
-#: assets/admin.js:1158
+#: assets/admin.js:1225
 msgid "Link, for example the category address"
 msgstr "Link, nt kategooria aadress"
 
-#: assets/admin.js:1182 assets/admin.js:3163
+#: assets/admin.js:1249 assets/admin.js:3230
 msgid "Load product categories"
 msgstr "Lae tootekategooriad"
 
-#: assets/admin.js:1474
+#: assets/admin.js:1541
 msgid "Load the WooCommerce content as blocks"
 msgstr "Lae WooCommerce'i sisu plokkidena"
 
@@ -806,7 +806,7 @@ msgstr "Lae WooCommerce'i sisu plokkidena"
 msgid "Loading the designer…"
 msgstr "Laen kujundajat…"
 
-#: assets/admin.js:1822 assets/admin.js:3155
+#: assets/admin.js:1889 assets/admin.js:3222
 msgid "Loading…"
 msgstr "Laen…"
 
@@ -834,7 +834,7 @@ msgstr "Logo laius (px)"
 msgid "Main heading size (px)"
 msgstr "Peapealkirja suurus (px)"
 
-#: assets/admin.js:2324
+#: assets/admin.js:2391
 msgid "Manifest address"
 msgstr "Manifesti aadress"
 
@@ -850,7 +850,7 @@ msgstr "Mari Tamm<br>Pikk 12-4<br>10123 Tallinn<br>Eesti"
 msgid "Medium"
 msgstr "Keskmine"
 
-#: assets/admin.js:2691
+#: assets/admin.js:2758
 msgid "Mobile"
 msgstr "Mobiil"
 
@@ -874,7 +874,7 @@ msgstr "Nime värv"
 msgid "Name size (px)"
 msgstr "Nime suurus (px)"
 
-#: assets/admin.js:1152
+#: assets/admin.js:1219
 msgid "Name under the image"
 msgstr "Nimi pildi all"
 
@@ -886,11 +886,11 @@ msgstr "Uus konto"
 msgid "New order (to shop)"
 msgstr "Uus tellimus (poele)"
 
-#: assets/admin.js:1324 assets/admin.js:1350
+#: assets/admin.js:1391 assets/admin.js:1417
 msgid "No blocks here yet. Add one below."
 msgstr "Siin pole veel ühtegi plokki. Lisa allpool."
 
-#: includes/class-wmd-updater.php:352
+#: includes/class-wmd-updater.php:413
 msgid "No changelog was provided."
 msgstr "Muudatuste nimekirja ei ole antud."
 
@@ -898,11 +898,11 @@ msgstr "Muudatuste nimekirja ei ole antud."
 msgid "No lines"
 msgstr "Ilma joonteta"
 
-#: assets/admin.js:2148
+#: assets/admin.js:2215
 msgid "No payment methods were found in the shop."
 msgstr "Poes ei leitud ühtegi makseviisi."
 
-#: assets/admin.js:1175
+#: assets/admin.js:1242
 msgid "No product categories were found."
 msgstr "Tootekategooriaid ei leitud."
 
@@ -910,15 +910,15 @@ msgstr "Tootekategooriaid ei leitud."
 msgid "Note to customer"
 msgstr "Märkus kliendile"
 
-#: assets/admin.js:2076 assets/admin.js:2095
+#: assets/admin.js:2143 assets/admin.js:2162
 msgid "Nothing found."
 msgstr "Midagi ei leitud."
 
-#: assets/admin.js:389
+#: assets/admin.js:396
 msgid "Nothing is translated here yet — everything comes from %s."
 msgstr "Siin ei ole veel midagi tõlgitud — kõik tuleb %s keelest."
 
-#: assets/admin.js:2579
+#: assets/admin.js:2646
 msgid "Nothing selected"
 msgstr "Midagi pole valitud"
 
@@ -930,7 +930,7 @@ msgstr "Veerge"
 msgid "Number of items"
 msgstr "Toodete arv"
 
-#: assets/admin.js:2254 assets/admin.js:2310
+#: assets/admin.js:2321 assets/admin.js:2377
 msgid "Off"
 msgstr "Väljas"
 
@@ -966,7 +966,7 @@ msgstr "Tellimuse kuupäev"
 msgid "Order details (table)"
 msgstr "Tellimuse andmed (tabel)"
 
-#: assets/admin.js:989
+#: assets/admin.js:1056
 msgid "Order field"
 msgstr "Tellimuse väli"
 
@@ -1018,7 +1018,7 @@ msgstr "Muu"
 msgid "Outlined"
 msgstr "Raamiga"
 
-#: assets/admin.js:2312
+#: assets/admin.js:2379
 msgid "Own JSON manifest"
 msgstr "Oma JSON-manifest"
 
@@ -1042,7 +1042,7 @@ msgstr "Parooli lähtestamine"
 msgid "Password reset link"
 msgstr "Parooli lähtestamise link"
 
-#: assets/admin.js:2443
+#: assets/admin.js:2510
 msgid "Paste the JSON first"
 msgstr "Kleebi kõigepealt JSON"
 
@@ -1086,7 +1086,7 @@ msgstr "Makseviisi nimi"
 msgid "Payment method:"
 msgstr "Makseviis:"
 
-#: assets/admin.js:2625
+#: assets/admin.js:2692
 msgid "Payment methods"
 msgstr "Makseviisid"
 
@@ -1098,7 +1098,7 @@ msgstr "Telefon"
 msgid "Phone and email at the shipping address"
 msgstr "Telefon ja e-post tarneaadressi juures"
 
-#: assets/admin.js:1434
+#: assets/admin.js:1501
 msgid "Pick an email and add to it. A field left empty means the WooCommerce default is used."
 msgstr "Vali meil ja täienda seda. Tühjaks jäetud väli tähendab, et kasutatakse WooCommerce'i vaikeväärtust."
 
@@ -1142,35 +1142,35 @@ msgstr "Tooted (oma tabel)"
 msgid "Quantity"
 msgstr "Kogus"
 
-#: assets/admin.js:2431
+#: assets/admin.js:2498
 msgid "Reading the file failed"
 msgstr "Faili lugemine ebaõnnestus"
 
-#: assets/admin.js:2533
+#: assets/admin.js:2600
 msgid "Reloading the page…"
 msgstr "Laen lehe uuesti…"
 
-#: assets/admin.js:1294
+#: assets/admin.js:1361
 msgid "Remove"
 msgstr "Eemalda"
 
-#: includes/class-wmd-updater.php:390
+#: includes/class-wmd-updater.php:451
 msgid "Renaming the update folder failed."
 msgstr "Uuenduse kausta ümbernimetamine ebaõnnestus."
 
-#: assets/admin.js:2696
+#: assets/admin.js:2763
 msgid "Reset"
 msgstr "Lähtesta"
 
-#: assets/admin.js:2696
+#: assets/admin.js:2763
 msgid "Reset the design"
 msgstr "Lähtesta kujundus"
 
-#: assets/admin.js:3577
+#: assets/admin.js:3644
 msgid "Reset the whole design to its defaults? This cannot be undone."
 msgstr "Kas lähtestada kogu kujundus vaikeväärtustele? Seda ei saa tagasi võtta."
 
-#: includes/helpers.php:860 assets/admin.js:1155
+#: includes/helpers.php:860 assets/admin.js:1222
 msgid "Right"
 msgstr "Paremale"
 
@@ -1186,31 +1186,31 @@ msgstr "Read"
 msgid "SKU"
 msgstr "Tootekood"
 
-#: assets/admin.js:2695
+#: assets/admin.js:2762
 msgid "Save"
 msgstr "Salvesta"
 
-#: assets/admin.js:2263
+#: assets/admin.js:2330
 msgid "Save the key"
 msgstr "Salvesta võti"
 
-#: assets/admin.js:2328
+#: assets/admin.js:2395
 msgid "Save the source"
 msgstr "Salvesta allikas"
 
-#: assets/admin.js:2471 assets/admin.js:2510 assets/admin.js:3586 assets/admin.js:3645
+#: assets/admin.js:2538 assets/admin.js:2577 assets/admin.js:3653 assets/admin.js:3712
 msgid "Saved"
 msgstr "Salvestatud"
 
-#: assets/admin.js:3647 assets/admin.js:3758
+#: assets/admin.js:3714 assets/admin.js:3826
 msgid "Saving failed"
 msgstr "Salvestamine ebaõnnestus"
 
-#: assets/admin.js:2067
+#: assets/admin.js:2134
 msgid "Search for a variable…"
 msgstr "Otsi muutujat…"
 
-#: assets/admin.js:2694 assets/admin.js:3629
+#: assets/admin.js:2761 assets/admin.js:3696
 msgid "Send test email"
 msgstr "Saada testmeil"
 
@@ -1218,7 +1218,7 @@ msgstr "Saada testmeil"
 msgid "Sending the email failed. Check the shop's email settings."
 msgstr "Meili saatmine ebaõnnestus. Kontrolli poe meiliseadeid."
 
-#: assets/admin.js:3610
+#: assets/admin.js:3677
 msgid "Sending…"
 msgstr "Saadan…"
 
@@ -1226,11 +1226,11 @@ msgstr "Saadan…"
 msgid "Set password link (new account)"
 msgstr "Parooli seadmise link (uus konto)"
 
-#: assets/admin.js:2283
+#: assets/admin.js:2350
 msgid "Setting up updates needs permission to update plugins."
 msgstr "Uuenduste seadistamiseks on vaja õigust pluginaid uuendada."
 
-#: assets/admin.js:2627
+#: assets/admin.js:2694
 msgid "Settings"
 msgstr "Seaded"
 
@@ -1286,7 +1286,7 @@ msgstr "Näita päiserida"
 msgid "Show phone and email"
 msgstr "Näita telefoni ja e-posti"
 
-#: assets/admin.js:2215
+#: assets/admin.js:2282
 msgid "Show the JSON"
 msgstr "Näita JSON-i"
 
@@ -1302,7 +1302,7 @@ msgstr "Suurus (px)"
 msgid "Size: M"
 msgstr "Suurus: M"
 
-#: assets/admin.js:1185
+#: assets/admin.js:1252
 msgid "Slots left empty are not put into the real email — they are shown in the designer only so you can see the layout."
 msgstr "Tühjaks jäänud kohti päris kirja ei panda — kujundajas on need näha ainult selleks, et paigutust näeksid."
 
@@ -1334,7 +1334,7 @@ msgstr "Ruut (1:1)"
 msgid "Style"
 msgstr "Stiil"
 
-#: assets/admin.js:1445
+#: assets/admin.js:1512
 msgid "Subject line"
 msgstr "Pealkiri postkastis"
 
@@ -1346,7 +1346,7 @@ msgstr "Vahesumma"
 msgid "Subtotal:"
 msgstr "Vahesumma:"
 
-#: assets/admin.js:1443
+#: assets/admin.js:1510
 msgid "Switched off, this email goes out exactly as WooCommerce sends it. Everything set here stays saved and comes back when you switch it on again."
 msgstr "Väljas olekus läheb see kiri välja täpselt nii, nagu WooCommerce selle saadab. Kõik siin seatu jääb alles ja tuleb tagasi, kui lüliti uuesti sisse lülitad."
 
@@ -1358,7 +1358,7 @@ msgstr "Süsteemne (soovitatud)"
 msgid "Take over"
 msgstr "Võta üle"
 
-#: assets/admin.js:1475
+#: assets/admin.js:1542
 msgid "Takes this email's current WooCommerce content apart into blocks and replaces the blocks below. Useful when you want to start again from the WooCommerce text."
 msgstr "Võtab selle meili praeguse WooCommerce'i sisu plokkideks lahti ja asendab allolevad plokid. Kasulik, kui tahad alustada uuesti WooCommerce'i tekstist."
 
@@ -1378,27 +1378,27 @@ msgstr "Aitäh tellimuse eest!"
 msgid "The DeepL quota for this month is used up."
 msgstr "Selle kuu DeepL-i maht on otsas."
 
-#: assets/admin.js:761
+#: assets/admin.js:768
 msgid "The WooCommerce part of the canvas shows "
 msgstr "Kanvasel on WooCommerce'i osas "
 
-#: assets/admin.js:3597
+#: assets/admin.js:3664
 msgid "The design applies to emails"
 msgstr "Kujundus rakendub meilidele"
 
-#: assets/admin.js:3597
+#: assets/admin.js:3664
 msgid "The design is switched off"
 msgstr "Kujundus on välja lülitatud"
 
-#: assets/admin.js:737
+#: assets/admin.js:744
 msgid "The design is switched off on every email. You can switch it back on under Settings."
 msgstr "Kujundus on kõigil kirjadel välja lülitatud. Saad selle Seaded alt uuesti sisse lülitada."
 
-#: assets/admin.js:743
+#: assets/admin.js:750
 msgid "The design is switched off on this email, so it goes out as WooCommerce sends it."
 msgstr "Sellel kirjal on kujundus välja lülitatud, seega läheb see välja nii, nagu WooCommerce selle saadab."
 
-#: assets/admin.js:3624
+#: assets/admin.js:3691
 msgid "The design was saved and the test email went to "
 msgstr "Kujundus salvestati ja testmeil läks aadressile "
 
@@ -1406,43 +1406,47 @@ msgstr "Kujundus salvestati ja testmeil läks aadressile "
 msgid "The designer needs JavaScript."
 msgstr "Kujundaja vajab JavaScripti."
 
-#: assets/admin.js:2369
+#: assets/admin.js:2436
 msgid "The file could not be read"
 msgstr "Faili ei õnnestunud lugeda"
 
-#: assets/admin.js:2638
+#: assets/admin.js:2705
 msgid "The footer is the same at the bottom of every email."
 msgstr "Jalus on kõigi meilide all ühesugune."
 
-#: assets/admin.js:2636
+#: assets/admin.js:2703
 msgid "The header is the same at the top of every email."
 msgstr "Päis on kõigi meilide ülaosas ühesugune."
 
-#: assets/admin.js:2231
+#: assets/admin.js:2298
 msgid "The logo still points at the source shop's media library — in another shop it is worth uploading it again. Payment instructions carry over by their ID; if the target shop has other payment gateways, those rows are simply left unused."
 msgstr "Logo viitab endiselt lähtepoe meediateegile — teises poes tasub see uuesti üles laadida. Makseviiside juhised kanduvad üle nende tunnuse järgi; kui sihtpoes on teised makselahendused, jäävad need read lihtsalt kasutamata."
 
-#: assets/admin.js:2278
+#: assets/admin.js:2345
 msgid "The main switch for the whole plugin. Switched off, every email goes out as WooCommerce sends it. Whether the design reaches one particular email is decided by the switch on that email under Email content."
 msgstr "Kogu plugina peakraan. Väljas olekus läheb iga kiri välja nii, nagu WooCommerce selle saadab. Kas kujundus jõuab ühe kindla kirjani, otsustab selle kirja oma lüliti Kirja sisu all."
 
-#: assets/admin.js:2306
+#: assets/admin.js:2373
 msgid "The plugin is not on WordPress.org, so updates come straight from your GitHub releases. WordPress shows the update notice on the ordinary Plugins page too."
 msgstr "Plugin ei ole WordPress.org-is, seega uuendused tulevad otse sinu GitHubi väljalasetest. WordPress näitab uuendusteadet ka tavalisel Pluginad-lehel."
 
-#: assets/admin.js:3753
+#: assets/admin.js:868
+msgid "The server did not answer in 10 seconds."
+msgstr "Server ei vastanud 10 sekundi jooksul."
+
+#: assets/admin.js:3821
 msgid "The server firewall blocked the request (HTTP 403). Ask your host to allow this address."
 msgstr "Serveri tulemüür blokeeris päringu (HTTP 403). Küsi majutajalt, et see aadress lubataks."
 
-#: assets/admin.js:3754
+#: assets/admin.js:3822
 msgid "The server replied unexpectedly (HTTP "
 msgstr "Server vastas ootamatult (HTTP "
 
-#: assets/admin.js:2562
+#: assets/admin.js:2629
 msgid "The source did not respond"
 msgstr "Allikast ei saanud vastust"
 
-#: assets/admin.js:1091
+#: assets/admin.js:1158
 msgid "The tick shows whether the column goes into the email. You can rewrite the label and reorder it with the arrows."
 msgstr "Linnuke näitab, kas veerg läheb kirja. Silti saab ümber kirjutada, nooltega järjekorda muuta."
 
@@ -1454,63 +1458,63 @@ msgstr "Tõlketeenus vastas veaga (HTTP %d)."
 msgid "The translation service sent an answer we could not read."
 msgstr "Tõlketeenus saatis vastuse, mida me lugeda ei osanud."
 
-#: assets/admin.js:1999
+#: assets/admin.js:2066
 msgid "The translation service sent back a different number of texts than we asked for."
 msgstr "Tõlketeenus saatis tagasi teise arvu tekste, kui me küsisime."
 
-#: includes/class-wmd-updater.php:575
+#: includes/class-wmd-updater.php:639
 msgid "The update failed. Check file permissions or install the ZIP by hand."
 msgstr "Uuendus ei õnnestunud. Vaata failiõigusi või paigalda ZIP käsitsi."
 
-#: includes/class-wmd-updater.php:494
+#: includes/class-wmd-updater.php:555
 msgid "The update source did not respond."
 msgstr "Uuenduste allikast ei saanud vastust."
 
-#: assets/admin.js:2059
+#: assets/admin.js:2126
 msgid "The value comes from the selected order ("
 msgstr "Väärtus on valitud tellimuse pealt ("
 
-#: assets/admin.js:2061
+#: assets/admin.js:2128
 msgid "The value comes from the selected order."
 msgstr "Väärtus on valitud tellimuse pealt."
 
-#: assets/admin.js:2209
+#: assets/admin.js:2276
 msgid "The whole design — brand, header, footer, every email and the payment instructions — in one file. In another shop you import it and have the same setup at once."
 msgstr "Kogu kujundus — bränd, päis, jalus, kõik meilid ja makseviiside juhised — ühes failis. Teises poes impordid selle ja oled kohe sama seadistusega."
 
-#: assets/admin.js:1471
+#: assets/admin.js:1538
 msgid "There is no content in this language yet, so this email goes out with the WooCommerce content. Add blocks below."
 msgstr "Selles keeles ei ole veel sisu, seega läheb kiri välja WooCommerce'i sisuga. Lisa allpool plokke."
 
-#: includes/class-wmd-updater.php:501
+#: includes/class-wmd-updater.php:562
 msgid "There is no newer version."
 msgstr "Uuemat versiooni ei ole."
 
-#: assets/admin.js:1977
+#: assets/admin.js:2044
 msgid "There is nothing to translate here."
 msgstr "Siin ei ole midagi tõlkida."
 
-#: assets/admin.js:1328
+#: assets/admin.js:1395
 msgid "These blocks come from the default language. Translate this part to give this language its own."
 msgstr "Need plokid tulevad vaikekeelest. Tõlgi see osa, et sellel keelel oleksid omad."
 
-#: assets/admin.js:1389
+#: assets/admin.js:1456
 msgid "These settings apply to "
 msgstr "Need seaded kehtivad "
 
-#: assets/admin.js:1813
+#: assets/admin.js:1880
 msgid "This email already has "
 msgstr "Selles meilis on juba "
 
-#: assets/admin.js:2062
+#: assets/admin.js:2129
 msgid "This email does not come from an order, so the order variables have no value here."
 msgstr "See kiri ei käi tellimuse pealt, seega tellimuse muutujatel siin väärtust ei ole."
 
-#: assets/admin.js:2357
+#: assets/admin.js:2424
 msgid "This is not an Email Designer design file."
 msgstr "See ei ole Meilidisaineri kujundusfail."
 
-#: assets/admin.js:1465
+#: assets/admin.js:1532
 msgid "This mode does not use the WooCommerce content template. Everything in the email comes from the blocks below — including the order table and the addresses."
 msgstr "Selles režiimis ei kasutata WooCommerce'i sisumalli. Kõik, mis meilis on, tuleb allolevatest plokkidest — ka tellimuse tabel ja aadressid."
 
@@ -1530,23 +1534,23 @@ msgstr "Kokkuvõte (oma tabel)"
 msgid "Tracking code"
 msgstr "Jälgimiskood"
 
-#: assets/admin.js:2048
+#: assets/admin.js:2115
 msgid "Translate this email automatically"
 msgstr "Tõlgi see kiri masinaga"
 
-#: assets/admin.js:1331
+#: assets/admin.js:1398
 msgid "Translate this part"
 msgstr "Tõlgi see osa"
 
-#: assets/admin.js:1986
+#: assets/admin.js:2053
 msgid "Translating…"
 msgstr "Tõlgin…"
 
-#: assets/admin.js:2252
+#: assets/admin.js:2319
 msgid "Translation service"
 msgstr "Tõlketeenus"
 
-#: assets/admin.js:2546
+#: assets/admin.js:2613
 msgid "Try again"
 msgstr "Proovi uuesti"
 
@@ -1566,35 +1570,35 @@ msgstr "Nimi allajoonitud"
 msgid "Unit price"
 msgstr "Ühiku hind"
 
-#: assets/admin.js:2684
+#: assets/admin.js:2751
 msgid "Unsaved changes"
 msgstr "Salvestamata muudatused"
 
-#: assets/admin.js:2600
+#: assets/admin.js:2667
 msgid "Unticked = always show. Tick the payment methods for which the block goes into the email — that way bank transfer instructions can go only to bank transfer orders."
 msgstr "Märkimata = näita alati. Märgi need makseviisid, mille puhul plokk kirja läheb — nii saab nt pangaülekande juhised panna ainult ülekandega tellimustele."
 
-#: assets/admin.js:1084 assets/admin.js:1108 assets/admin.js:1342
+#: assets/admin.js:1151 assets/admin.js:1175 assets/admin.js:1409
 msgid "Up"
 msgstr "Üles"
 
-#: assets/admin.js:2562
+#: assets/admin.js:2629
 msgid "Update "
 msgstr "Uuendus "
 
-#: assets/admin.js:2336
+#: assets/admin.js:2403
 msgid "Update now to version "
 msgstr "Uuenda kohe versioonile "
 
-#: assets/admin.js:2308
+#: assets/admin.js:2375
 msgid "Update source"
 msgstr "Uuenduste allikas"
 
-#: assets/admin.js:2277
+#: assets/admin.js:2344
 msgid "Use the design on emails"
 msgstr "Kasuta kujundust kirjadel"
 
-#: assets/admin.js:1442
+#: assets/admin.js:1509
 msgid "Use this design on this email"
 msgstr "Kasuta seda kujundust sellel kirjal"
 
@@ -1614,11 +1618,11 @@ msgstr "Kasutajanimi"
 msgid "VAT"
 msgstr "Käibemaks"
 
-#: assets/admin.js:1113
+#: assets/admin.js:1180
 msgid "Value or {{variable}}"
 msgstr "Väärtus või {{muutuja}}"
 
-#: assets/admin.js:2626
+#: assets/admin.js:2693
 msgid "Variables"
 msgstr "Muutujad"
 
@@ -1630,7 +1634,7 @@ msgstr "Variandid ja lisaväljad"
 msgid "View order"
 msgstr "Vaata tellimust"
 
-#: assets/admin.js:2598
+#: assets/admin.js:2665
 msgid "Visibility"
 msgstr "Nähtavus"
 
@@ -1642,7 +1646,7 @@ msgstr "Saime su tellimuse kätte ja asume seda kohe komplekteerima."
 msgid "What to show"
 msgstr "Mida näidata"
 
-#: assets/admin.js:2686
+#: assets/admin.js:2753
 msgid "What to show in the preview"
 msgstr "Mida eelvaates näidata"
 
@@ -1650,15 +1654,15 @@ msgstr "Mida eelvaates näidata"
 msgid "When to show the shipping address"
 msgstr "Millal tarneaadressi näidata"
 
-#: assets/admin.js:3605
+#: assets/admin.js:3672
 msgid "Where should the test email go?"
 msgstr "Kuhu testmeil saata?"
 
-#: assets/admin.js:2659
+#: assets/admin.js:2726
 msgid "Which language's content to edit"
 msgstr "Mille keele sisu muudad"
 
-#: assets/admin.js:2673
+#: assets/admin.js:2740
 msgid "Which order to fill the preview with"
 msgstr "Millise tellimuse andmetega eelvaadet täita"
 
@@ -1674,11 +1678,11 @@ msgstr "Wonom Meilidisainer"
 msgid "Wonom Email Designer needs WooCommerce to work. You can still use the designer, but emails are left untouched."
 msgstr "Wonom Meilidisainer vajab töötamiseks WooCommerce'i. Kujundajat saab kasutada, aga meilid jäävad muutmata."
 
-#: assets/admin.js:1455
+#: assets/admin.js:1522
 msgid "WooCommerce additional content at the end"
 msgstr "WooCommerce'i lisatekst kirja lõpus"
 
-#: assets/admin.js:1790
+#: assets/admin.js:1857
 msgid "WooCommerce content could not be loaded"
 msgstr "WooCommerce'i sisu ei õnnestunud laadida"
 
@@ -1686,7 +1690,7 @@ msgstr "WooCommerce'i sisu ei õnnestunud laadida"
 msgid "WooCommerce content could not be rendered."
 msgstr "WooCommerce'i sisu ei õnnestunud renderdada."
 
-#: assets/admin.js:1827
+#: assets/admin.js:1894
 msgid "WooCommerce content could not be turned into blocks"
 msgstr "WooCommerce'i sisu ei õnnestunud plokkideks võtta"
 
@@ -1702,11 +1706,11 @@ msgstr "WooCommerce ei ole aktiivne."
 msgid "Wool scarf"
 msgstr "Villane sall"
 
-#: assets/admin.js:2155
+#: assets/admin.js:2222
 msgid "Write the instructions for each payment method here once. The block "
 msgstr "Kirjuta iga makseviisi juhised üks kord siia. Kirja toob need plokk "
 
-#: assets/admin.js:396
+#: assets/admin.js:403
 msgid "You are editing %s."
 msgstr "Muudad %s keelt."
 
@@ -1714,11 +1718,11 @@ msgstr "Muudad %s keelt."
 msgid "You are getting this email because you placed an order in our shop."
 msgstr "Said selle kirja, sest tegid meie poes tellimuse."
 
-#: assets/admin.js:1123
+#: assets/admin.js:1190
 msgid "You can pick the value under the { } button — the real fields of this order are there too, such as the tracking code."
 msgstr "Väärtuse saab valida { } nupu alt — seal on ka selle tellimuse päris väljad, nagu jälgimiskood."
 
-#: includes/class-wmd-updater.php:488
+#: includes/class-wmd-updater.php:549
 msgid "You do not have permission to update plugins."
 msgstr "Puuduvad õigused pluginate uuendamiseks."
 
@@ -1726,11 +1730,11 @@ msgstr "Puuduvad õigused pluginate uuendamiseks."
 msgid "You do not have permission."
 msgstr "Puuduvad õigused."
 
-#: assets/admin.js:2521
+#: assets/admin.js:2588
 msgid "You have unsaved changes. Updating reloads the page and they will be lost. Continue?"
 msgstr "Sul on salvestamata muudatusi. Uuendamine laadib lehe uuesti ja need lähevad kaotsi. Jätkan?"
 
-#: assets/admin.js:1456
+#: assets/admin.js:1523
 msgid "You will find this text under WooCommerce → Settings → Emails. It cannot be emptied there — an empty field is replaced by the default text (\"Thanks for shopping with us.\"). Here you can switch it off for good."
 msgstr "Selle teksti leiad WooCommerce → Seaded → Meilid alt. Seal ei saa seda tühjendada — tühi väli asendatakse vaiketekstiga („Thanks for shopping with us.\"). Siit saab selle päriselt välja lülitada."
 
@@ -1742,35 +1746,35 @@ msgstr "Sinu märkus tellimusele"
 msgid "[TEST] %s"
 msgstr "[TEST] %s"
 
-#: assets/admin.js:1863
+#: assets/admin.js:1930
 msgid "blocks loaded — the WooCommerce text no longer goes into the email"
 msgstr "plokki laaditud — WooCommerce'i oma tekst enam kirja ei lähe"
 
-#: assets/admin.js:1813
+#: assets/admin.js:1880
 msgid "blocks. Replace them with the current WooCommerce content?"
 msgstr "plokki. Asendan need WooCommerce'i praeguse sisuga?"
 
-#: assets/admin.js:1479
+#: assets/admin.js:1546
 msgid "button, upsell"
 msgstr "nupp, lisamüük"
 
-#: assets/admin.js:1420
+#: assets/admin.js:1487
 msgid "design off"
 msgstr "kujundus väljas"
 
-#: assets/admin.js:1389
+#: assets/admin.js:1456
 msgid "every"
 msgstr "kõigile"
 
-#: assets/admin.js:1478
+#: assets/admin.js:1545
 msgid "greeting, info"
 msgstr "tervitus, info"
 
-#: assets/admin.js:2562
+#: assets/admin.js:2629
 msgid "is available"
 msgstr "on saadaval"
 
-#: assets/admin.js:1380
+#: assets/admin.js:1447
 msgid "no image"
 msgstr "pilt puudub"
 
@@ -1786,23 +1790,23 @@ msgstr "väljas"
 msgid "on"
 msgstr "sees"
 
-#: assets/admin.js:2321
+#: assets/admin.js:2388
 msgid "only for a private repository"
 msgstr "ainult privaatse hoidla puhul"
 
-#: assets/admin.js:761
+#: assets/admin.js:768
 msgid "sample content"
 msgstr "näidissisu"
 
-#: assets/admin.js:1476
+#: assets/admin.js:1543
 msgid "the whole body"
 msgstr "terve keha"
 
-#: assets/admin.js:2317
+#: assets/admin.js:2384
 msgid "user/repository"
 msgstr "kasutaja/hoidla"
 
-#: assets/admin.js:2226
+#: assets/admin.js:2293
 msgid "…or paste JSON here"
 msgstr "…või kleebi JSON siia"
 

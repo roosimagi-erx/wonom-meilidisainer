@@ -20,24 +20,42 @@ $wmd_order    = isset( $order ) ? $order : null;
 $wmd_heading  = isset( $email_heading ) ? $email_heading : '';
 $wmd_admin    = isset( $sent_to_admin ) ? (bool) $sent_to_admin : false;
 
-// Konteksti ehitab WMD_Emails, et kontomeilidel oleksid olemas ka kasutaja ja
-// parooli lähtestamise märgendid — ilma nendeta läheks kiri ilma lingita.
-$wmd_ctx = WMD_Emails::context_for( $wmd_email );
+// Koostamine käib läbi turvavõrgu: korras kirja puhul on väljund täpselt
+// sama, vea korral jäävad meie osad tühjaks ja kiri koostatakse saatmisel
+// uuesti WooCommerce'i vaikemalliga (vt WMD_Emails::guard).
+$wmd_ctx = WMD_Emails::guard(
+	'context',
+	$wmd_email,
+	static function () use ( $wmd_email, $wmd_order, $wmd_admin ) {
+		// Konteksti ehitab WMD_Emails, et kontomeilidel oleksid olemas ka kasutaja ja
+		// parooli lähtestamise märgendid — ilma nendeta läheks kiri ilma lingita.
+		$wmd_ctx = WMD_Emails::context_for( $wmd_email );
 
-// WooCommerce'i enda plokid vajavad neid objekte; hoiame need kontekstis.
-// Tellimus tuleb mallilt endalt, sest see on siin kindlasti õige.
-if ( $wmd_order ) {
-	$wmd_ctx            = array_merge( $wmd_ctx, WMD_Tags::order_context( $wmd_order ) );
-	$wmd_ctx['__order'] = $wmd_order;
-}
+		// WooCommerce'i enda plokid vajavad neid objekte; hoiame need kontekstis.
+		// Tellimus tuleb mallilt endalt, sest see on siin kindlasti õige.
+		if ( $wmd_order ) {
+			$wmd_ctx            = array_merge( $wmd_ctx, WMD_Tags::order_context( $wmd_order ) );
+			$wmd_ctx['__order'] = $wmd_order;
+		}
 
-$wmd_ctx['__email']         = $wmd_email;
-$wmd_ctx['__sent_to_admin'] = $wmd_admin;
+		$wmd_ctx['__email']         = $wmd_email;
+		$wmd_ctx['__sent_to_admin'] = $wmd_admin;
+
+		return $wmd_ctx;
+	},
+	array()
+);
 
 do_action( 'woocommerce_email_header', $wmd_heading, $wmd_email );
 
 // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML koostatakse WMD_Render sees.
-echo WMD_Render::body_html( $wmd_email_id, $wmd_ctx );
+echo WMD_Emails::guard(
+	'body',
+	$wmd_email,
+	static function () use ( $wmd_email_id, $wmd_ctx ) {
+		return WMD_Render::body_html( $wmd_email_id, $wmd_ctx );
+	}
+);
 
 // Poe seadetes olev lisatekst jääb alles, et miski vaikselt ei kaoks.
 if ( ! empty( $additional_content ) ) {

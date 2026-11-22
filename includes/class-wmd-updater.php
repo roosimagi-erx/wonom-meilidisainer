@@ -37,6 +37,14 @@ class WMD_Updater {
 		add_filter( 'upgrader_source_selection', array( __CLASS__, 'fix_folder' ), 10, 4 );
 		add_filter( 'http_request_args', array( __CLASS__, 'auth_header' ), 10, 2 );
 		add_action( 'upgrader_process_complete', array( __CLASS__, 'flush' ), 10, 2 );
+
+		// WordPressi uuenduste nimekirja lugemisel näitame oma viimast teadaolevat
+		// seisu. Nii ei pea me kunagi kogu nimekirja kustutama, et WordPress meie
+		// uuendust näeks — kustutamine paneks tööle kõigi pluginate uuendajad.
+		// Ainult adminis: külastaja päringus seda nimekirja ei loeta.
+		if ( is_admin() ) {
+			add_filter( 'site_transient_update_plugins', array( __CLASS__, 'reflect' ) );
+		}
 	}
 
 	/**
@@ -117,8 +125,9 @@ class WMD_Updater {
 			update_option( 'wmd_update_token', sanitize_text_field( $token ) );
 		}
 
+		// Ainult meie enda vahemälu. WordPressi üldist uuenduste nimekirja ei
+		// puutu — selle kustutamine käivitaks kõigi pluginate uuenduskontrolli.
 		delete_transient( self::TRANSIENT );
-		delete_site_transient( 'update_plugins' );
 
 		return self::settings();
 	}
@@ -314,6 +323,58 @@ class WMD_Updater {
 		}
 
 		return $transient;
+	}
+
+	/**
+	 * Näitab WordPressile meie viimast teadaolevat seisu uuenduste nimekirja
+	 * lugemisel.
+	 *
+	 * Kasutab ainult vahemälus olevat infot ega tee kunagi välispäringut. Kui
+	 * nimekirjas on meie kohta vana kirje (versioon, mis on juba paigaldatud),
+	 * võtab selle välja — nii ei jää pärast uuendamist valeteadet rippuma.
+	 *
+	 * @param mixed $value Uuenduste nimekiri.
+	 * @return mixed
+	 */
+	public static function reflect( $value ) {
+		if ( ! is_object( $value ) ) {
+			return $value;
+		}
+
+		$file = self::basename();
+
+		if ( isset( $value->response ) && is_array( $value->response ) && isset( $value->response[ $file ] ) ) {
+			$listed = $value->response[ $file ];
+			$listed = is_object( $listed ) && ! empty( $listed->new_version ) ? (string) $listed->new_version : '';
+
+			if ( '' === $listed || version_compare( $listed, WMD_VERSION, '<=' ) ) {
+				unset( $value->response[ $file ] );
+			}
+		}
+
+		if ( 'off' === self::source() ) {
+			return $value;
+		}
+
+		$info = get_transient( self::TRANSIENT );
+
+		if ( ! is_array( $info ) || empty( $info['version'] ) || empty( $info['package'] ) ) {
+			return $value;
+		}
+
+		if ( version_compare( $info['version'], WMD_VERSION, '>' ) ) {
+			if ( ! isset( $value->response ) || ! is_array( $value->response ) ) {
+				$value->response = array();
+			}
+
+			$value->response[ $file ] = self::item( $info );
+
+			if ( isset( $value->no_update ) && is_array( $value->no_update ) ) {
+				unset( $value->no_update[ $file ] );
+			}
+		}
+
+		return $value;
 	}
 
 	/**
@@ -552,7 +613,10 @@ class WMD_Updater {
 		add_filter( 'site_transient_update_plugins', $stage, 100 );
 
 		try {
-			$result = $upgrade->upgrade( $file );
+			// clear_update_cache = false: muidu kustutab WordPress pärast paigaldust
+			// kogu uuenduste nimekirja ja järgmine admin-päring kontrollib kõiki
+			// pluginaid uuesti. Meie kirje hoiab õigena reflect().
+			$result = $upgrade->upgrade( $file, array( 'clear_update_cache' => false ) );
 		} finally {
 			// Filter ei tohi jääda rippuma ka siis, kui paigaldus viskab vea —
 			// muidu paistaks uuendus igal järgmisel lehel olemasolevana.
@@ -583,7 +647,6 @@ class WMD_Updater {
 		}
 
 		delete_transient( self::TRANSIENT );
-		delete_site_transient( 'update_plugins' );
 
 		return array(
 			'updated' => true,
@@ -603,8 +666,10 @@ class WMD_Updater {
 	 * @return array
 	 */
 	public static function check_now() {
+		// Kontrollime ainult selle plugina allikat. WordPressi üldist uuenduste
+		// nimekirja ei kustuta: see sunniks järgmise admin-päringu kontrollima
+		// kõiki pluginaid ja teemasid. Tulemuse viib nimekirja reflect().
 		delete_transient( self::TRANSIENT );
-		delete_site_transient( 'update_plugins' );
 
 		$info = self::remote( true );
 

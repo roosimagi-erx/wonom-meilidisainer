@@ -57,6 +57,26 @@ class WMD_Emails {
 	 * @return string
 	 */
 	public static function additional_content( $content, $object = null, $email = null ) {
+		try {
+			return self::build_additional_content( $content, $object, $email );
+		} catch ( Throwable $e ) {
+			// Turvavõrk: vea korral jääb WooCommerce'i enda tekst.
+			self::log_error( $e, 'additional content', $email );
+
+			return $content;
+		}
+	}
+
+	/**
+	 * Lisateksti otsus. Eraldi meetod, et additional_content() saaks vea kinni
+	 * püüda ilma loogikat muutmata.
+	 *
+	 * @param string   $content Lisatekst.
+	 * @param mixed    $object  Tellimus või muu objekt.
+	 * @param WC_Email $email   Meil.
+	 * @return string
+	 */
+	protected static function build_additional_content( $content, $object = null, $email = null ) {
 		if ( ! $email || empty( $email->id ) || ! self::enabled_for( $email->id ) ) {
 			return $content;
 		}
@@ -85,7 +105,13 @@ class WMD_Emails {
 		}
 
 		if ( self::$current ) {
-			self::use_email_language( self::$current );
+			try {
+				self::use_email_language( self::$current );
+			} catch ( Throwable $e ) {
+				// Keele valik ei tohi kirja saatmist katkestada: vea korral
+				// jääb vaikekeele kujundus.
+				self::log_error( $e, 'language', self::$current );
+			}
 		}
 	}
 
@@ -174,11 +200,204 @@ class WMD_Emails {
 	 * @return bool
 	 */
 	public static function enabled() {
+		// Vaikemalliga uuesti koostamise ajal ei tohi meie mallid vahele tulla.
+		if ( self::$bypass ) {
+			return false;
+		}
+
 		if ( self::$forced ) {
 			return true;
 		}
 
 		return (bool) get_option( 'wmd_enabled', 1 );
+	}
+
+	/**
+	 * Kirjad, mille koostamine ebaõnnestus: objekti id => WC_Email.
+	 *
+	 * @var array<int,mixed>
+	 */
+	protected static $failed = array();
+
+	/**
+	 * Kiri, mida WooCommerce parasjagu saadab. Jääb meelde stiilide küsimisel,
+	 * sest saatmise lõpus olev sisufilter kirjaobjekti kaasa ei anna.
+	 *
+	 * @var WC_Email|null
+	 */
+	protected static $sending = null;
+
+	/**
+	 * Kas kirja koostatakse parasjagu uuesti WooCommerce'i vaikemalliga.
+	 *
+	 * @var bool
+	 */
+	protected static $bypass = false;
+
+	/**
+	 * Kas päästefilter on juba lisatud. Lisame selle alles esimese vea korral,
+	 * et korras kirja teel ei oleks ühtegi lisahaaki.
+	 *
+	 * @var bool
+	 */
+	protected static $rescue_hooked = false;
+
+	/**
+	 * Võti kirjaobjekti järgi. Ilma objektita on võti 0.
+	 *
+	 * @param mixed $email Meil.
+	 * @return int
+	 */
+	protected static function key( $email ) {
+		return is_object( $email ) ? spl_object_id( $email ) : 0;
+	}
+
+	/**
+	 * Kas selle kirja koostamine on juba ebaõnnestunud.
+	 *
+	 * @param mixed $email Meil.
+	 * @return bool
+	 */
+	public static function has_failed( $email ) {
+		return isset( self::$failed[ self::key( $email ) ] );
+	}
+
+	/**
+	 * Turvavõrk kirja osa koostamise ümber.
+	 *
+	 * Korras kirja puhul annab see tagasi täpselt selle, mille tagasikutse
+	 * annab — midagi ei lisata ega muudeta. Kui tagasikutse viskab vea, jätame
+	 * selle kirja meelde, logime vea ja anname vaikeväärtuse. Kiri koostatakse
+	 * siis saatmise lõpus uuesti WooCommerce'i vaikemalliga (vt rescue()), nii
+	 * et klient saab kirja ikka kätte ja tellimuse töötlus ei katke.
+	 *
+	 * @param string   $where    Mis osa: header, body või footer.
+	 * @param mixed    $email    Meil.
+	 * @param callable $callback Koostaja.
+	 * @param mixed    $default  Mida anda vea korral.
+	 * @return mixed
+	 */
+	public static function guard( $where, $email, $callback, $default = '' ) {
+		// Sama kirja ülejäänud osi ei ole enam mõtet koostada.
+		if ( self::has_failed( $email ) ) {
+			return $default;
+		}
+
+		$level = ob_get_level();
+
+		try {
+			/**
+			 * Käivitub enne kirja osa koostamist.
+			 *
+			 * @param string $where Mis osa.
+			 * @param mixed  $email Meil.
+			 */
+			do_action( 'wmd_render_part', $where, $email );
+
+			return call_user_func( $callback );
+		} catch ( Throwable $e ) {
+			// Poolikuks jäänud väljundipuhvrid kinni, muidu satuks nende sisu
+			// valesse kohta.
+			while ( ob_get_level() > $level ) {
+				ob_end_clean();
+			}
+
+			self::fail( $e, $where, $email );
+
+			return $default;
+		}
+	}
+
+	/**
+	 * Märgib kirja ebaõnnestunuks ja paneb päästefiltri valmis.
+	 *
+	 * @param Throwable $e     Viga.
+	 * @param string    $where Mis osa.
+	 * @param mixed     $email Meil.
+	 */
+	public static function fail( $e, $where, $email = null ) {
+		self::$failed[ self::key( $email ) ] = is_object( $email ) ? $email : true;
+
+		if ( ! self::$rescue_hooked ) {
+			add_filter( 'woocommerce_mail_content', array( __CLASS__, 'rescue' ), 1 );
+			self::$rescue_hooked = true;
+		}
+
+		self::log_error( $e, $where, $email );
+	}
+
+	/**
+	 * Koostab ebaõnnestunud kirja uuesti WooCommerce'i vaikemalliga.
+	 *
+	 * Käivitub WC_Email::send() sees vahetult enne saatmist ja ainult siis,
+	 * kui selle kirja koostamisel oli viga.
+	 *
+	 * @param string $content Kirja sisu.
+	 * @return string
+	 */
+	public static function rescue( $content ) {
+		$email         = self::$sending;
+		self::$sending = null;
+
+		if ( ! is_a( $email, 'WC_Email' ) || ! self::has_failed( $email ) ) {
+			return $content;
+		}
+
+		unset( self::$failed[ self::key( $email ) ] );
+
+		$was          = self::$bypass;
+		$level        = ob_get_level();
+		$html         = '';
+		self::$bypass = true;
+
+		try {
+			$html = (string) $email->style_inline( $email->get_content_html() );
+		} catch ( Throwable $e ) {
+			while ( ob_get_level() > $level ) {
+				ob_end_clean();
+			}
+
+			self::log_error( $e, 'default template', $email );
+		}
+
+		self::$bypass  = $was;
+		self::$sending = null;
+
+		return '' !== trim( $html ) ? $html : $content;
+	}
+
+	/**
+	 * Kirjutab vea WooCommerce'i logisse (WooCommerce → Olek → Logid, allikas
+	 * „wonom-meilidisainer").
+	 *
+	 * @param Throwable $e     Viga.
+	 * @param string    $where Mis osa.
+	 * @param mixed     $email Meil.
+	 */
+	protected static function log_error( $e, $where, $email = null ) {
+		$message = sprintf(
+			'Email "%1$s": building the %2$s failed, falling back to WooCommerce defaults. %3$s: %4$s (%5$s:%6$d)',
+			( is_object( $email ) && ! empty( $email->id ) ) ? $email->id : 'unknown',
+			$where,
+			get_class( $e ),
+			$e->getMessage(),
+			basename( $e->getFile() ),
+			$e->getLine()
+		);
+
+		try {
+			if ( function_exists( 'wc_get_logger' ) ) {
+				wc_get_logger()->error( $message, array( 'source' => 'wonom-meilidisainer' ) );
+
+				return;
+			}
+		} catch ( Throwable $ignored ) {
+			// Logimine ei tohi kirja saatmist katkestada.
+			unset( $ignored );
+		}
+
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- varuvariant, kui WooCommerce'i logi ei ole.
+		error_log( 'Wonom Meilidisainer: ' . $message );
 	}
 
 	/**
@@ -191,6 +410,10 @@ class WMD_Emails {
 	 * @return bool
 	 */
 	public static function enabled_for( $email_id ) {
+		if ( self::$bypass ) {
+			return false;
+		}
+
 		if ( self::$forced ) {
 			return true;
 		}
@@ -211,6 +434,26 @@ class WMD_Emails {
 	 * @return string
 	 */
 	public static function locate_template( $template, $template_name, $template_path ) {
+		try {
+			return self::resolve_template( $template, $template_name, $template_path );
+		} catch ( Throwable $e ) {
+			// Turvavõrk: vea korral jääb WooCommerce'i leitud mall.
+			self::log_error( $e, 'template lookup', self::current() );
+
+			return $template;
+		}
+	}
+
+	/**
+	 * Malli valik. Eraldi meetod, et locate_template() saaks vea kinni püüda
+	 * ilma loogikat muutmata.
+	 *
+	 * @param string $template      Leitud tee.
+	 * @param string $template_name Malli nimi.
+	 * @param string $template_path Teema alamkaust.
+	 * @return string
+	 */
+	protected static function resolve_template( $template, $template_name, $template_path ) {
 		// Päise ja jaluse puhul teame kirja capture() kaudu; sisumalli puhul
 		// ütleb malli nimi ise, mis kirjaga on tegu.
 		$for_email = self::email_by_template( $template_name );
@@ -284,13 +527,27 @@ class WMD_Emails {
 	 * @return string
 	 */
 	public static function styles( $css, $email = null ) {
-		$for_email = ( $email && ! empty( $email->id ) ) ? $email->id : self::current_id();
-
-		if ( ! self::enabled_for( $for_email ) ) {
-			return $css;
+		// WooCommerce küsib stiile saatmise sees vahetult enne sisufiltrit —
+		// siit saab rescue() teada, mis kirja parasjagu saadetakse.
+		if ( is_a( $email, 'WC_Email' ) ) {
+			self::$sending = $email;
 		}
 
-		return $css . "\n" . WMD_Render::email_css();
+		try {
+			$for_email = ( $email && ! empty( $email->id ) ) ? $email->id : self::current_id();
+
+			if ( ! self::enabled_for( $for_email ) ) {
+				return $css;
+			}
+
+			return $css . "\n" . WMD_Render::email_css();
+		} catch ( Throwable $e ) {
+			// Ilma meie stiilideta ei ole meie kujundus terve — parem kogu kiri
+			// vaikemalliga.
+			self::fail( $e, 'styles', $email );
+
+			return $css;
+		}
 	}
 
 	/**
@@ -302,6 +559,26 @@ class WMD_Emails {
 	 * @return string
 	 */
 	public static function subject( $subject, $object = null, $email = null ) {
+		try {
+			return self::build_subject( $subject, $object, $email );
+		} catch ( Throwable $e ) {
+			// Turvavõrk: vea korral jääb WooCommerce'i enda teema.
+			self::log_error( $e, 'subject', $email );
+
+			return $subject;
+		}
+	}
+
+	/**
+	 * Teema koostamine. Eraldi meetod, et subject() saaks vea kinni püüda ilma
+	 * loogikat muutmata.
+	 *
+	 * @param string   $subject Vaiketeema.
+	 * @param mixed    $object  Tellimus või muu objekt.
+	 * @param WC_Email $email   Meil.
+	 * @return string
+	 */
+	protected static function build_subject( $subject, $object = null, $email = null ) {
 		if ( ! $email || empty( $email->id ) || ! self::enabled_for( $email->id ) ) {
 			return $subject;
 		}

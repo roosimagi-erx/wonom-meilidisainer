@@ -83,6 +83,13 @@
 	 */
 	var wcCache = {};
 
+	// Eelvaate WooCommerce'i sisu päring: korraga on teel üks. Uus päring katkestab
+	// eelmise, sest selle vastust ei ole enam kellelegi vaja.
+	var wcFlight = null;
+	var WC_CANCELLED = {};
+	var WC_TIMEOUT_MS = 10000;
+	var WC_RETRY_MS = 30000;
+
 	/* ---------------------------------------------------------------- abi */
 
 	function esc( str ) {
@@ -772,17 +779,64 @@
 		// Ka täisrežiimis on vaja tellimuse ridu, kokkuvõtet ja välju — ainult
 		// WooCommerce'i sisuosa jääb seal kasutamata.
 		if ( wcCache[ key ] ) {
-			return;
+			// Ebaõnnestunud vastust proovime uuesti alles mõne aja pärast — muidu
+			// saadaks aeglase serveri korral iga klahvivajutus uue päringu.
+			if ( ! wcCache[ key ].failedAt || Date.now() - wcCache[ key ].failedAt < WC_RETRY_MS ) {
+				return;
+			}
+		}
+
+		// Teise kirja, tellimuse või keele päring on veel teel: katkestame selle.
+		// Tema pooleli olev kirje läheb mälust välja, et tagasi tulles küsitaks uuesti.
+		if ( wcFlight ) {
+			wcFlight.cancel();
 		}
 
 		wcCache[ key ] = { pending: true, html: '', css: '' };
+
+		var ctl = ( 'function' === typeof window.AbortController ) ? new window.AbortController() : null;
+		var flight = { cancelled: false, timedOut: false };
+
+		flight.timer = setTimeout( function () {
+			flight.timedOut = true;
+			if ( ctl ) {
+				ctl.abort();
+			}
+		}, WC_TIMEOUT_MS );
+
+		flight.cancel = function () {
+			flight.cancelled = true;
+			clearTimeout( flight.timer );
+			if ( wcCache[ key ] && wcCache[ key ].pending ) {
+				delete wcCache[ key ];
+			}
+			if ( ctl ) {
+				ctl.abort();
+			}
+		};
+
+		function settle() {
+			clearTimeout( flight.timer );
+			if ( wcFlight === flight ) {
+				wcFlight = null;
+			}
+		}
+
+		wcFlight = flight;
 
 		post( 'wmd_wc_part', {
 			email: state.email,
 			order: orderParam(),
 			lang: state.lang,
 			design: JSON.stringify( state.design ),
-		} ).then( function ( res ) {
+		}, { signal: ctl ? ctl.signal : null } ).then( function ( res ) {
+			settle();
+
+			// Katkestatud päringu vastus võib ikkagi kohale jõuda — seda ei kasuta.
+			if ( flight.cancelled ) {
+				throw WC_CANCELLED;
+			}
+
 			wcCache[ key ] = {
 				pending: false,
 				html: res.html || '',
@@ -799,8 +853,21 @@
 			if ( wcKey() === key ) {
 				render();
 			}
-		} ).catch( function () {
-			wcCache[ key ] = { pending: false, html: '', css: '', items: [], totals: [], fields: [], ctx: {}, parts: {}, addr: null, why: __( 'Could not fetch the WooCommerce content.', 'wonom-meilidisainer' ) };
+		} ).catch( function ( err ) {
+			settle();
+
+			// Katkestasime ise: midagi ei ole valesti ja kirjet ei jää.
+			if ( flight.cancelled || err === WC_CANCELLED ) {
+				return;
+			}
+
+			wcCache[ key ] = {
+				pending: false, html: '', css: '', items: [], totals: [], fields: [], ctx: {}, parts: {}, addr: null,
+				failedAt: Date.now(),
+				why: flight.timedOut
+					? __( 'The server did not answer in 10 seconds.', 'wonom-meilidisainer' )
+					: __( 'Could not fetch the WooCommerce content.', 'wonom-meilidisainer' ),
+			};
 		} );
 	}
 
@@ -3706,7 +3773,7 @@
 		return btoa( bin );
 	}
 
-	function post( action, data ) {
+	function post( action, data, opts ) {
 		var body = new FormData();
 		body.append( 'action', action );
 		body.append( 'nonce', cfg.nonce );
@@ -3735,6 +3802,7 @@
 			method: 'POST',
 			credentials: 'same-origin',
 			body: body,
+			signal: ( opts && opts.signal ) || undefined,
 		} ).then( function ( r ) {
 			return r.text().then( function ( text ) {
 				var json = null;
