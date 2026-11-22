@@ -320,10 +320,44 @@ class WMD_Emails {
 
 		if ( ! self::$rescue_hooked ) {
 			add_filter( 'woocommerce_mail_content', array( __CLASS__, 'rescue' ), 1 );
+			add_filter( 'wc_get_template', array( __CLASS__, 'default_template' ), 999, 5 );
 			self::$rescue_hooked = true;
 		}
 
 		self::log_error( $e, $where, $email );
+	}
+
+	/**
+	 * Vaikemalliga taaskoostamise ajal vahetab meie malli WooCommerce'i oma vastu.
+	 *
+	 * WooCommerce jätab leitud malli tee päringu sees meelde, seega filter
+	 * woocommerce_locate_template teist korda ei käivitu ja ilma selleta saaks
+	 * taaskoostamine vahemälust uuesti meie malli. See filter käivitub iga
+	 * malli laadimisel; lisame selle alles esimese vea korral.
+	 *
+	 * @param string $template      Laaditav mall.
+	 * @param string $template_name Malli nimi.
+	 * @param array  $args          Malli muutujad.
+	 * @param string $template_path Teema alamkaust.
+	 * @param string $default_path  Vaiketee.
+	 * @return string
+	 */
+	public static function default_template( $template, $template_name = '', $args = array(), $template_path = '', $default_path = '' ) {
+		if ( ! self::$bypass || ! is_string( $template ) || '' === $template_name ) {
+			return $template;
+		}
+
+		$ours = str_replace( '\\', '/', WMD_DIR . 'templates/' );
+
+		if ( 0 !== strpos( str_replace( '\\', '/', $template ), $ours ) ) {
+			return $template;
+		}
+
+		// $bypass all jätab meie enda otsingufilter WooCommerce'i (või teema)
+		// malli puutumata, seega saame siit õige vaiketee.
+		$found = wc_locate_template( $template_name, $template_path, $default_path );
+
+		return ( is_string( $found ) && '' !== $found && file_exists( $found ) ) ? $found : $template;
 	}
 
 	/**

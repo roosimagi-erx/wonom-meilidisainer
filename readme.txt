@@ -4,7 +4,7 @@ Tags: woocommerce, email, template, editor, transactional
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.14
+Stable tag: 1.0.15
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ Emails go back to the WooCommerce default design. Your design stays in the datab
 == Changelog ==
 
 Entries up to 0.23.0 are in Estonian — that was the source language until 0.24.0.
+
+= 1.0.15 =
+* **Fix: the safety net from 1.0.14 did not really fall back to WooCommerce's template.** WooCommerce remembers where it found each template for the rest of the request. So when an email was rebuilt after an error, it was handed the design's header again and came out without a footer — the email was sent and the error was logged, but it was not the default email. The rebuild now uses WooCommerce's own templates, and the error is logged once instead of twice. Found on the test site before 1.0.14 reached a live shop.
+* Emails that build correctly are unchanged: byte for byte the same as in 1.0.13.
 
 = 1.0.14 =
 * **Safety net for sending.** If building an email with the design ever fails — a broken block, a clash with another plugin — the email now goes out with WooCommerce's own default template instead, and the error is written to the log (WooCommerce → Status → Logs, source `wonom-meilidisainer`). Before, such an error could stop the request that was changing the order's status. An email that builds correctly is byte for byte the same as in 1.0.13; the safety net only acts when something goes wrong.
